@@ -15,8 +15,8 @@ Ian Hodge | ihodge@stanford.edu | <img src="https://avatars3.githubusercontent.c
 
 Member | Hat | Technical Skills | Non-Technical Skills | Personal Traits | Desired Growth | Weaknesses
 --- | --- | --- | --- | --- | --- | ---
-Luis | Black/Green | AI/DL, Python, Backend, some JS/React Native/security  | Leadership skills, rapid prototyping, experimentation, interviewing people | Logical, cautious, motivated | Product management skills, embedded systems, cybersecurity | Presentation skills, time management
-Katherine | White | Deep learning, Systems, Python, some cybersecurity | Team facilitator, leadership skills | Logical, flexible, optimistic | Project management and presentation skills | UI/UX, time management
-Susannah | Black/Yellow | Python, AI/ML, quick prototyping | Small-team work, international work environments | Planner, group-oriented, cautious | UI/UX research and design, security, AI/ML lifecycle | Presentation, prioritization, systems
-Cody | Blue | Systems, networking, testing | Decision making, some project management, time management | Motivated, logical, direct | Embedded systems & cybersecurity / launching attacks | AI, can be too blunt
-Ian | Black | Python, systems design, systems security, some AI/deep learning | Facilitating groups, managing schedules and tasks | Precise, consistent, reliable, introverted, thinks of the larger picture | IoT security, applying deep learning, group dynamics, managing a budget | Can be fickle, sometimes hard to convince, introverted
+Luis | Black/Green | AI/DL, python, backend,  some react native & security  | Ideation, organization and team management | logical, ambitious, detail oriented | UI/UX, mobile, product design | presentation skills, indecisive, prioritization
+Katherine | White | Front-end programming, iOS development | Design process, prototyping, communication | Analytical, organized | UI/UX, React Native | Prioritizing, complicated math
+Susannah | Blue | Python, data management, scraping | Presentation skills, documentation, time management | Organized, logical, ambitious | Need-finding, prototyping, mobile development | UI, a bit stubborn
+Cody | White | JS, some AI/deep learning, React Native | Decision making, design, time management | Motivated, logical, direct | Design, clean dev practices | Rapid prototyping, user research
+Ian | Blue | Python, JS, React Native, Basic UI design, some AI/deep learning, database design | Task management, product management, general leadership skills | consistent, reliable, extroverted, thinks of the larger picture | UI Design skills, needfinding process, large scale project managment | Hard time balancing multiple small tasks, not very detail oriented with UX/UI design
