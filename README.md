@@ -15,7 +15,7 @@ Ian Hodge | ihodge@stanford.edu | <img src="https://avatars3.githubusercontent.c
 
 Member | Hat | Technical Skills | Non-Technical Skills | Personal Traits | Desired Growth | Weaknesses
 --- | --- | --- | --- | --- | --- | ---
-Luis | Black/Green | AI/DL, Python, Backend, some JS and React Native  | Leadership skills, rapid prototyping, experimentation, interviewing people | Logical, cautious, motivated | Product management skills, embedded systems, cybersecurity | Presentation skills, time management
+Luis | Black/Green | AI/DL, Python, Backend, some JS/React Native/security  | Leadership skills, rapid prototyping, experimentation, interviewing people | Logical, cautious, motivated | Product management skills, embedded systems, cybersecurity | Presentation skills, time management
 Katherine | White | Deep learning, Systems, Python, some cybersecurity | Team facilitator, leadership skills | Logical, flexible, optimistic | Project management and presentation skills | UI/UX, time management
 Susannah | Black/Yellow | Python, AI/ML, quick prototyping | Small-team work, international work environments | Planner, group-oriented, cautious | UI/UX research and design, security, AI/ML lifecycle | Presentation, prioritization, systems
 Cody | Blue | Systems, networking, testing | Decision making, some project management, time management | Motivated, logical, direct | Embedded systems & cybersecurity / launching attacks | AI, can be too blunt
