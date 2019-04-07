@@ -9,7 +9,7 @@ Luis Varela | lfvarela@stanford.edu | <img src="https://upload.wikimedia.org/wik
 Katherine Eisenbrand | keisenbr@stanford.edu | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/220px-SNice.svg.png" alt="" width="157.5" height="157.5">
 Susannah Meyer | smeyer7@stanford.edu | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/220px-SNice.svg.png" alt="" width="157.5" height="157.5">
 Cody Hankins | chankins@stanford.edu | <img src="https://github.com/chankins/chankins/blob/master/assets/real_headshot.jpg" alt="" width="157.5" height="157.5">
-Ian Hodge | @stanford.edu | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/220px-SNice.svg.png" alt="" width="157.5" height="210">
+Ian Hodge | ihodge@stanford.edu | <img src="https://avatars3.githubusercontent.com/u/14864663?s=460&v=4" alt="" width="157.5" height="157.5">
 
 # Team Skills Matrix
 
