@@ -1,6 +1,6 @@
-# [TEAM NAME]
+# Volunta
 
-<img src="https://www.petmd.com/sites/default/files/Acute-Dog-Diarrhea-47066074.jpg" alt="Logo">
+<img src="https://i.imgur.com/BHihiiJ.png" alt="Logo">
 
 # Team Members
 Member | Email | Photo
