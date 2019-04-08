@@ -2,6 +2,8 @@
 
 <img src="https://i.imgur.com/BHihiiJ.png" alt="Logo">
 
+A platform where individuals and organizations connect through volunteering opportunities.
+
 # Team Members
 Member | Email | Photo
 --- | --- | ---
@@ -20,3 +22,7 @@ Katherine | White | Front-end programming, iOS development | Design process, pro
 Susannah | Blue | Python, data management, scraping | Presentation skills, documentation, time management | Organized, logical, ambitious | Need-finding, prototyping, mobile development | UI, a bit stubborn
 Cody | White | JS, some AI/deep learning, React Native | Decision making, design, time management | Motivated, logical, direct | Design, clean dev practices | Rapid prototyping, user research
 Ian | Blue | Python, JS, React Native, Basic UI design, some AI/deep learning, database design | Task management, product management, general leadership skills | consistent, reliable, extroverted, thinks of the larger picture | UI Design skills, needfinding process, large scale project managment | Hard time balancing multiple small tasks, not very detail oriented with UX/UI design
+
+# Team Communication
+* Intra-team Slack channel: [voluntaworkspace.slack.com](https://voluntaworkspace.slack.com/)
+* To contact us, email lfvarela@stanford.edu, keisenbr@stanford.edu, smeyer7@stanford.edu, chankins@stanford.edu, and ihodge@stanford.edu.
