@@ -8,7 +8,7 @@ A platform where individuals and organizations connect through volunteering oppo
 Member | Email | Photo
 --- | --- | ---
 Luis Varela | lfvarela@stanford.edu | <img src="https://avatars1.githubusercontent.com/u/26133102?s=400&u=2cc93856eba9d127b2aa71cb8b59e35c34582c0d&v=4" alt="" width="157.5" height="157.5">
-Katherine Eisenbrand | keisenbr@stanford.edu | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/220px-SNice.svg.png" alt="" width="157.5" height="157.5">
+Katherine Eisenbrand | keisenbr@stanford.edu | <img src="https://media.licdn.com/dms/image/C5103AQHY-GpcTOVEeQ/profile-displayphoto-shrink_200_200/0?e=1560384000&v=beta&t=KpxCMYn2Tc2R3LGbIBANrKGT4D9MDyjnqFsQ1ClOGRo" alt="" width="157.5" height="157.5">
 Susannah Meyer | smeyer7@stanford.edu | <img src="https://i.imgur.com/knGF9je.jpg" alt="" width="157.5" height="157.5">
 Cody Hankins | chankins@stanford.edu | <img src="https://github.com/chankins/chankins/blob/master/assets/real_headshot.jpg" alt="" width="157.5" height="157.5">
 Ian Hodge | ihodge@stanford.edu | <img src="https://avatars3.githubusercontent.com/u/14864663?s=460&v=4" alt="" width="157.5" height="157.5">
