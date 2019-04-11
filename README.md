@@ -19,7 +19,7 @@ Member | Hat | Technical Skills | Non-Technical Skills | Personal Traits | Desir
 --- | --- | --- | --- | --- | --- | ---
 Luis | Black/Green | AI/DL, python, backend,  some react native & security  | Ideation, organization and team management | logical, ambitious, detail oriented | UI/UX, mobile, product design | presentation skills, indecisive, prioritization
 Katherine | White | Front-end programming, iOS development | Design process, prototyping, communication | Analytical, organized | UI/UX, React Native | Prioritizing, complicated math
-Susannah | Blue | Python, data management, scraping | Presentation skills, documentation, time management | Organized, logical, ambitious | Need-finding, prototyping, mobile development | UI, a bit stubborn
+Susannah | Blue | Python, data management, scraping | Presentation skills, documentation, time management, communication | Organized, logical, ambitious | Need-finding, prototyping, mobile development | UI, a bit stubborn
 Cody | White | JS, some AI/deep learning, React Native | Decision making, design, time management | Motivated, logical, direct | Design, clean dev practices | Rapid prototyping, user research
 Ian | Blue | Python, JS, React Native, Basic UI design, some AI/deep learning, database design | Task management, product management, general leadership skills | consistent, reliable, extroverted, thinks of the larger picture | UI Design skills, needfinding process, large scale project managment | Hard time balancing multiple small tasks, not very detail oriented with UX/UI design
 
