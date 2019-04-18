@@ -2,7 +2,7 @@
 
 <img src="https://i.imgur.com/BHihiiJ.png" alt="Logo">
 
-A platform where individuals and organizations connect through volunteering opportunities.
+A platform that connects individuals to communities through service.
 
 # Team Members
 Member | Email | Photo
