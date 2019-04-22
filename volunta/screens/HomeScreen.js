@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
+import  EventCard  from '../components/EventCard';
 import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
@@ -20,8 +20,11 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
+          <EventCard/>
+          
             <Image
               source={
                 __DEV__
