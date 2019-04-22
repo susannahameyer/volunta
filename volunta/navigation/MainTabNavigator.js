@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -53,8 +54,23 @@ SettingsStack.navigationOptions = {
   ),
 };
 
+const NotificationsStack = createStackNavigator({
+  Notifications: NotificationsScreen,
+});
+
+NotificationsStack.navigationOptions = {
+  tabBarLabel: 'Notifications',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={'ios-notifications'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
+  NotificationsStack,
 });
