@@ -1,36 +1,39 @@
 import React from 'react';
 import { Icon, Font, LinearGradient } from 'expo';
-
 import {
   Image,
-  Platform,
-  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   Dimensions,
 } from 'react-native';
 
 export default class CommunityCoverPhoto extends React.Component {
   render() {
+    const {communityPhoto, communityName} = this.props
     return (
       <View>
         {/* Community cover photo */}
         <Image
-            source={require('../assets/images/Stanford.png')}
+            source={{uri: communityPhoto}}
             style={styles.photo}
         />
-        <View style={styles.rectangle} />
+
+        {/* Gradient banner for text */}
+        <View style={styles.banner}>
+          <LinearGradient
+          colors={[ 'rgba(90,90,90,0.25)', 'rgba(40,40,40,.95)']}
+          style={{flex: 1}}></LinearGradient>
+        </View>
+
         {/* Community name
             - should limit input community name char count to fit one line
          */}
         <View style={styles.container}>
           <Text style={styles.titleText}>
-            {'Stanford Community'}
+            {communityName}
           </Text>
         </View>
-        
       </View>
     );
   }
@@ -48,10 +51,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  rectangle: {
+  banner: {
     width: Dimensions.get('window').width,
     height: 60,
-    backgroundColor: 'rgba(0, 0, 0, .5)',
     bottom: 60,
   },
     titleText: {
@@ -61,4 +63,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'montserrat'
   },
+  screenText: {
+    fontFamily: 'montserrat',
+    fontSize: 20,
+    
+  }
 });

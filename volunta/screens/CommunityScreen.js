@@ -10,7 +10,9 @@ export default class CommunityScreen extends React.Component {
 
   render() {
     return (
-      <CommunityCoverPhoto />
+      <View>
+        <CommunityCoverPhoto communityPhoto={'https://i.imgur.com/Es0yqyh.png'} communityName={'Stanford Community'}/>
+      </View>
     );
   }
 }
