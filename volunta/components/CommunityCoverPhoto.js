@@ -63,4 +63,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'montserrat'
   },
+  screenText: {
+    fontFamily: 'montserrat',
+    fontSize: 20,
+    
+  }
 });
