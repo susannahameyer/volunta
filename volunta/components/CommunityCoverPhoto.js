@@ -40,12 +40,11 @@ const styles = StyleSheet.create({
     top: 0,
   },
   titleText: {
-    // fontFamily: 'Times',
     height: 36,
-    // textAlign: 'center',
     top: -20,
     fontSize: 24,
     color: 'white',
+    fontFamily: 'montserrat'
   },
   container: {
     flex: 1,
