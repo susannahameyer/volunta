@@ -23,7 +23,11 @@ export default class HomeScreen extends React.Component {
 
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-          <EventCard/>
+          <EventCard
+            coverPhoto={require('../assets/images/volunteer-stock1.jpg')}
+            title='Volunteer Opportunity'
+            organization='Girls Who Code'
+          />
           
             <Image
               source={

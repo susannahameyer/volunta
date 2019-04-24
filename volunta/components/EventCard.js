@@ -21,9 +21,12 @@ export default class EventCard extends React.Component {
           <TouchableOpacity style={styles.cardContainer}>
             <View style={styles.shadow}>
               <Image
-                source={require('../assets/images/volunteer-stock1.jpg')}
+                source={this.props.coverPhoto}
                 style={styles.coverPhoto}
               />
+              <Text style={styles.titleText}>
+                {this.props.title}
+              </Text>
             </View>
             
           </TouchableOpacity>
@@ -58,5 +61,11 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       backgroundColor : "#0000" // invisible color
+    },
+    titleText: {
+      fontFamily: 'montserrat',
+      fontSize: 20,
+      fontWeight: '500',
+
     }
 });
