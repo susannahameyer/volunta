@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
 import * as api from '../firebase/api';
 import { Constants } from 'expo';
-import { EventRowTest } from '../components';
+import { EventRowTest, EventCard } from '../components';
 
 export default class FeedScreen extends React.Component {
   constructor(props) {
@@ -36,11 +36,19 @@ export default class FeedScreen extends React.Component {
     // TODO: Cancel async calls to prevent memory leakage
   }
 
-  _renderEventRow = ({ item }) => <EventRowTest {...item} />;
+  // _renderEventRow = ({ item }) => <EventRowTest {...item} />;
+  _renderEventRow = () => (
+    <EventCard
+      coverPhoto={require('../assets/images/volunteer-stock1.jpg')}
+      title="Volunteer Opportunity"
+      organization="Girls Who Code"
+      date="6/12/19"
+      distance="1.2"
+      numAttendees="40"
+    />
+  );
 
   render() {
-    // return null;
-
     return (
       <View style={myStyles.container}>
         {this.state.events !== [] && (
@@ -59,10 +67,10 @@ export default class FeedScreen extends React.Component {
 
 const myStyles = StyleSheet.create({
   container: {
-    padding: Constants.statusBarHeight,
+    // padding: Constants.statusBarHeight,
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: 'center'
+    // justifyContent: 'center'
   }
 });
