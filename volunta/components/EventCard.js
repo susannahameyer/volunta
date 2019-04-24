@@ -143,6 +143,5 @@ const styles = StyleSheet.create({
       position: 'absolute',
       left: EventCardConstants.cardWidth - 45,
       bottom:  EventCardConstants.cardHeight/2,
-      
     },
 });
