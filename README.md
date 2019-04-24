@@ -4,6 +4,8 @@
 
 A platform that connects individuals to communities through service.
 
+To browse Volunta documentation, from initial brainstorming through final product specs, check out our Wiki [here](https://github.com/StanfordCS194/Team-16/wiki).
+
 # Team Members
 Member | Email | Photo
 --- | --- | ---
