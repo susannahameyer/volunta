@@ -62,5 +62,5 @@ export default createBottomTabNavigator({
   FeedStack,
   CommunityStack,
   NotificationsStack,
-  ProfileStack,
+  ProfileStack
 });
