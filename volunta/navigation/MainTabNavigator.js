@@ -1,47 +1,40 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import {
+  createStackNavigator,
+  createBottomTabNavigator
+} from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
+import FeedScreen from '../screens/FeedScreen';
 import CommunityScreen from '../screens/CommunityScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+const FeedStack = createStackNavigator({
+  Feed: FeedScreen
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+FeedStack.navigationOptions = {
+  tabBarLabel: 'Feed',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
+    <TabBarIcon focused={focused} name={'ios-menu'} />
+  )
 };
 
 const CommunityStack = createStackNavigator({
-  Community: CommunityScreen,
+  Community: CommunityScreen
 });
 
 CommunityStack.navigationOptions = {
   tabBarLabel: 'Community',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={'ios-people'}
-    />
-  ),
+    <TabBarIcon focused={focused} name={'ios-people'} />
+  )
 };
 
 const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
+  Settings: SettingsScreen
 });
 
 SettingsStack.navigationOptions = {
@@ -51,26 +44,23 @@ SettingsStack.navigationOptions = {
       focused={focused}
       name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
     />
-  ),
+  )
 };
 
 const NotificationsStack = createStackNavigator({
-  Notifications: NotificationsScreen,
+  Notifications: NotificationsScreen
 });
 
 NotificationsStack.navigationOptions = {
   tabBarLabel: 'Notifications',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={'ios-notifications'}
-    />
-  ),
+    <TabBarIcon focused={focused} name={'ios-notifications'} />
+  )
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
+  FeedStack,
   CommunityStack,
   SettingsStack,
-  NotificationsStack,
+  NotificationsStack
 });
