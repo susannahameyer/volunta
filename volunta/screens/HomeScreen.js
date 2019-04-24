@@ -27,6 +27,9 @@ export default class HomeScreen extends React.Component {
             coverPhoto={require('../assets/images/volunteer-stock1.jpg')}
             title='Volunteer Opportunity'
             organization='Girls Who Code'
+            date='6/12/19'
+            distance='1.2'
+            numAttendees= '40'
           />
           
             <Image
