@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Image,
+<<<<<<< HEAD
   Platform,
   ScrollView,
   StyleSheet,
@@ -16,6 +17,13 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+=======
+  StyleSheet,
+  View,
+} from 'react-native';
+
+export default class HomeScreen extends React.Component {
+>>>>>>> added welcome screen, uploaded logo assets
 
   render() {
     return (
