@@ -27,4 +27,6 @@ Ian | Blue | Python, JS, React Native, Basic UI design, some AI/deep learning, d
 
 # Team Communication
 * Intra-team Slack channel: [voluntaworkspace.slack.com](https://voluntaworkspace.slack.com/)
+* Weekly team progress [doc](https://docs.google.com/document/d/1rweNvAg_KsDeoJ5nKEwI_S1fV0rEthGw3iMvW23Arnc/edit?usp=sharing)
 * To contact us, email lfvarela@stanford.edu, keisenbr@stanford.edu, smeyer7@stanford.edu, chankins@stanford.edu, and ihodge@stanford.edu.
+
