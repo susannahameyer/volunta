@@ -1,12 +1,10 @@
 import React from 'react';
-import { Icon, Font, LinearGradient } from 'expo';
 import {
-  Image,
   StyleSheet,
   Text,
   View,
-  Dimensions,
 } from 'react-native';
+
 
 export default class InterestBubble extends React.Component {
   render() {
@@ -20,13 +18,16 @@ export default class InterestBubble extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  photo: {
     bubble: {
-        color:'blue'
+        backgroundColor:'#0081AF',
+        alignSelf: 'flex-start',
+        borderRadius: 20
     },
     bubbleText: {
+        margin: 8,
+        marginHorizontal: 15,
         color: 'white',
         fontFamily: 'montserrat'
     }
-  },
+
 });

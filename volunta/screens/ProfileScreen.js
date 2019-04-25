@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import InterestBubble from '../components/InterestBubble';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -27,6 +29,16 @@ export default class ProfileScreen extends React.Component {
       </View>
       <View style={styles.interestBar}>
         <Text style={styles.sectionTitle}>interests:</Text>
+        <View style={styles.singleInterestRow}>
+          <InterestBubble interestName={'puppies'}/>
+          <InterestBubble interestName={'environmental'}/>
+          <InterestBubble interestName={'civics'}/>
+        </View>
+        <View style={styles.singleInterestRow}>
+          <InterestBubble interestName={'public health'}/>
+          <InterestBubble interestName={'kitties'}/>
+          <InterestBubble interestName={'social good'}/>
+        </View>
       </View>
       <View style={styles.comingUpBar}>
         <Text style={styles.sectionTitle}>coming up:</Text>
@@ -44,13 +56,13 @@ export default class ProfileScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginLeft:20,
+    marginHorizontal:20,
   },
   profileBar: {
     flexDirection: 'row',
   },
   sectionTitle: {
-    fontSize:22,
+    fontSize:20,
     fontFamily: 'montserrat'
   },
   profilePic: {
@@ -73,7 +85,12 @@ const styles = StyleSheet.create({
     fontFamily: 'montserrat'
   },
   interestBar: {
-    height:100
+    height:110
+  },
+  singleInterestRow: {
+    justifyContent: 'space-evenly',
+    flexDirection:'row',
+    marginVertical: 5
   },
   comingUpBar: {
     height:200
