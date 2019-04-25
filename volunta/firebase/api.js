@@ -15,10 +15,14 @@ export const getEvents = async () => {
   return returnArr;
 };
 
-// export const getOrgName = async orgDocRef => {
-//   const files = await firestore()
-//     .collection('organizations')
-//     .where('organizations', '==', orgDocRef)
-//     .get();
-//   console.log(files);
-// };
+// Logic to retrieve organization name from an organization reference
+export const getOrganizationName = async org_ref => {
+  name = '';
+  await org_ref
+    .get()
+    .then(snapshot => {
+      name = snapshot.get('name');
+    })
+    .catch(error => console.log(error));
+  return name;
+};

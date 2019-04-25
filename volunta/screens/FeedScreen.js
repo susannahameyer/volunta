@@ -59,6 +59,7 @@ export default class FeedScreen extends React.Component {
         />
         {events !== [] && (
           <FlatList
+            style={styles.flatListStyle}
             renderItem={this._renderEventRow}
             data={events}
             onRefresh={() => this._loadEvents()}
@@ -82,5 +83,8 @@ const styles = StyleSheet.create({
   },
   searchInputContainerStyle: {
     backgroundColor: '#E8E8E8'
+  },
+  flatListStyle: {
+    height: '100%'
   }
 });
