@@ -1,10 +1,9 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AsyncImage from './AsyncImage';
 import EventCardConstants from '../constants/EventCardConstants';
-// import console = require('console');
+import { getOrganizationName } from '../firebase/api';
 
 export default class EventCard extends React.Component {
   constructor(props) {
@@ -18,21 +17,9 @@ export default class EventCard extends React.Component {
   // Fetch data here
   async componentWillMount() {
     this.setState({
-      org_name: await this._getOrganizationName()
+      org_name: await getOrganizationName(this.props.org_ref)
     });
   }
-
-  // Logic to retrieve organization name from an organization reference
-  _getOrganizationName = async () => {
-    name = '';
-    await this.props.org_ref
-      .get()
-      .then(snapshot => {
-        name = snapshot.get('name');
-      })
-      .catch(error => console.log(error));
-    return name;
-  };
 
   // TODO: implement logic to get distance to event from the location (return distance in miles for now)
   _getDistance = () => {
