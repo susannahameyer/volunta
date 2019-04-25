@@ -15,7 +15,7 @@ export default class FeedScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Notifications'
+    title: 'Feed'
   };
 
   async componentDidMount() {
