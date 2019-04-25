@@ -19,15 +19,20 @@ export default class EventCard extends React.Component {
     super(props);
     this.state = {
       title: props.title,
-      coverPhoto: props.coverPhoto,
-      organizationName: props.organizationName,
+      cover_url: props.cover_url,
+      org_name: props.org_name,
       date: props.date,
       // whether or not a user has starred the event
-      interested: props.interested,
+      bookmarked: this._getBookmarked(),
       // whether the event should appear in the upcoming list or not
       comingUp: props.comingUp,
     };
   }
+
+  //TODO implement with db logic
+  _getBookmarked = () => {
+    return true;
+  };
 
   render() {
     return (
@@ -36,7 +41,7 @@ export default class EventCard extends React.Component {
           <TouchableOpacity style={[styles.cardContainer, {height: this.state.comingUp ? 153 : 118}]}>
             <View style={styles.shadow}>
               <Image
-                source={{uri:this.state.coverPhoto}}
+                source={{uri:this.state.cover_url}}
                 style={styles.coverPhoto}
               />
               <View style={styles.textContainer}>
@@ -45,7 +50,7 @@ export default class EventCard extends React.Component {
                     {this.state.title}
                   </Text>
                   <Text style={styles.detailText} numberOfLines={1}>
-                    {this.state.organizationName}
+                    {this.state.org_name}
                   </Text>
                 </View>
                 <View style={this.state.comingUp ? styles.detailTextContainer : styles.smallDetailTextContainer}>
@@ -56,7 +61,7 @@ export default class EventCard extends React.Component {
                     name={"star-circle-outline"}
                     size={23}
                     style={styles.bookmarkIcon}
-                    color={this.state.interested ? '#0081AF' :'grey'}/>
+                    color={this.state.bookmarked ? '#0081AF' :'grey'}/>
                 </View>
               </View>
             </View>
