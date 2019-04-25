@@ -119,8 +119,11 @@ const styles = StyleSheet.create({
     left: 15,
     top: -25,
   },
+<<<<<<< HEAD
   pastScroll: {
     left: 15,
     top: 7,
   }
+=======
+>>>>>>> final scroll styling
 });

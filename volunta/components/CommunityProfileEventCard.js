@@ -75,12 +75,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: 'hidden',
 <<<<<<< HEAD:volunta/components/CommunityProfileEventCard.js
+<<<<<<< HEAD:volunta/components/CommunityProfileEventCard.js
         marginLeft: 4,
 =======
         marginRight: 10,
         marginLeft: 4,
         marginBottom: 10,
 >>>>>>> style edits:volunta/components/CommunityEventCard.js
+=======
+        marginLeft: 4,
+>>>>>>> final scroll styling:volunta/components/CommunityEventCard.js
     },
     coverPhoto: {
         height: '50%',
@@ -94,10 +98,14 @@ const styles = StyleSheet.create({
       shadowOffset: {
         width: 0,
 <<<<<<< HEAD:volunta/components/CommunityProfileEventCard.js
+<<<<<<< HEAD:volunta/components/CommunityProfileEventCard.js
         height: 4,
 =======
         height: 3,
 >>>>>>> style edits:volunta/components/CommunityEventCard.js
+=======
+        height: 4,
+>>>>>>> final scroll styling:volunta/components/CommunityEventCard.js
       },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
