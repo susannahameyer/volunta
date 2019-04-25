@@ -12,7 +12,9 @@ export default class CommunityScreen extends React.Component {
   };
 
   render() {
-    const events = [
+    // upcomingEvents and pastEvents are just hard-coded for now
+    // next will refactor props to match db table and connect to db
+    const upcomingEvents = [
       {
         coverPhoto:'https://i.imgur.com/c6JH6uo.jpg',
         title:'Volunteer Opportunity',
@@ -38,41 +40,58 @@ export default class CommunityScreen extends React.Component {
         comingUp:true,
       },
     ];
+    const pastEvents = [
+      {
+        coverPhoto:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        organizationName:'Girls Who Code',
+        date:'6/12/19',
+        interested:true,
+        comingUp:false,
+      },
+      {
+        coverPhoto:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        organizationName:'Girls Who Code',
+        date:'6/12/19',
+        interested:true,
+        comingUp:false,
+      },
+      {
+        coverPhoto:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        organizationName:'Girls Who Code',
+        date:'6/12/19',
+        interested:true,
+        comingUp:false,
+      },
+    ];
 
     return (
       <View>
         <CommunityCoverPhoto communityPhoto={'https://i.imgur.com/Es0yqyh.png'} communityName={'Stanford Community'}/>
-        <View>
           <View style={styles.topText}>
             <Text style={styles.titleText}>
               {'in my community'}
             </Text>
           </View>
-          <View style={styles.placeholder}></View>
+          <View style={styles.placeholder} />
           <View style={styles.middleText}>
             <Text style={styles.titleText}>
               {'coming up'}
             </Text>
           </View>
           <View style={styles.upcomingScroll}>
-            <EventCardHorizontalScroll events={events}></EventCardHorizontalScroll>
+            <EventCardHorizontalScroll events={upcomingEvents} />
           </View>
           <View style={styles.bottomText}>
             <Text style={styles.titleText}>
               {'how we\'ve helped'}
             </Text>
-            <View style={styles.cardContainer}>
-              <CommunityEventCard
-                coverPhoto='https://i.imgur.com/c6JH6uo.jpg'
-                title='Volunteer Opportunity'
-                organizationName='Girls Who Code'
-                date='6/12/19'
-                interested={true}
-                comingUp={false}
-              />
+            <View style={styles.pastScroll}>
+              <EventCardHorizontalScroll events={pastEvents} />
             </View>
           </View>
-        </View>
       </View>
     );
   }
@@ -86,27 +105,27 @@ const styles = StyleSheet.create({
     left: 19,
   },
   topText: {
-    top: -51,
+    top: -44,
   },
   middleText: {
-    top: -37,
+    top: -30,
   },
   bottomText: {
-    marginTop: 137,
-  },
-  cardContainer: {
-    left: 19,
-    paddingBottom: 5,
+    top: -20,
   },
   placeholder: {
     width: 335,
     height: 50,
     backgroundColor: 'grey',
     left: 19,
-    top: -48,
+    top: -42,
   },
   upcomingScroll: {
     left: 15,
     top: -25,
   },
+  pastScroll: {
+    left: 15,
+    top: 7,
+  }
 });

@@ -20,11 +20,12 @@ export default class EventCardHorizontalScroll extends React.Component {
     _renderEventCard = ({ item }) => <CommunityEventCard {...item} />;
 
     _renderSeparator = () => {
+        var upcoming = this.props.events[0].comingUp;
         return (
           <View
             style={{
               marginRight: 10,
-              height: 200,
+              height: upcoming ? 164 : 127,
             }}
           />
         );
