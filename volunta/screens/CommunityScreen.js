@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
 import CommunityEventCard from '../components/CommunityEventCard';
+import CommunityEventCardHorizontallScroll from '../components/EventCardHorizontalScroll'
+import EventCardHorizontalScroll from '../components/EventCardHorizontalScroll';
 
 export default class CommunityScreen extends React.Component {
   static navigationOptions = {
@@ -10,6 +12,33 @@ export default class CommunityScreen extends React.Component {
   };
 
   render() {
+    const events = [
+      {
+        coverPhoto:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        organizationName:'Girls Who Code',
+        date:'6/12/19',
+        interested:true,
+        comingUp:true,
+      },
+      {
+        coverPhoto:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        organizationName:'Girls Who Code',
+        date:'6/12/19',
+        interested:true,
+        comingUp:true,
+      },
+      {
+        coverPhoto:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        organizationName:'Girls Who Code',
+        date:'6/12/19',
+        interested:true,
+        comingUp:true,
+      },
+    ];
+
     return (
       <View>
         <CommunityCoverPhoto communityPhoto={'https://i.imgur.com/Es0yqyh.png'} communityName={'Stanford Community'}/>
@@ -24,31 +53,22 @@ export default class CommunityScreen extends React.Component {
             <Text style={styles.titleText}>
               {'coming up'}
             </Text>
-          <View style={styles.cardContainer}>
-            <CommunityEventCard
-              coverPhoto='https://i.imgur.com/c6JH6uo.jpg'
-              title='Volunteer Opportunity'
-              organizationName='Girls Who Code'
-              date='6/12/19'
-              interested={true}
-              comingUp={true}
-            />
           </View>
-          </View>
+          <EventCardHorizontalScroll events={events}></EventCardHorizontalScroll>
           <View style={styles.bottomText}>
             <Text style={styles.titleText}>
               {'how we\'ve helped'}
             </Text>
-          </View>
-          <View style={styles.cardContainer}>
-            <CommunityEventCard
-              coverPhoto='https://i.imgur.com/c6JH6uo.jpg'
-              title='Volunteer Opportunity'
-              organizationName='Girls Who Code'
-              date='6/12/19'
-              interested={true}
-              comingUp={false}
-            />
+            <View style={styles.cardContainer}>
+              <CommunityEventCard
+                coverPhoto='https://i.imgur.com/c6JH6uo.jpg'
+                title='Volunteer Opportunity'
+                organizationName='Girls Who Code'
+                date='6/12/19'
+                interested={true}
+                comingUp={false}
+              />
+            </View>
           </View>
         </View>
       </View>
