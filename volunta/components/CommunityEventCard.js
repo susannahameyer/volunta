@@ -72,9 +72,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8F8F8',
         borderRadius: 10,
         overflow: 'hidden',
-        marginRight: 10,
         marginLeft: 4,
-        marginBottom: 10,
     },
     coverPhoto: {
         height: '50%',
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
       shadowColor: "black",
       shadowOffset: {
         width: 0,
-        height: 3,
+        height: 4,
       },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,

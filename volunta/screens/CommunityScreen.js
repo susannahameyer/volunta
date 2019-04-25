@@ -106,8 +106,7 @@ const styles = StyleSheet.create({
     top: -48,
   },
   upcomingScroll: {
-    left: 19,
-    height: 160,
+    left: 15,
     top: -25,
-  }
+  },
 });

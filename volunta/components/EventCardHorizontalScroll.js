@@ -19,6 +19,17 @@ export default class EventCardHorizontalScroll extends React.Component {
 
     _renderEventCard = ({ item }) => <CommunityEventCard {...item} />;
 
+    _renderSeparator = () => {
+        return (
+          <View
+            style={{
+              marginRight: 10,
+              height: 200,
+            }}
+          />
+        );
+      };
+
     render() {
         const { events } = this.props
         return (
@@ -28,12 +39,9 @@ export default class EventCardHorizontalScroll extends React.Component {
                 data={events}
                 renderItem={this._renderEventCard}
                 keyExtractor={(_, index) => index.toString()}
+                ItemSeparatorComponent={this._renderSeparator}
               />
         </View>
         );
     }
 }
-
-const styles = StyleSheet.create({
-
-});
