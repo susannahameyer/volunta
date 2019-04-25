@@ -42,7 +42,7 @@ export default class CommunityCoverPhoto extends React.Component {
 const styles = StyleSheet.create({
   photo: {
     width: Dimensions.get('window').width,
-    height: 195,
+    height: 175,
     left: 0,
     top: 0,
   },
@@ -63,9 +63,4 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'montserrat'
   },
-  screenText: {
-    fontFamily: 'montserrat',
-    fontSize: 20,
-    
-  }
 });
