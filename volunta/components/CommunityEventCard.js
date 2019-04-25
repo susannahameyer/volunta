@@ -45,7 +45,7 @@ export default class EventCard extends React.Component {
                     {this.state.title}
                   </Text>
                   <Text style={styles.detailText} numberOfLines={1}>
-                    {this.state.organization}
+                    {this.state.organizationName}
                   </Text>
                 </View>
                 <View style={this.state.comingUp ? styles.detailTextContainer : styles.smallDetailTextContainer}>

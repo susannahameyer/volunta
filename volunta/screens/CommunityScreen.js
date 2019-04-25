@@ -28,7 +28,7 @@ export default class CommunityScreen extends React.Component {
             <CommunityEventCard
               coverPhoto='https://i.imgur.com/c6JH6uo.jpg'
               title='Volunteer Opportunity'
-              organization='Girls Who Code'
+              organizationName='Girls Who Code'
               date='6/12/19'
               interested={true}
               comingUp={true}
@@ -44,7 +44,7 @@ export default class CommunityScreen extends React.Component {
             <CommunityEventCard
               coverPhoto='https://i.imgur.com/c6JH6uo.jpg'
               title='Volunteer Opportunity'
-              organization='Girls Who Code'
+              organizationName='Girls Who Code'
               date='6/12/19'
               interested={true}
               comingUp={false}
