@@ -1,15 +1,16 @@
 import React from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
 import * as api from '../firebase/api';
-import { Constants } from 'expo';
-import { EventRowTest, EventCard } from '../components';
+import { EventCard } from '../components';
+import { SearchBar } from 'react-native-elements';
 
 export default class FeedScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       events: [],
-      isRefreshing: false
+      isRefreshing: false,
+      search: ''
     };
   }
 
@@ -36,28 +37,33 @@ export default class FeedScreen extends React.Component {
     // TODO: Cancel async calls to prevent memory leakage
   }
 
-  // _renderEventRow = ({ item }) => <EventRowTest {...item} />;
-  _renderEventRow = () => (
-    <EventCard
-      coverPhoto={require('../assets/images/volunteer-stock1.jpg')}
-      title="Volunteer Opportunity"
-      organization="Girls Who Code"
-      date="6/12/19"
-      distance="1.2"
-      numAttendees="40"
-    />
-  );
+  _updateSearch = search => {
+    this.setState({ search });
+  };
+
+  _renderEventRow = ({ item }) => <EventCard {...item} />;
 
   render() {
+    const { search, events, isRefreshing } = this.state;
+
     return (
-      <View style={myStyles.container}>
-        {this.state.events !== [] && (
+      <View>
+        <SearchBar
+          placeholder=""
+          onChangeText={this._updateSearch}
+          value={search}
+          lightTheme
+          round
+          containerStyle={styles.searchContainerStyle}
+          inputContainerStyle={styles.searchInputContainerStyle}
+        />
+        {events !== [] && (
           <FlatList
             renderItem={this._renderEventRow}
-            data={this.state.events}
+            data={events}
             onRefresh={() => this._loadEvents()}
             keyExtractor={(_, index) => index.toString()}
-            refreshing={this.state.isRefreshing}
+            refreshing={isRefreshing}
           />
         )}
       </View>
@@ -65,12 +71,16 @@ export default class FeedScreen extends React.Component {
   }
 }
 
-const myStyles = StyleSheet.create({
-  container: {
-    // padding: Constants.statusBarHeight,
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center'
-    // justifyContent: 'center'
+const styles = StyleSheet.create({
+  searchContainerStyle: {
+    backgroundColor: 'white',
+    borderWidth: 0, // no effect
+    shadowColor: 'white', //no effect
+    borderBottomColor: 'transparent',
+    borderTopColor: 'transparent',
+    marginHorizontal: 8
+  },
+  searchInputContainerStyle: {
+    backgroundColor: '#E8E8E8'
   }
 });
