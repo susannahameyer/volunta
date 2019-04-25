@@ -14,3 +14,11 @@ export const getEvents = async () => {
     .catch(error => console.log(error));
   return returnArr;
 };
+
+// export const getOrgName = async orgDocRef => {
+//   const files = await firestore()
+//     .collection('organizations')
+//     .where('organizations', '==', orgDocRef)
+//     .get();
+//   console.log(files);
+// };

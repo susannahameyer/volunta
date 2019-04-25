@@ -1,28 +1,55 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import AsyncImage from './AsyncImage';
 import EventCardConstants from '../constants/EventCardConstants';
+// import console = require('console');
 
 export default class EventCard extends React.Component {
-  //This will be changed once the database is completely connected
-  // and we actually know what needs to be stored here
-  // FYI copying props into state is bad practice but fine for now
-  // since we won't be using this long term
   constructor(props) {
     super(props);
     this.state = {
-      title: props.title,
-      coverPhoto: props.coverPhoto,
-      organization: props.organization,
-      date: props.date,
-      distance: props.distance,
-      numAttendees: props.numAttendees,
-      bookmarked: false
+      bookmarked: this._get_bookmarked(),
+      loaded: false
     };
   }
 
+  // Fetch data here
+  async componentWillMount() {
+    this.setState({
+      org_name: await this._get_organization_name()
+    });
+  }
+
+  // Logic to retrieve organization name from an organization reference
+  _get_organization_name = async () => {
+    name = '';
+    await this.props.org_ref
+      .get()
+      .then(snapshot => {
+        name = snapshot.get('name');
+      })
+      .catch(error => console.log(error));
+    return name;
+  };
+
+  // TODO: implement logic to get distance to event from the location (return distance in miles for now)
+  _get_distance = () => {
+    return 1.2;
+  };
+
+  // TODO: implement logic to get number of attendees
+  _get_num_attendees = () => {
+    return 40;
+  };
+
+  // TODO: implement backend logic to get actual bookmarked data.
+  _get_bookmarked = () => {
+    return false;
+  };
+
+  // Sets state to bookmarked (user triggered)
   _bookmarkEvent = () => {
     this.setState({
       bookmarked: !this.state.bookmarked
@@ -34,7 +61,14 @@ export default class EventCard extends React.Component {
       <View style={styles.shadow}>
         <TouchableOpacity style={styles.cardContainer}>
           <View style={styles.shadow}>
-            <Image source={this.state.coverPhoto} style={styles.coverPhoto} />
+            <AsyncImage
+              viewStyle={styles.coverPhoto}
+              source={{
+                uri: this.props.cover_url
+              }}
+              placeholderColor="#E8E8E8"
+            />
+
             <Icon
               name="star-circle-outline"
               size={45}
@@ -45,14 +79,14 @@ export default class EventCard extends React.Component {
 
             <View style={styles.textContainer}>
               <View style={styles.titleTextContainer}>
-                <Text style={styles.titleText}>{this.state.title}</Text>
-                <Text style={styles.detailText}>{this.state.organization}</Text>
+                <Text style={styles.titleText}>{this.props.title}</Text>
+                <Text style={styles.detailText}>{this.state.org_name}</Text>
               </View>
               <View style={styles.detailTextContainer}>
-                <Text style={styles.detailText}>{this.state.date}</Text>
-                <Text style={styles.detailText}>{this.state.distance} mi</Text>
+                <Text style={styles.detailText}>{this.props.date}</Text>
+                <Text style={styles.detailText}>{this._get_distance()} mi</Text>
                 <Text style={styles.detailText}>
-                  {this.state.numAttendees} going
+                  {this._get_num_attendees()} going
                 </Text>
               </View>
             </View>
@@ -69,7 +103,8 @@ const styles = StyleSheet.create({
     width: EventCardConstants.cardWidth,
     backgroundColor: '#F8F8F8',
     borderRadius: 20,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    marginBottom: 16
   },
   coverPhoto: {
     height: '50%',
