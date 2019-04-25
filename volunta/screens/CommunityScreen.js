@@ -54,7 +54,9 @@ export default class CommunityScreen extends React.Component {
               {'coming up'}
             </Text>
           </View>
-          <EventCardHorizontalScroll events={events}></EventCardHorizontalScroll>
+          <View style={styles.upcomingScroll}>
+            <EventCardHorizontalScroll events={events}></EventCardHorizontalScroll>
+          </View>
           <View style={styles.bottomText}>
             <Text style={styles.titleText}>
               {'how we\'ve helped'}
@@ -93,8 +95,8 @@ const styles = StyleSheet.create({
     marginTop: 137,
   },
   cardContainer: {
-    top: 6,
     left: 19,
+    paddingBottom: 5,
   },
   placeholder: {
     width: 335,
@@ -102,5 +104,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     left: 19,
     top: -48,
+  },
+  upcomingScroll: {
+    left: 19,
+    height: 160,
+    top: -25,
   }
 });

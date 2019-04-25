@@ -27,6 +27,7 @@ export default class EventCardHorizontalScroll extends React.Component {
                 horizontal={true} 
                 data={events}
                 renderItem={this._renderEventCard}
+                keyExtractor={(_, index) => index.toString()}
               />
         </View>
         );
