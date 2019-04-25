@@ -10,7 +10,7 @@ export default class EventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bookmarked: this._get_bookmarked(),
+      bookmarked: this._getBookmarked(),
       loaded: false
     };
   }
@@ -18,12 +18,12 @@ export default class EventCard extends React.Component {
   // Fetch data here
   async componentWillMount() {
     this.setState({
-      org_name: await this._get_organization_name()
+      org_name: await this._getOrganizationName()
     });
   }
 
   // Logic to retrieve organization name from an organization reference
-  _get_organization_name = async () => {
+  _getOrganizationName = async () => {
     name = '';
     await this.props.org_ref
       .get()
@@ -35,17 +35,17 @@ export default class EventCard extends React.Component {
   };
 
   // TODO: implement logic to get distance to event from the location (return distance in miles for now)
-  _get_distance = () => {
+  _getDistance = () => {
     return 1.2;
   };
 
   // TODO: implement logic to get number of attendees
-  _get_num_attendees = () => {
+  _getNumAttendees = () => {
     return 40;
   };
 
   // TODO: implement backend logic to get actual bookmarked data.
-  _get_bookmarked = () => {
+  _getBookmarked = () => {
     return false;
   };
 
@@ -84,9 +84,9 @@ export default class EventCard extends React.Component {
               </View>
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{this.props.date}</Text>
-                <Text style={styles.detailText}>{this._get_distance()} mi</Text>
+                <Text style={styles.detailText}>{this._getDistance()} mi</Text>
                 <Text style={styles.detailText}>
-                  {this._get_num_attendees()} going
+                  {this._getNumAttendees()} going
                 </Text>
               </View>
             </View>
