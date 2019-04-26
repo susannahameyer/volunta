@@ -2,7 +2,6 @@ import React from 'react';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
-import CommunityProfileEventCard from '../components/CommunityProfileEventCard';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 
 export default class CommunityScreen extends React.Component {
