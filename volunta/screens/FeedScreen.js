@@ -67,7 +67,6 @@ export default class FeedScreen extends React.Component {
     return (
       <EventCard
         event={item}
-        navigation={this.props.navigation}
         onPress={this._onPressEventCard}
         interested={this.state.interestedEventDocIds.has(item.doc_id)}
       />
