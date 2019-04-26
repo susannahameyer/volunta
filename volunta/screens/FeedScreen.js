@@ -25,21 +25,20 @@ export default class FeedScreen extends React.Component {
     this._loadData();
   }
 
-  // Set refreshing to false (for FlatList to know and to update state once loaded)
-  // and fetch events using api call.
-  // Get all events for the feed
-  // Retrieve all events the user is interested in for the interested prop in EventCard
+  // Load data needed for the screen and its components
+  // 1) Detch list of events using api call.
+  // 2) Retrieve all events the user is interested in for the interested prop in EventCard
   // TODO: Using hard coded user doc id, make that a constant for now...
   _loadData = async () => {
     this.setState({
-      isRefreshing: true
+      isRefreshing: true // Needed for FlatList to know
     });
     const events = await getEvents();
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
       'kgxbnXxwNXKIupPuIrcV'
     );
     this.setState({
-      isRefreshing: false,
+      isRefreshing: false, // Restore
       events,
       interestedEventDocIds
     });
