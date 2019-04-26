@@ -30,6 +30,7 @@ export const getOrganizationName = async orgRef => {
 };
 
 // Given a user doc id, returns a set with the doc ids of all events the user is interested in
+// Returns none in case of error.
 export const getAllUserInterestedEventsDocIds = async userDocId => {
   interested = new Set();
   await firestore
