@@ -46,6 +46,7 @@ export default class FeedScreen extends React.Component {
     this.setState({ search });
   };
 
+  // Function we pass to EventCard, pushes screen onto feed stack with the corresponding event page
   _onPressEventCard = event => {
     this.props.navigation.push('Event', { event });
   };
