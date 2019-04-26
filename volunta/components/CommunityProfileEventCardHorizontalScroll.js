@@ -41,6 +41,7 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
                 renderItem={this._renderEventCard}
                 keyExtractor={(_, index) => index.toString()}
                 ItemSeparatorComponent={this._renderSeparator}
+                contentContainerStyle={{ paddingRight: 30}}
               />
         </View>
         );
