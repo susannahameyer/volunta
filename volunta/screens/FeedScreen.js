@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
-import * as api from '../firebase/api';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
+import { getEvents, getAllUserInterestedEventsDocIds } from '../firebase/api';
 
 export default class FeedScreen extends React.Component {
   constructor(props) {
@@ -10,7 +10,8 @@ export default class FeedScreen extends React.Component {
     this.state = {
       events: [],
       isRefreshing: false,
-      search: ''
+      search: '',
+      interestedEventDocIds: new Set()
     };
   }
 
@@ -21,18 +22,26 @@ export default class FeedScreen extends React.Component {
 
   // Fetch any data needed from api
   async componentDidMount() {
-    this._loadEvents();
+    this._loadData();
   }
 
-  // Set refreshing to false (for FlatList to know) and fetch events using api call.
-  _loadEvents = async () => {
+  // Set refreshing to false (for FlatList to know and to update state once loaded)
+  // and fetch events using api call.
+  // Get all events for the feed
+  // Retrieve all events the user is interested in for the interested prop in EventCard
+  // TODO: Using hard coded user doc id, make that a constant for now...
+  _loadData = async () => {
     this.setState({
       isRefreshing: true
     });
-    const events = await api.getEvents();
+    const events = await getEvents();
+    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
+      'kgxbnXxwNXKIupPuIrcV'
+    );
     this.setState({
       isRefreshing: false,
-      events: events
+      events,
+      interestedEventDocIds
     });
   };
 
@@ -48,15 +57,19 @@ export default class FeedScreen extends React.Component {
 
   // Function we pass to EventCard, pushes screen onto feed stack with the corresponding event page
   _onPressEventCard = event => {
-    this.props.navigation.push('Event', { event });
+    this.props.navigation.push('Event', {
+      event
+    });
   };
 
+  // Render card. The 'item' is an event object. Must be named item for function to work.
   _renderEventCard = ({ item }) => {
     return (
       <EventCard
         event={item}
         navigation={this.props.navigation}
         onPress={this._onPressEventCard}
+        interested={this.state.interestedEventDocIds.has(item.doc_id)}
       />
     );
   };
