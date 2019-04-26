@@ -14,14 +14,17 @@ export default class FeedScreen extends React.Component {
     };
   }
 
+  // Set title of screen
   static navigationOptions = {
     title: 'Feed'
   };
 
+  // Fetch any data needed from api
   async componentDidMount() {
     this._loadEvents();
   }
 
+  // Set refreshing to false (for FlatList to know) and fetch events using api call.
   _loadEvents = async () => {
     this.setState({
       isRefreshing: true
@@ -37,15 +40,28 @@ export default class FeedScreen extends React.Component {
     // TODO: Cancel async calls to prevent memory leakage
   }
 
+  // Called when user types something into search bar.
+  // Right now simply update displayed text.
   _updateSearch = search => {
     this.setState({ search });
   };
 
-  _renderEventRow = ({ item }) => <EventCard {...item} />;
+  _onPressEventCard = event => {
+    this.props.navigation.push('Event', { event });
+  };
+
+  _renderEventCard = ({ item }) => {
+    return (
+      <EventCard
+        event={item}
+        navigation={this.props.navigation}
+        onPress={this._onPressEventCard}
+      />
+    );
+  };
 
   render() {
     const { search, events, isRefreshing } = this.state;
-
     return (
       <View>
         <SearchBar
@@ -60,7 +76,7 @@ export default class FeedScreen extends React.Component {
         {events !== [] && (
           <FlatList
             style={styles.flatListStyle}
-            renderItem={this._renderEventRow}
+            renderItem={this._renderEventCard}
             data={events}
             onRefresh={() => this._loadEvents()}
             keyExtractor={(_, index) => index.toString()}
