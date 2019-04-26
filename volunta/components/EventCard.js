@@ -10,14 +10,15 @@ export default class EventCard extends React.Component {
     super(props);
     this.state = {
       bookmarked: this._getBookmarked(),
-      loaded: false
+      loaded: false,
+      org_name: ''
     };
   }
 
   // Fetch data here
   async componentWillMount() {
     this.setState({
-      org_name: await getOrganizationName(this.props.org_ref)
+      org_name: await getOrganizationName(this.props.event.org_ref)
     });
   }
 
@@ -44,14 +45,19 @@ export default class EventCard extends React.Component {
   };
 
   render() {
+    // const { navigate } = this.props.navigation;
+    const event = this.props.event;
     return (
       <View style={styles.shadow}>
-        <TouchableOpacity style={styles.cardContainer}>
+        <TouchableOpacity
+          style={styles.cardContainer}
+          onPress={() => this.props.onPress(event)}
+        >
           <View style={styles.shadow}>
             <AsyncImage
               viewStyle={styles.coverPhoto}
               source={{
-                uri: this.props.cover_url
+                uri: event.cover_url
               }}
               placeholderColor="#E8E8E8"
             />
@@ -66,11 +72,11 @@ export default class EventCard extends React.Component {
 
             <View style={styles.textContainer}>
               <View style={styles.titleTextContainer}>
-                <Text style={styles.titleText}>{this.props.title}</Text>
+                <Text style={styles.titleText}>{event.title}</Text>
                 <Text style={styles.detailText}>{this.state.org_name}</Text>
               </View>
               <View style={styles.detailTextContainer}>
-                <Text style={styles.detailText}>{this.props.date}</Text>
+                <Text style={styles.detailText}>{event.date}</Text>
                 <Text style={styles.detailText}>{this._getDistance()} mi</Text>
                 <Text style={styles.detailText}>
                   {this._getNumAttendees()} going

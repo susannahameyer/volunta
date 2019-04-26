@@ -10,9 +10,11 @@ import FeedScreen from '../screens/FeedScreen';
 import CommunityScreen from '../screens/CommunityScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
+import EventScreen from '../screens/EventScreen';
 
 const FeedStack = createStackNavigator({
-  Feed: FeedScreen
+  Feed: FeedScreen,
+  Event: EventScreen
 });
 
 FeedStack.navigationOptions = {
@@ -45,7 +47,7 @@ NotificationsStack.navigationOptions = {
 };
 
 const ProfileStack = createStackNavigator({
-  Profile: ProfileScreen,
+  Profile: ProfileScreen
 });
 
 ProfileStack.navigationOptions = {
@@ -55,7 +57,7 @@ ProfileStack.navigationOptions = {
       focused={focused}
       name={Platform.OS === 'ios' ? 'ios-person' : 'md-person'}
     />
-  ),
+  )
 };
 
 export default createBottomTabNavigator({
