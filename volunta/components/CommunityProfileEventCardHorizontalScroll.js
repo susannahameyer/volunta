@@ -6,9 +6,9 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import CommunityEventCard from '../components/CommunityEventCard';
+import CommunityProfileEventCard from '../components/CommunityProfileEventCard';
 
-export default class EventCardHorizontalScroll extends React.Component {
+export default class CommunityProfileEventCardHorizontalScroll extends React.Component {
     constructor(props) {
         super(props);
         // Static right now, need to connect with api.js 
@@ -17,7 +17,7 @@ export default class EventCardHorizontalScroll extends React.Component {
         };
     }
 
-    _renderEventCard = ({ item }) => <CommunityEventCard {...item} />;
+    _renderEventCard = ({ item }) => <CommunityProfileEventCard {...item} />;
 
     _renderSeparator = () => {
         var upcoming = this.props.events[0].comingUp;

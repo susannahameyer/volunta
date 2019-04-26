@@ -2,9 +2,8 @@ import React from 'react';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
-import CommunityEventCard from '../components/CommunityEventCard';
-import CommunityEventCardHorizontallScroll from '../components/EventCardHorizontalScroll'
-import EventCardHorizontalScroll from '../components/EventCardHorizontalScroll';
+import CommunityProfileEventCard from '../components/CommunityProfileEventCard';
+import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 
 export default class CommunityScreen extends React.Component {
   static navigationOptions = {
@@ -78,14 +77,14 @@ export default class CommunityScreen extends React.Component {
             </Text>
           </View>
           <View style={styles.upcomingScroll}>
-            <EventCardHorizontalScroll events={upcomingEvents} />
+            <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} />
           </View>
           <View style={styles.bottomText}>
             <Text style={styles.titleText}>
               {'how we\'ve helped'}
             </Text>
             <View style={styles.pastScroll}>
-              <EventCardHorizontalScroll events={pastEvents} />
+              <CommunityProfileEventCardHorizontalScroll events={pastEvents} />
             </View>
           </View>
       </View>
