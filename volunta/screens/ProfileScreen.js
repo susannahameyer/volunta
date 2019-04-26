@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import InterestBubble from '../components/InterestBubble';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -18,6 +19,55 @@ export default class ProfileScreen extends React.Component {
   };
 
   render() {
+    const upcomingEvents = [
+      {
+        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        org_name:'Girls Who Code',
+        date:'6/12/19',
+        comingUp:true,
+      },
+      {
+        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        org_name:'Girls Who Code',
+        date:'6/12/19',
+        comingUp:true,
+      },
+      {
+        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        org_name:'Girls Who Code',
+        date:'6/12/19',
+        comingUp:true,
+      },
+    ];
+
+    const pastEvents = [
+      {
+        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        org_name:'Girls Who Code',
+        date:'6/12/19',
+        comingUp:false,
+      },
+      {
+        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        org_name:'Girls Who Code',
+        date:'6/12/19',
+        comingUp:false,
+      },
+      {
+        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
+        title:'Volunteer Opportunity',
+        org_name:'Girls Who Code',
+        date:'6/12/19',
+        comingUp:false,
+      },
+    ];
+
+
     return (
       <View style={styles.container}>
       <View style={styles.profileBar}>
@@ -42,9 +92,13 @@ export default class ProfileScreen extends React.Component {
       </View>
       <View style={styles.comingUpBar}>
         <Text style={styles.sectionTitle}>coming up:</Text>
+        <View style={styles.upcomingScroll}>
+            <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} />
+        </View>
       </View>
       <View style={styles.helpedBar}>
         <Text style={styles.sectionTitle}>how I've helped:</Text>
+        <CommunityProfileEventCardHorizontalScroll events={pastEvents} />
       </View>
       <View>
         <Text style={styles.sectionTitle}>volunteer network:</Text>
@@ -63,7 +117,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize:20,
-    fontFamily: 'montserrat'
+    fontFamily: 'montserrat',
   },
   profilePic: {
     width: 90,
@@ -94,6 +148,9 @@ const styles = StyleSheet.create({
   },
   comingUpBar: {
     height:200
+  },
+  upcomingScroll: {
+    marginTop:8
   },
   helpedBar: {
     height:150
