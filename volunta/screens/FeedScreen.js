@@ -90,7 +90,7 @@ export default class FeedScreen extends React.Component {
             style={styles.flatListStyle}
             renderItem={this._renderEventCard}
             data={events}
-            onRefresh={() => this._loadEvents()}
+            onRefresh={() => this._loadData()}
             keyExtractor={(_, index) => index.toString()}
             refreshing={isRefreshing}
           />
