@@ -9,9 +9,10 @@ export default class EventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bookmarked: this._getBookmarked(),
+      interested: props.interested,
       loaded: false,
-      org_name: ''
+      org_name: '',
+      event: props.event
     };
   }
 
@@ -32,21 +33,16 @@ export default class EventCard extends React.Component {
     return 40;
   };
 
-  // TODO: implement backend logic to get actual bookmarked data.
-  _getBookmarked = () => {
-    return false;
-  };
-
-  // Sets state to bookmarked (user triggered)
-  _bookmarkEvent = () => {
+  // Sets state to interested/notInterested (user triggered)
+  _changeInterested = () => {
     this.setState({
-      bookmarked: !this.state.bookmarked
+      interested: !this.state.interested
     });
   };
 
   render() {
     // const { navigate } = this.props.navigation;
-    const event = this.props.event;
+    const event = this.state.event;
     return (
       <View style={styles.shadow}>
         <TouchableOpacity
@@ -65,9 +61,9 @@ export default class EventCard extends React.Component {
             <Icon
               name="star-circle-outline"
               size={45}
-              style={styles.bookmarkIcon}
-              onPress={this._bookmarkEvent}
-              color={this.state.bookmarked ? '#0081AF' : 'grey'}
+              style={styles.interestedIcon}
+              onPress={this._changeInterested}
+              color={this.state.interested ? '#0081AF' : 'grey'}
             />
 
             <View style={styles.textContainer}>
@@ -144,7 +140,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     paddingRight: 13
   },
-  bookmarkIcon: {
+  interestedIcon: {
     position: 'absolute',
     left: EventCardConstants.cardWidth - 45,
     bottom: EventCardConstants.cardHeight / 2
