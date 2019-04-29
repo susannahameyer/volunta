@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Facepile from '../components/Facepile';
 import { Ionicons } from '@expo/vector-icons';
 import InterestBubble from '../components/InterestBubble';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
@@ -108,7 +109,13 @@ export default class ProfileScreen extends React.Component {
       <View>
         <Text style={styles.sectionTitle}>volunteer network:</Text>
       </View>
-      <View style={styles.placeholder} />
+      <View style={styles.facepileContainer}>
+            <Facepile
+              totalWidth={335}
+              maxNumImages={10}
+              imageDiameter={50}
+              />
+          </View>
       </View> 
     );
   }
