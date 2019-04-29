@@ -1,5 +1,7 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { timestampToDate } from '../utils';
+import { getOrganizationName } from '../firebase/api'
 
 import {
   Image,
@@ -17,13 +19,24 @@ export default class CommunityProfileEventCard extends React.Component {
     this.state = {
       title: props.title,
       cover_url: props.cover_url,
-      org_name: props.org_name,
       date: props.date,
       // whether or not a user has starred the event
       bookmarked: this._getBookmarked(),
       // whether the event should appear in the upcoming list or not
       comingUp: props.comingUp,
+      event: props.event,
+      date: '',
+      org_name: '',
     };
+  }
+
+
+
+  async componentWillMount() {
+    this.setState({
+      date: timestampToDate(this.props.event.from_date),
+      org_name: await getOrganizationName(this.props.event.org_ref),
+    });
   }
 
   //TODO implement with db logic
@@ -32,25 +45,26 @@ export default class CommunityProfileEventCard extends React.Component {
   };
 
   render() {
+    const event = this.state.event;
     return (
         <View style={styles.shadow}>
           {/* if the event is in the past list, make the height shorter */}
-          <TouchableOpacity style={[styles.cardContainer, {height: this.state.comingUp ? 153 : 118}]}>
+          <TouchableOpacity style={[styles.cardContainer, {height: event.comingUp ? 153 : 118}]}>
             <View style={styles.shadow}>
               <Image
-                source={{uri:this.state.cover_url}}
+                source={{uri:event.cover_url}}
                 style={styles.coverPhoto}
               />
               <View style={styles.textContainer}>
                 <View style={styles.titleTextContainer}>
                   <Text style={styles.titleText} numberOfLines={1}>
-                    {this.state.title}
+                    {event.title}
                   </Text>
                   <Text style={styles.detailText} numberOfLines={1}>
                     {this.state.org_name}
                   </Text>
                 </View>
-                <View style={this.state.comingUp ? styles.detailTextContainer : styles.smallDetailTextContainer}>
+                <View style={event.comingUp ? styles.detailTextContainer : styles.smallDetailTextContainer}>
                   <Text style={styles.dateText}>
                     {this.state.date}
                   </Text>

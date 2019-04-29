@@ -17,9 +17,11 @@ export const getEvents = async () => {
   return returnArr;
 };
 
+// Fetch event data for the community page
+// comingUp prop is hard-coded here for now
 export const getEventsForCommunity = async () => {
-  var returnArr = [];
-  var eventsRef = firestore.collection('events');
+  let returnArr = [];
+  let eventsRef = firestore.collection('events');
   await eventsRef
     .get()
     .then(snapshot => {
@@ -30,10 +32,15 @@ export const getEventsForCommunity = async () => {
       });
     })
     .catch(error => console.log(error));
-  var finalEvents = [];
+
+  // Add whether an event is coming up or past
+  let finalEvents = [];
   for (let event of returnArr) {
-    event.comingUp = true;
-    finalEvents.push(event)
+    let eventDate = event.from_date.seconds;
+    let currentDate = Date.now() / 1000.0;
+
+    event.comingUp = (eventDate >= currentDate);
+    finalEvents.push(event);
   }
   return finalEvents;
 };
