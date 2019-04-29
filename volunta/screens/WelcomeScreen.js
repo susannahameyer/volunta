@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 
+const assetFilePath = '../assets/images/';
+
 export default class HomeScreen extends React.Component {
 
   // Function we pass to Log In button, pushes login screen onto stack
@@ -21,7 +23,7 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          source={require('../assets/images/logo.png')}
+          source={require(assetFilePath + 'logo.png')}
           style={styles.logo}
         />
         <View>
