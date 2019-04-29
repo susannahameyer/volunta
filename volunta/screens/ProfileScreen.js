@@ -73,8 +73,11 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.profileBar}>
         <Image style={styles.profilePic} source={require('../assets/images/kanye.png')} />
         <View style={styles.upperText}>
+          <View>
           <Text style={styles.personName}>Kanye West</Text>
           <Text style={styles.communityName}>Stanford University</Text>
+          </View>
+          <Ionicons name="md-checkmark-circle" size={32} color="green" />
         </View>
       </View>
       <View style={styles.interestBar}>
@@ -97,12 +100,13 @@ export default class ProfileScreen extends React.Component {
         </View>
       </View>
       <View style={styles.helpedBar}>
-        <Text style={styles.sectionTitle}>how I've helped:</Text>
+        <Text style={styles.helpedTitle}>how I've helped:</Text>
         <CommunityProfileEventCardHorizontalScroll events={pastEvents} />
       </View>
       <View>
         <Text style={styles.sectionTitle}>volunteer network:</Text>
       </View>
+      <View style={styles.placeholder} />
       </View> 
     );
   }
@@ -119,32 +123,38 @@ const styles = StyleSheet.create({
     fontSize:20,
     fontFamily: 'montserrat',
   },
+  helpedTitle: {
+    fontSize:20,
+    fontFamily: 'montserrat',
+    marginBottom: 8
+  },
   profilePic: {
-    width: 90,
-    height: 90, 
-    borderRadius: 45,
+    width: 78,
+    height: 78, 
+    borderRadius: 39,
     marginRight:20,
-    marginVertical:12
+    marginBottom:8,
+    marginTop:10
   },
   upperText: {
     justifyContent: 'center',
   },
   personName: {
-    fontSize:28,
+    fontSize:24,
     fontFamily: 'montserrat'
   },
   communityName: {
-    fontSize:16,
+    fontSize:14,
     color:'#838383',
     fontFamily: 'montserrat'
   },
   interestBar: {
-    height:110
+    height:100
   },
   singleInterestRow: {
     justifyContent: 'space-evenly',
     flexDirection:'row',
-    marginVertical: 5
+    marginVertical: 3
   },
   comingUpBar: {
     height:200
@@ -153,6 +163,12 @@ const styles = StyleSheet.create({
     marginTop:8
   },
   helpedBar: {
-    height:150
+    height:160
+  },
+  placeholder: {
+    width: 335,
+    height: 50,
+    marginTop:4,
+    backgroundColor: 'grey',
   },
 });

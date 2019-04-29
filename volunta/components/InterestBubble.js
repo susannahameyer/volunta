@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     bubbleText: {
-        margin: 8,
+        marginVertical: 7,
         marginHorizontal: 15,
         color: 'white',
         fontFamily: 'montserrat'
