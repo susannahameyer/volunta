@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import InterestBubble from '../components/InterestBubble';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
+import Feather from '@expo/vector-icons/Feather';
 
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -73,24 +74,25 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.profileBar}>
         <Image style={styles.profilePic} source={require('../assets/images/kanye.png')} />
         <View style={styles.upperText}>
-          <View>
           <Text style={styles.personName}>Kanye West</Text>
           <Text style={styles.communityName}>Stanford University</Text>
-          </View>
-          <Ionicons name="md-checkmark-circle" size={32} color="green" />
         </View>
+        <TouchableOpacity style ={styles.editIcon}>
+          <Feather name="edit" size={30} color="#0081AF" />
+        </TouchableOpacity>
       </View>
       <View style={styles.interestBar}>
         <Text style={styles.sectionTitle}>interests:</Text>
         <View style={styles.singleInterestRow}>
-          <InterestBubble interestName={'puppies'}/>
-          <InterestBubble interestName={'environmental'}/>
-          <InterestBubble interestName={'civics'}/>
-        </View>
-        <View style={styles.singleInterestRow}>
           <InterestBubble interestName={'public health'}/>
           <InterestBubble interestName={'kitties'}/>
           <InterestBubble interestName={'social good'}/>
+        </View>
+        <View style={styles.singleInterestRow}>
+          <InterestBubble interestName={'kids'}/>
+          <InterestBubble interestName={'environmental'}/>
+          <InterestBubble interestName={'civics'}/>
+          <InterestBubble interestName={'...'}/>
         </View>
       </View>
       <View style={styles.comingUpBar}>
@@ -119,6 +121,10 @@ const styles = StyleSheet.create({
   profileBar: {
     flexDirection: 'row',
   },
+  editIcon: {
+    marginLeft: 35,
+    alignSelf: 'center'
+  },
   sectionTitle: {
     fontSize:20,
     fontFamily: 'montserrat',
@@ -140,11 +146,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   personName: {
-    fontSize:24,
+    fontSize:28,
     fontFamily: 'montserrat'
   },
   communityName: {
-    fontSize:14,
+    fontSize:16,
     color:'#838383',
     fontFamily: 'montserrat'
   },
@@ -160,7 +166,7 @@ const styles = StyleSheet.create({
     height:200
   },
   upcomingScroll: {
-    marginTop:8
+    marginTop:8,
   },
   helpedBar: {
     height:160
