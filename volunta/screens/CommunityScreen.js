@@ -4,10 +4,31 @@ import { ExpoLinksView } from '@expo/samples';
 import Facepile from '../components/Facepile';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
+import { getEventsForCommunity } from '../firebase/api';
 
 export default class CommunityScreen extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      events: [],
+    };
+  }
+
   static navigationOptions = {
     title: 'Community',
+  };
+
+  async componentDidMount() {
+    this._loadData();
+  }
+
+  _loadData = async () => {
+    const events = await getEventsForCommunity();
+    console.log(events[0]);
+    this.setState({
+      events,
+    });
   };
 
   render() {

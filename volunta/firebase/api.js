@@ -17,6 +17,27 @@ export const getEvents = async () => {
   return returnArr;
 };
 
+export const getEventsForCommunity = async () => {
+  var returnArr = [];
+  var eventsRef = firestore.collection('events');
+  await eventsRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        data = doc.data();
+        data.doc_id = doc.id;
+        returnArr.push(data);
+      });
+    })
+    .catch(error => console.log(error));
+  var finalEvents = [];
+  for (let event of returnArr) {
+    event.comingUp = true;
+    finalEvents.push(event)
+  }
+  return finalEvents;
+};
+
 // Logic to retrieve organization name from an organization reference
 export const getOrganizationName = async orgRef => {
   name = '';
