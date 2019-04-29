@@ -78,7 +78,6 @@ export default class CommunityScreen extends React.Component {
           <View style={styles.upcomingScroll}>
             <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} />
           </View>
-          <EventCardHorizontalScroll events={events}></EventCardHorizontalScroll>
           <View style={styles.bottomText}>
             <Text style={styles.titleText}>
               {'how we\'ve helped'}

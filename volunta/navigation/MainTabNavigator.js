@@ -11,7 +11,6 @@ import CommunityScreen from '../screens/CommunityScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import EventScreen from '../screens/EventScreen';
-import WelcomeScreen from '../screens/WelcomeScreen'
 
 const FeedStack = createStackNavigator({
   Feed: FeedScreen,
@@ -37,7 +36,7 @@ CommunityStack.navigationOptions = {
 };
 
 const NotificationsStack = createStackNavigator({
-  Notifications: WelcomeScreen
+  Notifications: NotificationsScreen
 });
 
 NotificationsStack.navigationOptions = {
