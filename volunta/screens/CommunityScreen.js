@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
+import Facepile from '../components/Facepile';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 
@@ -69,7 +70,14 @@ export default class CommunityScreen extends React.Component {
               {'in my community'}
             </Text>
           </View>
-          <View style={styles.placeholder} />
+          <View style={styles.facepileContainer}>
+            <Facepile
+              totalWidth={335}
+              maxNumImages={10}
+              imageDiameter={50}
+              />
+          </View>
+          
           <View style={styles.middleText}>
             <Text style={styles.titleText}>
               {'coming up'}
@@ -100,6 +108,10 @@ const styles = StyleSheet.create({
   },
   topText: {
     top: -44,
+  },
+  facepileContainer: {
+    left: 19,
+    top: -42,
   },
   middleText: {
     top: -30,
