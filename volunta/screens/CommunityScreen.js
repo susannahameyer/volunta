@@ -24,7 +24,7 @@ export default class CommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
-    const [upcomingEvents, pastEvents] = await getEventsForCommunity();
+    const [upcomingEvents, pastEvents, ongoingEvents] = await getEventsForCommunity();
     this.setState({
       upcomingEvents,
       pastEvents,

@@ -13,15 +13,19 @@ export const getEvents = async () => {
         returnArr.push(data);
       });
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
   return returnArr;
 };
 
 // Fetch event data for the community page
+// TODO: finalize logic for upcoming vs past vs ongoing events
 export const getEventsForCommunity = async () => {
   let returnArrUpcoming = [];
   let returnArrPast = [];
-  let returnArr = [];
+  let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
   await eventsRef
     .get()
@@ -30,21 +34,35 @@ export const getEventsForCommunity = async () => {
         data = doc.data();
         data.doc_id = doc.id;
 
-        let eventDate = data.from_date.seconds;
+        // start time of the event in seconds
+        let eventFromDate = data.from_date.seconds;
+        // end time of the event in seconds
+        let eventEndDate = data.to_date.seconds;
+        // current time in seconds
         let currentDate = Date.now() / 1000.0;
-        data.comingUp = (eventDate >= currentDate);
-        if (data.comingUp) {
-          returnArrUpcoming.push(data);
-        } else {
-          returnArrPast.push(data);
-        }
 
-        returnArr.push(data);
+        // An event is upcoming if event from_date is greater than current date
+        if (eventFromDate > currentDate) {
+          data.status = 'upcoming';
+          returnArrUpcoming.push(data);
+        // An event is in the past if event to_date is less than current date
+        } else if (eventEndDate < currentDate) {
+          data.status = 'past';
+          returnArrPast.push(data);
+        // This means that from_date <= current date and to_date >= current date,
+        // so the event is currently ongoing
+        } else {
+          data.status = 'ongoing';
+          returnArrOngoing.push(data);
+        }
       });
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
 
-  return [returnArrUpcoming, returnArrPast];
+  return [returnArrUpcoming, returnArrPast, returnArrOngoing];
 };
 
 // Logic to retrieve organization name from an organization reference
@@ -55,7 +73,10 @@ export const getOrganizationName = async orgRef => {
     .then(snapshot => {
       name = snapshot.get('name');
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
   return name;
 };
 
@@ -72,7 +93,7 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
     })
     .catch(error => {
       console.log(error);
-      return;
+      return null;
     });
   interested_refs.forEach(ref => interested.add(ref.id));
   return interested;
