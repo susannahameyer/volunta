@@ -11,7 +11,8 @@ export default class CommunityScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: [],
+      upcomingEvents: [],
+      pastEvents: [],
     };
   }
 
@@ -24,14 +25,15 @@ export default class CommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
-    const events = await getEventsForCommunity();
+    const [upcomingEvents, pastEvents] = await getEventsForCommunity();
     this.setState({
-      events: events,
+      upcomingEvents: upcomingEvents,
+      pastEvents: pastEvents
     });
   };
 
   render() {
-    const { events } = this.state;
+    const { upcomingEvents, pastEvents } = this.state;
 
     return (
       <View>
@@ -55,14 +57,14 @@ export default class CommunityScreen extends React.Component {
             </Text>
           </View>
           <View style={styles.upcomingScroll}>
-            <CommunityProfileEventCardHorizontalScroll events={events} />
+            <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} />
           </View>
           <View style={styles.bottomText}>
             <Text style={styles.titleText}>
               {'how we\'ve helped'}
             </Text>
             <View style={styles.pastScroll}>
-              <CommunityProfileEventCardHorizontalScroll events={events} />
+              <CommunityProfileEventCardHorizontalScroll events={pastEvents} />
             </View>
           </View>
       </View>

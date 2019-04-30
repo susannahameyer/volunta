@@ -20,6 +20,8 @@ export const getEvents = async () => {
 // Fetch event data for the community page
 // comingUp prop is hard-coded here for now
 export const getEventsForCommunity = async () => {
+  let returnArrUpcoming = [];
+  let returnArrPast = [];
   let returnArr = [];
   let eventsRef = firestore.collection('events');
   await eventsRef
@@ -28,21 +30,34 @@ export const getEventsForCommunity = async () => {
       snapshot.forEach(doc => {
         data = doc.data();
         data.doc_id = doc.id;
+
+        let eventDate = data.from_date.seconds;
+        let currentDate = Date.now() / 1000.0;
+        data.comingUp = (eventDate >= currentDate);
+        if (data.comingUp) {
+          returnArrUpcoming.push(data);
+        } else {
+          returnArrPast.push(data);
+        }
+
         returnArr.push(data);
       });
     })
     .catch(error => console.log(error));
 
-  // Add whether an event is coming up or past
-  let finalEvents = [];
-  for (let event of returnArr) {
-    let eventDate = event.from_date.seconds;
-    let currentDate = Date.now() / 1000.0;
+  // console.log(returnArrUpcoming.length);
+  // console.log(returnArrPast.length);
+  // // Add whether an event is coming up or past
+  // let finalEvents = [];
+  // for (let event of returnArr) {
+  //   let eventDate = event.from_date.seconds;
+  //   let currentDate = Date.now() / 1000.0;
 
-    event.comingUp = (eventDate >= currentDate);
-    finalEvents.push(event);
-  }
-  return finalEvents;
+  //   event.comingUp = (eventDate >= currentDate);
+  //   finalEvents.push(event);
+  // }
+  // return finalEvents;
+  return [returnArrUpcoming, returnArrPast];
 };
 
 // Logic to retrieve organization name from an organization reference
