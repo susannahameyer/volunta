@@ -9,7 +9,7 @@ import {
 
 const assetFilePath = '../assets/images/';
 
-export default class HomeScreen extends React.Component {
+export default class WelcomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
@@ -18,7 +18,7 @@ export default class HomeScreen extends React.Component {
   // Function we pass to Log In button, pushes login screen onto stack
   // TODO: push login screen
   _onPressLogIn = event => {
-    this.props.navigation.push('Login', {
+    this.props.navigation.push('LogIn', {
       event
     });
   };
