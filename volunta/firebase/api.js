@@ -17,6 +17,36 @@ export const getEvents = async () => {
   return returnArr;
 };
 
+// Fetch event data for the community page
+export const getEventsForCommunity = async () => {
+  let returnArrUpcoming = [];
+  let returnArrPast = [];
+  let returnArr = [];
+  let eventsRef = firestore.collection('events');
+  await eventsRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        data = doc.data();
+        data.doc_id = doc.id;
+
+        let eventDate = data.from_date.seconds;
+        let currentDate = Date.now() / 1000.0;
+        data.comingUp = (eventDate >= currentDate);
+        if (data.comingUp) {
+          returnArrUpcoming.push(data);
+        } else {
+          returnArrPast.push(data);
+        }
+
+        returnArr.push(data);
+      });
+    })
+    .catch(error => console.log(error));
+
+  return [returnArrUpcoming, returnArrPast];
+};
+
 // Logic to retrieve organization name from an organization reference
 export const getOrganizationName = async orgRef => {
   name = '';
