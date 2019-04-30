@@ -18,7 +18,6 @@ export const getEvents = async () => {
 };
 
 // Fetch event data for the community page
-// comingUp prop is hard-coded here for now
 export const getEventsForCommunity = async () => {
   let returnArrUpcoming = [];
   let returnArrPast = [];
@@ -45,18 +44,6 @@ export const getEventsForCommunity = async () => {
     })
     .catch(error => console.log(error));
 
-  // console.log(returnArrUpcoming.length);
-  // console.log(returnArrPast.length);
-  // // Add whether an event is coming up or past
-  // let finalEvents = [];
-  // for (let event of returnArr) {
-  //   let eventDate = event.from_date.seconds;
-  //   let currentDate = Date.now() / 1000.0;
-
-  //   event.comingUp = (eventDate >= currentDate);
-  //   finalEvents.push(event);
-  // }
-  // return finalEvents;
   return [returnArrUpcoming, returnArrPast];
 };
 
