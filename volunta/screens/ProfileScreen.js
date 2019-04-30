@@ -33,8 +33,8 @@ export default class ProfileScreen extends React.Component {
   _loadData = async () => {
     const [upcomingEvents, pastEvents] = await getEventsForCommunity();
     this.setState({
-      upcomingEvents: upcomingEvents,
-      pastEvents: pastEvents
+      upcomingEvents,
+      pastEvents,
     });
   };
 

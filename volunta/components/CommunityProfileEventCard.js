@@ -19,7 +19,6 @@ export default class CommunityProfileEventCard extends React.Component {
     this.state = {
       // whether or not a user has starred the event
       bookmarked: this._getBookmarked(),
-      event: props.event,
       date: '',
       org_name: '',
     };
@@ -38,7 +37,7 @@ export default class CommunityProfileEventCard extends React.Component {
   };
 
   render() {
-    const event = this.state.event;
+    const event = this.props.event;
     return (
       <View style={styles.shadow}>
         {/* if the event is in the past list, make the height shorter */}
