@@ -11,9 +11,17 @@ const assetFilePath = '../assets/images/';
 
 export default class HomeScreen extends React.Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   // Function we pass to Log In button, pushes login screen onto stack
   // TODO: push login screen
-  _onPressLogIn = event => { };
+  _onPressLogIn = event => {
+    this.props.navigation.push('Login', {
+      event
+    });
+  };
 
   // Function we pass to Sign Up button, pushes sign up screen onto stack
   // TODO: push signup screen
