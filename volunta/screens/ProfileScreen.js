@@ -13,61 +13,37 @@ import InterestBubble from '../components/InterestBubble';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import Feather from '@expo/vector-icons/Feather';
+import { getEventsForCommunity } from '../firebase/api';
 
 export default class ProfileScreen extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      upcomingEvents: [],
+      pastEvents: [],
+    };
+  }
+
+  async componentDidMount() {
+    this._loadData();
+  }
+
+  //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
+  _loadData = async () => {
+    const [upcomingEvents, pastEvents] = await getEventsForCommunity();
+    this.setState({
+      upcomingEvents: upcomingEvents,
+      pastEvents: pastEvents
+    });
+  };
+
   static navigationOptions = {
     title: 'Profile',
   };
 
   render() {
-    const upcomingEvents = [
-      {
-        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
-        title:'Volunteer Opportunity',
-        org_name:'Girls Who Code',
-        date:'6/12/19',
-        comingUp:true,
-      },
-      {
-        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
-        title:'Volunteer Opportunity',
-        org_name:'Girls Who Code',
-        date:'6/12/19',
-        comingUp:true,
-      },
-      {
-        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
-        title:'Volunteer Opportunity',
-        org_name:'Girls Who Code',
-        date:'6/12/19',
-        comingUp:true,
-      },
-    ];
-
-    const pastEvents = [
-      {
-        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
-        title:'Volunteer Opportunity',
-        org_name:'Girls Who Code',
-        date:'6/12/19',
-        comingUp:false,
-      },
-      {
-        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
-        title:'Volunteer Opportunity',
-        org_name:'Girls Who Code',
-        date:'6/12/19',
-        comingUp:false,
-      },
-      {
-        cover_url:'https://i.imgur.com/c6JH6uo.jpg',
-        title:'Volunteer Opportunity',
-        org_name:'Girls Who Code',
-        date:'6/12/19',
-        comingUp:false,
-      },
-    ];
-
+    const { upcomingEvents, pastEvents } = this.state;
 
     return (
       <View style={styles.container}>
