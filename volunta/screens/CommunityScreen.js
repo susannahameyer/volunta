@@ -1,11 +1,6 @@
 import React from 'react';
-<<<<<<< HEAD
-import { ScrollView, StyleSheet, View, Text } from 'react-native';
-import { ExpoLinksView } from '@expo/samples';
-import Facepile from '../components/Facepile';
-=======
 import { StyleSheet, View, Text } from 'react-native';
->>>>>>> fixed height bug
+import Facepile from '../components/Facepile';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import { getEventsForCommunity } from '../firebase/api';
