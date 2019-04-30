@@ -11,11 +11,6 @@ import CommunityScreen from '../screens/CommunityScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import EventScreen from '../screens/EventScreen';
-import LoginScreen from '../screens/LoginScreen';
-
-const LoginStack = createStackNavigator({
-  Login: LoginScreen,
-})
 
 const FeedStack = createStackNavigator({
   Event: EventScreen,
