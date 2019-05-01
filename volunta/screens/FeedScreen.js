@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, View } from 'react-native';
+import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import { getEvents, getAllUserInterestedEventsDocIds } from '../firebase/api';
@@ -75,7 +75,7 @@ export default class FeedScreen extends React.Component {
   render() {
     const { search, events, isRefreshing } = this.state;
     return (
-      <View>
+      <View style={styles.pageContainer}>
         <SearchBar
           placeholder=""
           onChangeText={this._updateSearch}
@@ -101,18 +101,22 @@ export default class FeedScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  pageContainer: {
+    width: Dimensions.get('window').width,
+  },
   searchContainerStyle: {
     backgroundColor: 'white',
     borderWidth: 0, // no effect
     shadowColor: 'white', //no effect
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
-    marginHorizontal: 8
+    width:'95%',
+    alignSelf: 'center'
   },
   searchInputContainerStyle: {
     backgroundColor: '#E8E8E8'
   },
   flatListStyle: {
-    height: '100%'
+    height: '100%',
   }
 });

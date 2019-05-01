@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
     borderRadius: 20,
     overflow: 'hidden',
-    marginBottom: 16
+    marginBottom: 16,
+    marginLeft: 17
   },
   coverPhoto: {
     height: '50%',
