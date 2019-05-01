@@ -29,14 +29,19 @@ export const getEventsForCommunity = async () => {
   let eventsRef = firestore.collection('events');
   let communityRef = firestore.collection('communities').doc('G49erP5pZ5PmJyieUoCH');
 
+  let currentUserRef = firestore.collection('users').doc('kgxbnXxwNXKIupPuIrcV');
+  // currentUserRef.get().then(function(doc) {
+  //   if (doc.exists) {
+  //     console.log(doc.data());
+  //   }
+  // });
+
   await eventsRef.where('sponsors', 'array-contains', communityRef)
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-
         data = doc.data();
         data.doc_id = doc.id;
-        console.log(doc.id);
 
         // start time of the event in seconds
         let eventFromDate = data.from_date.seconds;
@@ -102,3 +107,18 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
   interested_refs.forEach(ref => interested.add(ref.id));
   return interested;
 };
+
+const getCurrentUserCommunity = async userDocId => {
+  await firestore
+    .collection('users')
+    .doc(userDocId)
+    .get()
+    .then(snapshot => {
+      community_ref = snapshot.get('community_ref');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+    
+}
