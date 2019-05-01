@@ -15,11 +15,6 @@ export default class FeedScreen extends React.Component {
     };
   }
 
-  // Set title of screen
-  static navigationOptions = {
-    title: 'Feed'
-  };
-
   // Fetch any data needed from api
   async componentDidMount() {
     this._loadData();
