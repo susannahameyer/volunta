@@ -23,7 +23,7 @@ export default class CommunityProfileEventCard extends React.Component {
     };
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     this.setState({
       date: timestampToDate(this.props.event.from_date),
       org_name: await getOrganizationName(this.props.event.org_ref),

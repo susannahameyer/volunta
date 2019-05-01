@@ -3,7 +3,8 @@ import { StyleSheet, View, Text } from 'react-native';
 import Facepile from '../components/Facepile';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
-import { getEventsForCommunity } from '../firebase/api';
+import { getEventsForCommunity, getCommunityName, getCommunityCoverPhoto, getUserCommunity } from '../firebase/api';
+import * as c from '../firebase/fb_constants';
 
 export default class CommunityScreen extends React.Component {
 
@@ -12,8 +13,8 @@ export default class CommunityScreen extends React.Component {
     this.state = {
       upcomingEvents: [],
       pastEvents: [],
-      // communityPhoto: '',
-      // communityName: '',
+      communityPhoto: '',
+      communityName: '',
     };
   }
 
@@ -23,19 +24,24 @@ export default class CommunityScreen extends React.Component {
 
   _loadData = async () => {
     const [upcomingEvents, pastEvents, ongoingEvents] = await getEventsForCommunity();
-    
+    const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+    const communityName = await getCommunityName(currentUserCommunityRef);
+    const communityPhoto = await getCommunityCoverPhoto(currentUserCommunityRef);
+
     this.setState({
       upcomingEvents,
       pastEvents,
+      communityPhoto,
+      communityName,
     });
   };
 
   render() {
-    const { upcomingEvents, pastEvents } = this.state;
+    const { upcomingEvents, pastEvents, communityPhoto, communityName } = this.state;
 
     return (
       <View>
-        <CommunityCoverPhoto communityPhoto={'https://i.imgur.com/Es0yqyh.png'} communityName={'Stanford Community'}/>
+        <CommunityCoverPhoto communityPhoto={communityPhoto} communityName={communityName}/>
           <View style={styles.topText}>
             <Text style={styles.titleText}>
               {'in my community'}
