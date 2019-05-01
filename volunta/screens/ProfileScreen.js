@@ -38,10 +38,6 @@ export default class ProfileScreen extends React.Component {
     });
   };
 
-  static navigationOptions = {
-    title: 'Profile',
-  };
-
   render() {
     const { upcomingEvents, pastEvents } = this.state;
 

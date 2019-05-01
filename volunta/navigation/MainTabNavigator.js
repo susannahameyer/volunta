@@ -65,4 +65,6 @@ export default createBottomTabNavigator({
   CommunityStack,
   NotificationsStack,
   ProfileStack
-});
+}, {tabBarOptions: {
+  showLabel: false,
+},});

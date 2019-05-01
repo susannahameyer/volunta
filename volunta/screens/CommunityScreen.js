@@ -15,10 +15,6 @@ export default class CommunityScreen extends React.Component {
     };
   }
 
-  static navigationOptions = {
-    title: 'Community',
-  };
-
   async componentDidMount() {
     this._loadData();
   }
