@@ -105,7 +105,7 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
 };
 
 export const getCurrentUserCommunity = async userDocId => {
-  var communityRef = '';
+  let communityRef = '';
   await firestore
     .collection('users')
     .doc(userDocId)
@@ -118,4 +118,9 @@ export const getCurrentUserCommunity = async userDocId => {
       return null;
     });
   return communityRef;
+}
+
+// Retreive cover photo for a given community reference
+export const getCommunityCoverPhoto  = async communityRef => {
+  
 }

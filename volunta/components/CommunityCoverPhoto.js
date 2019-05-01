@@ -9,21 +9,26 @@ import {
 } from 'react-native';
 
 export default class CommunityCoverPhoto extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    const {communityPhoto, communityName} = this.props
+    const { communityPhoto, communityName } = this.props;
     return (
       <View>
         {/* Community cover photo */}
         <Image
-            source={{uri: communityPhoto}}
-            style={styles.photo}
+          source={{ uri: communityPhoto }}
+          style={styles.photo}
         />
 
         {/* Gradient banner for text */}
         <View style={styles.banner}>
           <LinearGradient
-          colors={[ 'rgba(90,90,90,0.25)', 'rgba(40,40,40,.95)']}
-          style={{flex: 1}}></LinearGradient>
+            colors={['rgba(90,90,90,0.25)', 'rgba(40,40,40,.95)']}
+            style={{ flex: 1 }}></LinearGradient>
         </View>
 
         {/* Community name
@@ -56,7 +61,7 @@ const styles = StyleSheet.create({
     height: 60,
     bottom: 60,
   },
-    titleText: {
+  titleText: {
     height: 36,
     bottom: 84,
     fontSize: 24,
@@ -66,6 +71,6 @@ const styles = StyleSheet.create({
   screenText: {
     fontFamily: 'montserrat',
     fontSize: 20,
-    
+
   }
 });
