@@ -1,8 +1,10 @@
 import React from 'react';
 import {
+    Button,
     Image,
     StyleSheet,
     Text,
+    TextInput,
     TouchableOpacity,
     View,
   } from 'react-native';
@@ -12,26 +14,52 @@ import Colors from '../constants/Colors';
 
 export default class SignUpScreen extends React.Component {
 
+  // TODO: implement FB Sign in
+  _onPressSignUpWithFB = event => {  };
+
+  // TODO: implement Google Sign in
+  _onPressSignUpWithGoogle = event => {  };
+
   render() {
     return (
         <View style={styles.container}>
         <Image
-          source={require(assetFilePath + 'logo.png')}
+          source={require('../assets/images/logo.png')}
           style={styles.logo}
         />
         <View>
-          <TouchableOpacity onPress={this._onPressLogIn}>
+          <TouchableOpacity onPress={this._onPressSignUpWithFB}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>sign up with facebook</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._onPressSignUp}>
+          <TouchableOpacity onPress={this._onPressSignUpWithGoogle}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>sign up with google</Text>
             </View>
           </TouchableOpacity>
         </View>
-        <Divider style={{ backgroundColor: Colors.mediumGray }} />;
+        <Divider style={styles.divider} />;
+        <TextInput
+          placeholder="Email"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={email => this.setState({ email })}
+          value={this.state.email}
+        />
+        <TextInput
+          secureTextEntry
+          placeholder="Password"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={password => this.setState({ password })}
+          value={this.state.password}
+        />
+        <Button title="Sign Up" onPress={this.handleSignUp} />
+        <Button
+          title="Already have an account? Login"
+          onPress={() => this.props.navigation.navigate('Login')}
+        />
       </View>
     );
   }
@@ -45,7 +73,8 @@ const styles = StyleSheet.create({
       height: 46,
       justifyContent: 'center',
       marginTop: 20,
-      width: 202,
+      opacity: 0.5,
+      width: 306,
     },
     buttonText: {
       color: "#FFFFFF",
@@ -58,6 +87,10 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       justifyContent: 'center',
+    },
+    divider: {
+      backgroundColor: Colors.mediumGray,
+      height: 1,
     },
     logo: {
       width: 234,
