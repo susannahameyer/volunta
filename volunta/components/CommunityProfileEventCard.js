@@ -13,7 +13,6 @@ import {
 
 export default class CommunityProfileEventCard extends React.Component {
 
-  //DB call in place of this to get the current user's community and info
   constructor(props) {
     super(props);
     this.state = {
