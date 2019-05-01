@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 
+// This component is meant to check if a user is logged in. If they are,
+// it navigates to the MainTabNavigator, otherwise to the AuthStack.
 export default class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +21,9 @@ export default class AuthLoadingScreen extends React.Component {
 
     // This will switch to the App screen or Auth screen and this loading
     // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'Main' : 'Auth');
+    // TODO: uncomment token check
+    this.props.navigation.navigate('Main');
+    //this.props.navigation.navigate(userToken ? 'Main' : 'Auth');
   };
 
   // Render any loading content that you like here

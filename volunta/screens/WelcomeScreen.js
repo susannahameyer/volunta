@@ -40,7 +40,7 @@ export default class WelcomeScreen extends React.Component {
               <Text style={styles.buttonText}>log in</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._onPressLogIn}>
+          <TouchableOpacity onPress={this._onPressSignUp}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>sign up</Text>
             </View>

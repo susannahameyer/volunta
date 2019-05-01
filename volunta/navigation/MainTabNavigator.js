@@ -13,8 +13,8 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 import EventScreen from '../screens/EventScreen';
 
 const FeedStack = createStackNavigator({
-  Event: EventScreen,
   Feed: FeedScreen,
+  Event: EventScreen,
 });
 
 FeedStack.navigationOptions = {
