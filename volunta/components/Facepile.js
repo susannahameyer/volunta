@@ -22,6 +22,8 @@ Props:
     - imageDiameter
     - maxNumImages
     - totalWidth
+    - pileTitle: What will be displayed when the user click in, default: 'details'
+    - navigation: required to make sure that the pile can go to another screen
     - TODO: list of photoIDs
 */
 export default class Facepile extends React.Component {
@@ -112,7 +114,9 @@ export default class Facepile extends React.Component {
     }
 
     componentWillMount = () => {
-        this.users = this._getUsersFromIDs();
+        this.setState({
+            users: this._getUsersFromIDs()
+        });
     }
 
     _renderFacepilePhoto = (item, index) => {
@@ -151,13 +155,21 @@ export default class Facepile extends React.Component {
         //Renders the image
         return (
             <View>
-                <Image
-                source={item.photo}
-                style={[
-                    styles.profileImage,
-                    imageStyle,
-                ]}>
-            </Image>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.props.navigation.push('Facepile', {
+                            users: this.state.users,
+                            title: this.props.pileTitle,
+                          });
+                    }}>
+                    <Image
+                    source={item.photo}
+                    style={[
+                        styles.profileImage,
+                        imageStyle,
+                    ]}>
+                    </Image>
+                </TouchableOpacity>
                 {overlay}
             </View>
         )
@@ -166,7 +178,7 @@ export default class Facepile extends React.Component {
 
     render() {
         return <FlatList
-            data={this.users.slice(0,this.props.maxNumImages)}
+            data={this.state.users.slice(0,this.props.maxNumImages)}
             horizontal={true}
             contentContainerStyle={{
                 flex:1,

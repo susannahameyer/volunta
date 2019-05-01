@@ -105,7 +105,13 @@ export default class CommunityScreen extends React.Component {
             <Text style={styles.titleText}>{'in my community'}</Text>
           </View>
           <View style={styles.facepileContainer}>
-            <Facepile totalWidth={335} maxNumImages={10} imageDiameter={50} />
+            <Facepile
+              totalWidth={335}
+              maxNumImages={10}
+              imageDiameter={50}
+              pileTitle='Community Members'
+              navigation={this.props.navigation}
+              />
           </View>
 
           <View style={styles.middleText}>
