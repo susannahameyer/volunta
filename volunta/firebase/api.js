@@ -28,9 +28,7 @@ export const getEventsForCommunity = async () => {
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
-  let currentUserCommunityRef = await getCurrentUserCommunity(c.TEST_USER_ID);
-
-  console.log(currentUserCommunityRef);
+  const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
 
   await eventsRef.where('sponsors', 'array-contains', currentUserCommunityRef)
     .get()
@@ -104,7 +102,8 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
   return interested;
 };
 
-export const getCurrentUserCommunity = async userDocId => {
+// Retrieve the community reference object for the current user
+export const getUserCommunity = async userDocId => {
   let communityRef = '';
   await firestore
     .collection('users')
@@ -120,7 +119,32 @@ export const getCurrentUserCommunity = async userDocId => {
   return communityRef;
 }
 
-// Retreive cover photo for a given community reference
-export const getCommunityCoverPhoto  = async communityRef => {
-  
+// Retreive cover photo url for a given community reference
+export const getCommunityCoverPhoto = async communityRef => {
+  let url = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      url = snapshot.get('cover_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return url;
+}
+
+// Retrieve name for a given community reference
+export const getCommunityName = async communityRef => {
+  let name = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      name = snapshot.get('name');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return name;
 }
