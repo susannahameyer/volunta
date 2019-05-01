@@ -38,10 +38,11 @@ export default class CommunityProfileEventCard extends React.Component {
 
   render() {
     const event = this.props.event;
+    const upcoming = event.status == 'upcoming';
     return (
       <View style={styles.shadow}>
         {/* if the event is in the past list, make the height shorter */}
-        <TouchableOpacity style={[styles.cardContainer, { height: event.comingUp ? 153 : 118 }]}>
+        <TouchableOpacity style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}>
           <View style={styles.shadow}>
             <Image
               source={{ uri: event.cover_url }}
@@ -56,7 +57,7 @@ export default class CommunityProfileEventCard extends React.Component {
                   {this.state.org_name}
                 </Text>
               </View>
-              <View style={event.comingUp ? styles.detailTextContainer : styles.smallDetailTextContainer}>
+              <View style={upcoming ? styles.detailTextContainer : styles.smallDetailTextContainer}>
                 <Text style={styles.dateText}>
                   {this.state.date}
                 </Text>

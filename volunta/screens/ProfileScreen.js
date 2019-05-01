@@ -31,7 +31,7 @@ export default class ProfileScreen extends React.Component {
 
   //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
   _loadData = async () => {
-    const [upcomingEvents, pastEvents] = await getEventsForCommunity();
+    const [upcomingEvents, pastEvents, ongoingEvents] = await getEventsForCommunity();
     this.setState({
       upcomingEvents,
       pastEvents,
