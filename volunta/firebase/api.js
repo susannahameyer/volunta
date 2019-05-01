@@ -27,12 +27,16 @@ export const getEventsForCommunity = async () => {
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
-  await eventsRef
+  let communityRef = firestore.collection('communities').doc('G49erP5pZ5PmJyieUoCH');
+
+  await eventsRef.where('sponsors', 'array-contains', communityRef)
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+
         data = doc.data();
         data.doc_id = doc.id;
+        console.log(doc.id);
 
         // start time of the event in seconds
         let eventFromDate = data.from_date.seconds;
