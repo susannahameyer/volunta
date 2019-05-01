@@ -1,4 +1,5 @@
 import { firestore } from './firebase';
+import * as c from './fb_constants';
 
 // Fetches all events array from firestore. We add doc_id to each event object as well just in case its needed.
 export const getEvents = async () => {
@@ -27,16 +28,11 @@ export const getEventsForCommunity = async () => {
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
-  let communityRef = firestore.collection('communities').doc('G49erP5pZ5PmJyieUoCH');
+  let currentUserCommunityRef = await getCurrentUserCommunity(c.TEST_USER_ID);
 
-  let currentUserRef = firestore.collection('users').doc('kgxbnXxwNXKIupPuIrcV');
-  // currentUserRef.get().then(function(doc) {
-  //   if (doc.exists) {
-  //     console.log(doc.data());
-  //   }
-  // });
+  console.log(currentUserCommunityRef);
 
-  await eventsRef.where('sponsors', 'array-contains', communityRef)
+  await eventsRef.where('sponsors', 'array-contains', currentUserCommunityRef)
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -108,17 +104,18 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
   return interested;
 };
 
-const getCurrentUserCommunity = async userDocId => {
+export const getCurrentUserCommunity = async userDocId => {
+  var communityRef = '';
   await firestore
     .collection('users')
     .doc(userDocId)
     .get()
     .then(snapshot => {
-      community_ref = snapshot.get('community_ref');
+      communityRef = snapshot.get('community_ref');
     })
     .catch(error => {
       console.log(error);
       return null;
     });
-    
+  return communityRef;
 }
