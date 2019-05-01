@@ -25,7 +25,11 @@ export default class WelcomeScreen extends React.Component {
 
   // Function we pass to Sign Up button, pushes sign up screen onto stack
   // TODO: push signup screen
-  _onPressSignUp = event => { };
+  _onPressSignUp = event => { 
+    this.props.navigation.push('SignUp', {
+      event
+    });
+  };
 
   render() {
     return (

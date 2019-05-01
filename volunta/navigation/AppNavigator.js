@@ -1,10 +1,14 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { 
+  createAppContainer, 
+  createSwitchNavigator, 
+  createStackNavigator 
+} from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import WelcomeScreen from "./screens/WelcomeScreen";
-import SignUpScreen from "./screens/SignUpScreen";
-import LogInScreen from "./screens/LogInScreen";
+import WelcomeScreen from '../screens/WelcomeScreen';
+import SignUpScreen from '../screens/SignUpScreen';
+import LogInScreen from '../screens/LoginScreen';
 
 export const AuthStack = createStackNavigator({
   Welcome: {
