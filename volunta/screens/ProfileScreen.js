@@ -9,9 +9,7 @@ import {
   View,
 } from 'react-native';
 import Facepile from '../components/Facepile';
-import { Ionicons } from '@expo/vector-icons';
 import InterestBubble from '../components/InterestBubble';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import Feather from '@expo/vector-icons/Feather';
 import { getEventsForCommunity } from '../firebase/api';
@@ -84,7 +82,7 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.facepileContainer}>
             <Facepile
               totalWidth={335}
-              maxNumImages={10}
+              maxNumImages={7}
               imageDiameter={50}
               />
           </View>
