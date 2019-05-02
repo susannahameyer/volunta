@@ -16,13 +16,11 @@ export default class WelcomeScreen extends React.Component {
   }
 
   // Function we pass to Log In button, pushes login screen onto stack
-  // TODO: push login screen
   _onPressLogIn = event => {
     this.props.navigation.navigate('LogIn')
   };
 
   // Function we pass to Sign Up button, pushes sign up screen onto stack
-  // TODO: push signup screen
   _onPressSignUp = event => { 
     this.props.navigation.navigate('SignUp')
   };
