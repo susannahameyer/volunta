@@ -150,6 +150,7 @@ export default class FeedScreen extends React.Component {
 const styles = StyleSheet.create({
   pageContainer: {
     width: Dimensions.get('window').width,
+    flex: 1,
   },
   searchContainerStyle: {
     backgroundColor: 'white',
