@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import Facepile from '../components/Facepile';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
-import { getEventsForCommunity, getCommunityName, getCommunityCoverPhoto, getUserCommunity } from '../firebase/api';
+import { getEventsForCommunity, getCommunityName, getCommunityCoverPhoto, getUserCommunity, getAllUserInterestedEventsDocIds } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
 export default class CommunityScreen extends React.Component {
@@ -15,6 +15,7 @@ export default class CommunityScreen extends React.Component {
       pastEvents: [],
       communityPhoto: '',
       communityName: '',
+      interestedEventDocIds: new Set(),
     };
   }
 
@@ -23,21 +24,30 @@ export default class CommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
+    // Get event data
     const [upcomingEvents, pastEvents, ongoingEvents] = await getEventsForCommunity();
+
+    // Get current user's community data
     const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
     const communityName = await getCommunityName(currentUserCommunityRef);
     const communityPhoto = await getCommunityCoverPhoto(currentUserCommunityRef);
+
+    // Get doc IDs the current user has bookmarked
+    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
+      c.TEST_USER_ID,
+    );
 
     this.setState({
       upcomingEvents,
       pastEvents,
       communityPhoto,
       communityName,
+      interestedEventDocIds,
     });
   };
 
   render() {
-    const { upcomingEvents, pastEvents, communityPhoto, communityName } = this.state;
+    const { upcomingEvents, pastEvents, communityPhoto, communityName, interestedEventDocIds } = this.state;
 
     return (
       <View>
@@ -61,14 +71,14 @@ export default class CommunityScreen extends React.Component {
             </Text>
           </View>
           <View style={styles.upcomingScroll}>
-            <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} />
+            <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} interestedIDs={interestedEventDocIds} />
           </View>
           <View style={styles.bottomText}>
             <Text style={styles.titleText}>
               {'how we\'ve helped'}
             </Text>
             <View style={styles.pastScroll}>
-              <CommunityProfileEventCardHorizontalScroll events={pastEvents} />
+              <CommunityProfileEventCardHorizontalScroll events={pastEvents} interestedIDs={interestedEventDocIds} />
             </View>
           </View>
       </View>
