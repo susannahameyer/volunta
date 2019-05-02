@@ -45,12 +45,12 @@ export const getEventsForCommunity = async () => {
         if (eventFromDate > currentDate) {
           data.status = 'upcoming';
           returnArrUpcoming.push(data);
-        // An event is in the past if event to_date is less than current date
+          // An event is in the past if event to_date is less than current date
         } else if (eventEndDate < currentDate) {
           data.status = 'past';
           returnArrPast.push(data);
-        // This means that from_date <= current date and to_date >= current date,
-        // so the event is currently ongoing
+          // This means that from_date <= current date and to_date >= current date,
+          // so the event is currently ongoing
         } else {
           data.status = 'ongoing';
           returnArrOngoing.push(data);
@@ -89,12 +89,47 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
     .doc(userDocId)
     .get()
     .then(snapshot => {
-      interested_refs = snapshot.get('event_refs.going');
+      let interested_refs = snapshot.get('event_refs.interested');
+      interested_refs.forEach(ref => interested.add(ref.id));
     })
     .catch(error => {
       console.log(error);
       return null;
     });
-  interested_refs.forEach(ref => interested.add(ref.id));
   return interested;
+};
+
+// Update list of events that user is interested on
+// add: boolean specifying if we want to add (true) or remove (false) the eventId from the userId's iterested events list.
+// Returns true if success otherwise false
+// We use a transaction since we both get and update.
+// TODO: make sure we return false in case there is a connection error, this is currently not working. Not sure how to verify if the transaction was successful!! Currently the .catch is never reached..
+export const updateUserInterestedEvents = async (userId, eventId, add) => {
+  const userRef = await firestore.collection('users').doc(userId);
+  const eventToUpdateRef = await firestore.collection('events').doc(eventId);
+  await firestore
+    .runTransaction(async transaction => {
+      const userDoc = await transaction.get(userRef);
+      let events = await userDoc.get('event_refs.interested');
+      if (add) {
+        events.push(eventToUpdateRef); // Simply push the new eventRef
+      } else {
+        // Make set of all current ids except the one we are removing (probably do not want to check for reference inclusion) since reference objects are large.
+        // We use a set to make sure there are no duplicates.
+        updatedSet = new Set();
+        events.forEach(eventRef => {
+          if (eventRef.id !== eventId) updatedSet.add(eventRef.id);
+        });
+        events = new Array();
+        updatedSet.forEach(eventId => {
+          events.push(firestore.collection('events').doc(eventId));
+        });
+      }
+      transaction.update(userRef, 'event_refs.interested', events);
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+  return true;
 };
