@@ -1,15 +1,8 @@
 import React from 'react';
 import { Icon, Font, LinearGradient } from 'expo';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-} from 'react-native';
+import { Image, StyleSheet, Text, View, Dimensions } from 'react-native';
 
 export default class CommunityCoverPhoto extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -19,25 +12,21 @@ export default class CommunityCoverPhoto extends React.Component {
     return (
       <View>
         {/* Community cover photo */}
-        <Image
-          source={{ uri: communityPhoto }}
-          style={styles.photo}
-        />
+        <Image source={{ uri: communityPhoto }} style={styles.photo} />
 
         {/* Gradient banner for text */}
         <View style={styles.banner}>
           <LinearGradient
             colors={['rgba(90,90,90,0.25)', 'rgba(40,40,40,.95)']}
-            style={{ flex: 1 }}></LinearGradient>
+            style={{ flex: 1 }}
+          />
         </View>
 
         {/* Community name
             - should limit input community name char count to fit one line
          */}
         <View style={styles.container}>
-          <Text style={styles.titleText}>
-            {communityName}
-          </Text>
+          <Text style={styles.titleText}>{communityName}</Text>
         </View>
       </View>
     );
@@ -66,11 +55,10 @@ const styles = StyleSheet.create({
     bottom: 84,
     fontSize: 24,
     color: 'white',
-    fontFamily: 'montserrat'
+    fontFamily: 'montserrat',
   },
   screenText: {
     fontFamily: 'montserrat',
     fontSize: 20,
-
-  }
+  },
 });

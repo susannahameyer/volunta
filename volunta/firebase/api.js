@@ -30,7 +30,8 @@ export const getEventsForCommunity = async () => {
   let eventsRef = firestore.collection('events');
   const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
 
-  await eventsRef.where('sponsors', 'array-contains', currentUserCommunityRef)
+  await eventsRef
+    .where('sponsors', 'array-contains', currentUserCommunityRef)
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -48,12 +49,12 @@ export const getEventsForCommunity = async () => {
         if (eventFromDate > currentDate) {
           data.status = 'upcoming';
           returnArrUpcoming.push(data);
-        // An event is in the past if event to_date is less than current date
+          // An event is in the past if event to_date is less than current date
         } else if (eventEndDate < currentDate) {
           data.status = 'past';
           returnArrPast.push(data);
-        // This means that from_date <= current date and to_date >= current date,
-        // so the event is currently ongoing
+          // This means that from_date <= current date and to_date >= current date,
+          // so the event is currently ongoing
         } else {
           data.status = 'ongoing';
           returnArrOngoing.push(data);
@@ -117,7 +118,7 @@ export const getUserCommunity = async userDocId => {
       return null;
     });
   return communityRef;
-}
+};
 
 // Retreive cover photo url for a given community reference
 export const getCommunityCoverPhoto = async communityRef => {
@@ -132,7 +133,7 @@ export const getCommunityCoverPhoto = async communityRef => {
       return null;
     });
   return url;
-}
+};
 
 // Retrieve name for a given community reference
 export const getCommunityName = async communityRef => {
@@ -147,4 +148,4 @@ export const getCommunityName = async communityRef => {
       return null;
     });
   return name;
-}
+};
