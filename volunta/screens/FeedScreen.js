@@ -2,7 +2,12 @@ import React from 'react';
 import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
-import { getEvents, getAllUserInterestedEventsDocIds } from '../firebase/api';
+import {
+  getEvents,
+  getAllUserInterestedEventsDocIds,
+  getUsersAttributes
+} from '../firebase/api';
+import { firestore } from '../firebase/firebase';
 
 export default class FeedScreen extends React.Component {
   constructor(props) {
@@ -37,6 +42,10 @@ export default class FeedScreen extends React.Component {
       events,
       interestedEventDocIds
     });
+    getUsersAttributes(
+      [firestore.collection('users').doc('kgxbnXxwNXKIupPuIrcV')],
+      ['name', 'profile_pic_url']
+    );
   };
 
   componentWillUnmount() {
@@ -97,7 +106,7 @@ export default class FeedScreen extends React.Component {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get('window').width
   },
   searchContainerStyle: {
     backgroundColor: 'white',
@@ -105,13 +114,13 @@ const styles = StyleSheet.create({
     shadowColor: 'white', //no effect
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
-    width:'95%',
+    width: '95%',
     alignSelf: 'center'
   },
   searchInputContainerStyle: {
     backgroundColor: '#E8E8E8'
   },
   flatListStyle: {
-    height: '100%',
+    height: '100%'
   }
 });

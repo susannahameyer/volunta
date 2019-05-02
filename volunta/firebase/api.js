@@ -1,4 +1,5 @@
 import { firestore } from './firebase';
+var Promise = require('bluebird');
 
 // Fetches all events array from firestore. We add doc_id to each event object as well just in case its needed.
 export const getEvents = async () => {
@@ -45,12 +46,12 @@ export const getEventsForCommunity = async () => {
         if (eventFromDate > currentDate) {
           data.status = 'upcoming';
           returnArrUpcoming.push(data);
-        // An event is in the past if event to_date is less than current date
+          // An event is in the past if event to_date is less than current date
         } else if (eventEndDate < currentDate) {
           data.status = 'past';
           returnArrPast.push(data);
-        // This means that from_date <= current date and to_date >= current date,
-        // so the event is currently ongoing
+          // This means that from_date <= current date and to_date >= current date,
+          // so the event is currently ongoing
         } else {
           data.status = 'ongoing';
           returnArrOngoing.push(data);
@@ -97,4 +98,47 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
     });
   interested_refs.forEach(ref => interested.add(ref.id));
   return interested;
+};
+
+// userDocIds: array of user doc ids for whom we want to get data from
+// attributes: array of strings representing the attributes we want to get from each user. ex: ['name', 'profile_pic_url' ]
+export const getUsersAttributes = async (userRefs, attributes) => {
+  // Easy way: https://medium.com/@justintulk/how-to-query-arrays-of-data-in-firebase-aa28a90181ba
+  // For a 'handful of users'
+
+  // // Map the Firebase promises into an array
+  // const userPromises = userRefs.map(ref => {
+  //   return ref.get();
+  // });
+
+  // // For each user get all the att
+  // let results = [];
+  // Promise.all(userPromises).then(snapshots => {
+  //   snapshots.forEach(snapshot => {
+  //     result = {};
+  //     attributes.forEach(attribute => {
+  //       result[attribute] = snapshot.get(attribute);
+  //     });
+  //     console.log(result);
+  //     results.push(result);
+  //   });
+  // });
+  // console.log(results);
+  // return results;
+
+  // If we need a more robust implementation, see: http://bluebirdjs.com/docs/api/promise.map.html (does not look that hard, should probably try)
+  let results = [];
+  Promise.map(userRefs, ref => {
+    // Promise.map awaits for returned promises as well.
+    return ref.get();
+  }).then(snapshots => {
+    snapshots.forEach(snapshot => {
+      result = {};
+      attributes.forEach(attribute => {
+        result[attribute] = snapshot.get(attribute);
+      });
+      console.log(result);
+      results.push(result);
+    });
+  });
 };
