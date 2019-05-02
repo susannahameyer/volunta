@@ -89,7 +89,7 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
     .doc(userDocId)
     .get()
     .then(snapshot => {
-      interested_refs = snapshot.get('event_refs.interested');
+      let interested_refs = snapshot.get('event_refs.interested');
       interested_refs.forEach(ref => interested.add(ref.id));
     })
     .catch(error => {

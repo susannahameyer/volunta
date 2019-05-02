@@ -5,7 +5,7 @@ import { SearchBar } from 'react-native-elements';
 import {
   getEvents,
   getAllUserInterestedEventsDocIds,
-  updateUserInterestedEvents
+  updateUserInterestedEvents,
 } from '../firebase/api';
 
 export default class FeedScreen extends React.Component {
@@ -17,7 +17,7 @@ export default class FeedScreen extends React.Component {
       search: '',
       interestedEventDocIds: new Set(), // IDs of all events that user is interested on
       userId: 'kgxbnXxwNXKIupPuIrcV', // TODO: pass in as prop
-      interestedMap: new Map() // <string, boolean>, tells us if user is interested in eventid
+      interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
     };
   }
 
@@ -37,7 +37,7 @@ export default class FeedScreen extends React.Component {
   // TODO: show error message in case fetching goes wrong (if anything returns null or error?)...
   _loadData = async () => {
     this.setState({
-      isRefreshing: true // Needed for FlatList to know
+      isRefreshing: true, // Needed for FlatList to know
     });
 
     // Fetch all event objects into array and initialize interestedMap to all false
@@ -58,7 +58,7 @@ export default class FeedScreen extends React.Component {
     this.setState({
       isRefreshing: false,
       events,
-      interestedMap
+      interestedMap,
     });
   };
 
@@ -71,7 +71,7 @@ export default class FeedScreen extends React.Component {
   // Function we pass to EventCard, pushes screen onto current stack with the corresponding event page
   _onPressEventCard = event => {
     this.props.navigation.push('Event', {
-      event
+      event,
     });
   };
 
@@ -85,14 +85,14 @@ export default class FeedScreen extends React.Component {
         id={item.doc_id}
         event={item}
         onPress={this._onPressEventCard}
-        interested={!!this.state.interestedMap.get(item.doc_id)}
+        interested={this.state.interestedMap.get(item.doc_id)}
         onClickInterested={this._updateInterested}
       />
     );
   };
 
   // Function that we pass to the child (EventCard) that should be called when user presses the 'interested' button.
-  // We first get try updating the state in the FE.
+  // We first get try updating the state in the Front End.
   // Then we try updating in the database. If the update fails we toggle it back.
   // Otherwise we toggle
   _updateInterested = async eventId => {
@@ -110,7 +110,6 @@ export default class FeedScreen extends React.Component {
       eventId,
       interested
     );
-    console.log(success);
 
     // Toggle back if database update failed.
     if (!success) {
@@ -150,7 +149,7 @@ export default class FeedScreen extends React.Component {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    width: Dimensions.get('window').width
+    width: Dimensions.get('window').width,
   },
   searchContainerStyle: {
     backgroundColor: 'white',
@@ -159,12 +158,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
     width: '95%',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   searchInputContainerStyle: {
-    backgroundColor: '#E8E8E8'
+    backgroundColor: '#E8E8E8',
   },
   flatListStyle: {
-    height: '100%'
-  }
+    height: '100%',
+  },
 });
