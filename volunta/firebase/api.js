@@ -112,14 +112,19 @@ export const getUsersAttributes = async (userRefs, attributes) => {
   Promise.map(userRefs, ref => {
     // Promise.map awaits for returned promises as well.
     return ref.get();
-  }).then(snapshots => {
-    snapshots.forEach(snapshot => {
-      result = {};
-      attributes.forEach(attribute => {
-        result[attribute] = snapshot.get(attribute);
+  })
+    .then(snapshots => {
+      snapshots.forEach(snapshot => {
+        result = {};
+        attributes.forEach(attribute => {
+          result[attribute] = snapshot.get(attribute);
+        });
+        results[snapshot.id] = result;
       });
-      results[snapshot.id] = result;
+      return results;
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
     });
-    return results;
-  });
 };
