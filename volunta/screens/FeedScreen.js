@@ -2,12 +2,7 @@ import React from 'react';
 import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
-import {
-  getEvents,
-  getAllUserInterestedEventsDocIds,
-  getUsersAttributes
-} from '../firebase/api';
-import { firestore } from '../firebase/firebase';
+import { getEvents, getAllUserInterestedEventsDocIds } from '../firebase/api';
 
 export default class FeedScreen extends React.Component {
   constructor(props) {
@@ -42,10 +37,6 @@ export default class FeedScreen extends React.Component {
       events,
       interestedEventDocIds
     });
-    getUsersAttributes(
-      [firestore.collection('users').doc('kgxbnXxwNXKIupPuIrcV')],
-      ['name', 'profile_pic_url']
-    );
   };
 
   componentWillUnmount() {
