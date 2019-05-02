@@ -9,10 +9,7 @@ export default class EventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      interested: props.interested,
-      loaded: false,
-      org_name: '',
-      event: props.event
+      org_name: ''
     };
   }
 
@@ -33,21 +30,15 @@ export default class EventCard extends React.Component {
     return 40;
   };
 
-  // Sets state to interested/notInterested (user triggered)
-  _changeInterested = () => {
-    this.setState({
-      interested: !this.state.interested
-    });
-  };
-
+  // TODO: add date
   render() {
-    // const { navigate } = this.props.navigation;
-    const event = this.state.event;
+    const { event, interested, onPress, onClickInterested } = this.props;
+    const { org_name } = this.state;
     return (
       <View style={styles.shadow}>
         <TouchableOpacity
           style={styles.cardContainer}
-          onPress={() => this.props.onPress(event)}
+          onPress={() => onPress(event)}
         >
           <View style={styles.shadow}>
             <AsyncImage
@@ -62,14 +53,16 @@ export default class EventCard extends React.Component {
               name="star-circle-outline"
               size={45}
               style={styles.interestedIcon}
-              onPress={this._changeInterested}
-              color={this.state.interested ? '#0081AF' : 'grey'}
+              onPress={() => onClickInterested(event.doc_id)}
+              color={interested ? '#0081AF' : 'grey'}
             />
 
             <View style={styles.textContainer}>
               <View style={styles.titleTextContainer}>
                 <Text style={styles.titleText}>{event.title}</Text>
-                <Text style={styles.detailText}>{this.state.org_name}</Text>
+                <Text style={styles.detailText} numberOfLines={1}>
+                  {org_name}
+                </Text>
               </View>
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{event.date}</Text>
