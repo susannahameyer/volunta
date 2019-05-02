@@ -9,17 +9,14 @@ export default class EventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      interested: props.interested,
-      loaded: false,
       org_name: '',
-      event: props.event
     };
   }
 
   // Fetch data here
   async componentWillMount() {
     this.setState({
-      org_name: await getOrganizationName(this.props.event.org_ref)
+      org_name: await getOrganizationName(this.props.event.org_ref),
     });
   }
 
@@ -33,27 +30,21 @@ export default class EventCard extends React.Component {
     return 40;
   };
 
-  // Sets state to interested/notInterested (user triggered)
-  _changeInterested = () => {
-    this.setState({
-      interested: !this.state.interested
-    });
-  };
-
+  // TODO: add date
   render() {
-    // const { navigate } = this.props.navigation;
-    const event = this.state.event;
+    const { event, interested, onPress, onClickInterested } = this.props;
+    const { org_name } = this.state;
     return (
       <View style={styles.shadow}>
         <TouchableOpacity
           style={styles.cardContainer}
-          onPress={() => this.props.onPress(event)}
+          onPress={() => onPress(event)}
         >
           <View style={styles.shadow}>
             <AsyncImage
               viewStyle={styles.coverPhoto}
               source={{
-                uri: event.cover_url
+                uri: event.cover_url,
               }}
               placeholderColor="#E8E8E8"
             />
@@ -62,14 +53,18 @@ export default class EventCard extends React.Component {
               name="star-circle-outline"
               size={45}
               style={styles.interestedIcon}
-              onPress={this._changeInterested}
-              color={this.state.interested ? '#0081AF' : 'grey'}
+              onPress={() => onClickInterested(event.doc_id)}
+              color={interested ? '#0081AF' : 'grey'}
             />
 
             <View style={styles.textContainer}>
               <View style={styles.titleTextContainer}>
-                <Text style={styles.titleText}>{event.title}</Text>
-                <Text style={styles.detailText}>{this.state.org_name}</Text>
+                <Text numberOfLines={2} style={styles.titleText}>
+                  {event.title}
+                </Text>
+                <Text style={styles.detailText} numberOfLines={1}>
+                  {org_name}
+                </Text>
               </View>
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{event.date}</Text>
@@ -94,56 +89,56 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     marginBottom: 16,
-    marginLeft: 17
+    marginLeft: 17,
   },
   coverPhoto: {
     height: '50%',
     width: '100%',
     borderTopLeftRadius: 20,
-    borderTopRightRadius: 20
+    borderTopRightRadius: 20,
   },
   shadow: {
     flex: 1,
     shadowColor: 'black',
     shadowOffset: {
       width: 0,
-      height: 5
+      height: 5,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    backgroundColor: '#0000' // invisible color
+    backgroundColor: '#0000', // invisible color
   },
   titleText: {
     fontFamily: 'montserrat',
     fontSize: 20,
     fontWeight: 'normal',
-    paddingBottom: 5
+    paddingBottom: 5,
   },
   detailText: {
     fontFamily: 'montserrat',
     fontSize: 14,
     fontWeight: 'normal',
-    color: '#838383'
+    color: '#838383',
   },
   textContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   titleTextContainer: {
     flex: 3,
     justifyContent: 'center',
-    paddingLeft: 13
+    paddingLeft: 13,
   },
   detailTextContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    paddingRight: 13
+    paddingRight: 13,
   },
   interestedIcon: {
     position: 'absolute',
     left: EventCardConstants.cardWidth - 45,
-    bottom: EventCardConstants.cardHeight / 2
-  }
+    bottom: EventCardConstants.cardHeight / 2,
+  },
 });
