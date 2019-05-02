@@ -1,20 +1,17 @@
 import React from 'react';
 import {
   Image,
-  Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Facepile from '../components/Facepile';
-import { Ionicons } from '@expo/vector-icons';
 import InterestBubble from '../components/InterestBubble';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import Feather from '@expo/vector-icons/Feather';
-import { getEventsForCommunity } from '../firebase/api';
+import { getEventsForCommunity, getAllUserInterestedEventsDocIds } from '../firebase/api';
+import * as c from '../firebase/fb_constants';
 
 export default class ProfileScreen extends React.Component {
 
@@ -23,6 +20,7 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       upcomingEvents: [],
       pastEvents: [],
+      interestedEventDocIds: new Set(),
     };
   }
 
@@ -33,14 +31,21 @@ export default class ProfileScreen extends React.Component {
   //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
   _loadData = async () => {
     const [upcomingEvents, pastEvents, ongoingEvents] = await getEventsForCommunity();
+
+    // Get doc IDs the current user has bookmarked
+    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
+      c.TEST_USER_ID,
+    );
+
     this.setState({
       upcomingEvents,
       pastEvents,
+      interestedEventDocIds,
     });
   };
 
   render() {
-    const { upcomingEvents, pastEvents } = this.state;
+    const { upcomingEvents, pastEvents, interestedEventDocIds } = this.state;
 
     return (
       <View style={styles.container}>
@@ -71,12 +76,12 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.comingUpBar}>
         <Text style={styles.sectionTitle}>coming up:</Text>
         <View style={styles.upcomingScroll}>
-            <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} />
+            <CommunityProfileEventCardHorizontalScroll events={upcomingEvents} interestedIDs={interestedEventDocIds} />
         </View>
       </View>
       <View style={styles.helpedBar}>
         <Text style={styles.helpedTitle}>how I've helped:</Text>
-        <CommunityProfileEventCardHorizontalScroll events={pastEvents} />
+        <CommunityProfileEventCardHorizontalScroll events={pastEvents} interestedIDs={interestedEventDocIds} />
       </View>
       <View>
         <Text style={styles.sectionTitle}>volunteer network:</Text>

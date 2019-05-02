@@ -15,6 +15,7 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
     return (
       <CommunityProfileEventCard
         event={item}
+        interested={this.props.interestedIDs.has(item.doc_id)}
       />
     );
   };

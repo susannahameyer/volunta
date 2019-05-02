@@ -16,8 +16,6 @@ export default class CommunityProfileEventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // whether or not a user has starred the event
-      bookmarked: this._getBookmarked(),
       date: '',
       org_name: '',
     };
@@ -30,13 +28,9 @@ export default class CommunityProfileEventCard extends React.Component {
     });
   }
 
-  //TODO implement with db logic
-  _getBookmarked = () => {
-    return true;
-  };
-
   render() {
     const event = this.props.event;
+    const interested = this.props.interested;
     const upcoming = event.status == 'upcoming';
     return (
       <View style={styles.shadow}>
@@ -64,7 +58,7 @@ export default class CommunityProfileEventCard extends React.Component {
                   name={"star-circle-outline"}
                   size={23}
                   style={styles.bookmarkIcon}
-                  color={this.state.bookmarked ? '#0081AF' : 'grey'} />
+                  color={interested ? '#0081AF' : 'grey'} />
               </View>
             </View>
           </View>
