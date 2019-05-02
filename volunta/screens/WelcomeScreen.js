@@ -9,15 +9,21 @@ import {
 
 const assetFilePath = '../assets/images/';
 
-export default class HomeScreen extends React.Component {
+export default class WelcomeScreen extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
 
   // Function we pass to Log In button, pushes login screen onto stack
-  // TODO: push login screen
-  _onPressLogIn = event => { };
+  _onPressLogIn = event => {
+    this.props.navigation.navigate('LogIn')
+  };
 
   // Function we pass to Sign Up button, pushes sign up screen onto stack
-  // TODO: push signup screen
-  _onPressSignUp = event => { };
+  _onPressSignUp = event => { 
+    this.props.navigation.navigate('SignUp')
+  };
 
   render() {
     return (
@@ -32,7 +38,7 @@ export default class HomeScreen extends React.Component {
               <Text style={styles.buttonText}>log in</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._onPressLogIn}>
+          <TouchableOpacity onPress={this._onPressSignUp}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>sign up</Text>
             </View>

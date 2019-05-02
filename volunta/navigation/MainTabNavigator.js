@@ -14,7 +14,7 @@ import EventScreen from '../screens/EventScreen';
 
 const FeedStack = createStackNavigator({
   Feed: FeedScreen,
-  Event: EventScreen
+  Event: EventScreen,
 });
 
 FeedStack.navigationOptions = {
