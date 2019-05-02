@@ -29,7 +29,7 @@ export const AuthStack = createStackNavigator({
   }
 });
 
-const AppContainer = createAppContainer(createSwitchNavigator(
+export default AppContainer = createAppContainer(createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
     Main: MainTabNavigator,
@@ -39,4 +39,3 @@ const AppContainer = createAppContainer(createSwitchNavigator(
     initialRouteName: 'AuthLoading',
   }
 ));
-export default AppContainer;
