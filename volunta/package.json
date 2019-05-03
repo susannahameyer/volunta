@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@expo/samples": "2.1.1",
+    "bluebird": "^3.5.4",
     "expo": "^32.0.6",
     "firebase": "^5.10.0",
     "material-ui-community-icons": "^0.15.0",

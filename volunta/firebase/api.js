@@ -1,4 +1,5 @@
 import { firestore } from './firebase';
+var Promise = require('bluebird');
 import * as c from './fb_constants';
 
 // Fetches all events array from firestore. We add doc_id to each event object as well just in case its needed.
@@ -183,4 +184,33 @@ export const updateUserInterestedEvents = async (userId, eventId, add) => {
       return false;
     });
   return true;
+};
+
+// userRefs: array of user references for whom we want to get data from
+// attributes: array of strings representing the attributes we want to get from each user. ex: ['name', 'profile_pic_url' ]
+// Uses concurrency, should be able to work for many users (more than 100)
+// Returns a map, where each key is a user id (from the ref) and the value is another map where each key is an attribute
+// specified in attributes and the value is the one that corresponds to the user.
+export const getUsersAttributes = async (userRefs, attributes) => {
+  // Easy way: https://medium.com/@justintulk/how-to-query-arrays-of-data-in-firebase-aa28a90181ba
+  // Robust implementation: http://bluebirdjs.com/docs/api/promise.map.html
+  let results = {};
+  Promise.map(userRefs, ref => {
+    // Promise.map awaits for returned promises as well.
+    return ref.get();
+  })
+    .then(snapshots => {
+      snapshots.forEach(snapshot => {
+        let result = {};
+        attributes.forEach(attribute => {
+          result[attribute] = snapshot.get(attribute);
+        });
+        results[snapshot.id] = result;
+      });
+      return results;
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
 };
