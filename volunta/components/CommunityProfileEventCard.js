@@ -22,8 +22,7 @@ export default class CommunityProfileEventCard extends React.Component {
   }
 
   render() {
-    const event = this.props.event;
-    const interested = this.props.interested;
+    const { event, interested } = this.props;
     const upcoming = event.status == 'upcoming';
     return (
       <View style={styles.shadow}>

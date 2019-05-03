@@ -3,10 +3,6 @@ import { Icon, Font, LinearGradient } from 'expo';
 import { Image, StyleSheet, Text, View, Dimensions } from 'react-native';
 
 export default class CommunityCoverPhoto extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { communityPhoto, communityName } = this.props;
     return (
