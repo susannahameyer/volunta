@@ -1,5 +1,13 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import Facepile from '../components/Facepile';
 import InterestBubble from '../components/InterestBubble';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
@@ -17,6 +25,7 @@ export default class ProfileScreen extends React.Component {
       upcomingEvents: [],
       pastEvents: [],
       interestedEventDocIds: new Set(),
+      refreshing: false,
     };
   }
 
@@ -26,6 +35,10 @@ export default class ProfileScreen extends React.Component {
 
   //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
   _loadData = async () => {
+    this.setState({
+      refreshing: true,
+    });
+
     const [
       upcomingEvents,
       pastEvents,
@@ -41,64 +54,80 @@ export default class ProfileScreen extends React.Component {
       upcomingEvents,
       pastEvents,
       interestedEventDocIds,
+      refreshing: false,
     });
   };
 
   render() {
-    const { upcomingEvents, pastEvents, interestedEventDocIds } = this.state;
+    const {
+      upcomingEvents,
+      pastEvents,
+      interestedEventDocIds,
+      refreshing,
+    } = this.state;
 
     return (
-      <View style={styles.container}>
-        <View style={styles.profileBar}>
-          <Image
-            style={styles.profilePic}
-            source={require('../assets/images/kanye.png')}
+      // Invisible ScrollView component to add pull-down refresh functionality
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => this._loadData()}
           />
-          <View style={styles.upperText}>
-            <Text style={styles.personName}>Kanye West</Text>
-            <Text style={styles.communityName}>Stanford University</Text>
+        }
+      >
+        <View style={styles.container}>
+          <View style={styles.profileBar}>
+            <Image
+              style={styles.profilePic}
+              source={require('../assets/images/kanye.png')}
+            />
+            <View style={styles.upperText}>
+              <Text style={styles.personName}>Kanye West</Text>
+              <Text style={styles.communityName}>Stanford University</Text>
+            </View>
+            <TouchableOpacity style={styles.editIcon}>
+              <Feather name="edit" size={30} color="#0081AF" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.editIcon}>
-            <Feather name="edit" size={30} color="#0081AF" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.interestBar}>
-          <Text style={styles.sectionTitle}>interests:</Text>
-          <View style={styles.singleInterestRow}>
-            <InterestBubble interestName={'public health'} />
-            <InterestBubble interestName={'kitties'} />
-            <InterestBubble interestName={'social good'} />
+          <View style={styles.interestBar}>
+            <Text style={styles.sectionTitle}>interests:</Text>
+            <View style={styles.singleInterestRow}>
+              <InterestBubble interestName={'public health'} />
+              <InterestBubble interestName={'kitties'} />
+              <InterestBubble interestName={'social good'} />
+            </View>
+            <View style={styles.singleInterestRow}>
+              <InterestBubble interestName={'kids'} />
+              <InterestBubble interestName={'environmental'} />
+              <InterestBubble interestName={'civics'} />
+              <InterestBubble interestName={'...'} />
+            </View>
           </View>
-          <View style={styles.singleInterestRow}>
-            <InterestBubble interestName={'kids'} />
-            <InterestBubble interestName={'environmental'} />
-            <InterestBubble interestName={'civics'} />
-            <InterestBubble interestName={'...'} />
+          <View style={styles.comingUpBar}>
+            <Text style={styles.sectionTitle}>coming up:</Text>
+            <View style={styles.upcomingScroll}>
+              <CommunityProfileEventCardHorizontalScroll
+                events={upcomingEvents}
+                interestedIDs={interestedEventDocIds}
+              />
+            </View>
           </View>
-        </View>
-        <View style={styles.comingUpBar}>
-          <Text style={styles.sectionTitle}>coming up:</Text>
-          <View style={styles.upcomingScroll}>
+          <View style={styles.helpedBar}>
+            <Text style={styles.helpedTitle}>how I've helped:</Text>
             <CommunityProfileEventCardHorizontalScroll
-              events={upcomingEvents}
+              events={pastEvents}
               interestedIDs={interestedEventDocIds}
             />
           </View>
+          <View>
+            <Text style={styles.sectionTitle}>volunteer network:</Text>
+          </View>
+          <View style={styles.facepileContainer}>
+            <Facepile totalWidth={335} maxNumImages={10} imageDiameter={50} />
+          </View>
         </View>
-        <View style={styles.helpedBar}>
-          <Text style={styles.helpedTitle}>how I've helped:</Text>
-          <CommunityProfileEventCardHorizontalScroll
-            events={pastEvents}
-            interestedIDs={interestedEventDocIds}
-          />
-        </View>
-        <View>
-          <Text style={styles.sectionTitle}>volunteer network:</Text>
-        </View>
-        <View style={styles.facepileContainer}>
-          <Facepile totalWidth={335} maxNumImages={10} imageDiameter={50} />
-        </View>
-      </View>
+      </ScrollView>
     );
   }
 }
