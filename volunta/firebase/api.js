@@ -148,6 +148,7 @@ export const getCommunityName = async communityRef => {
       return null;
     });
   return name;
+};
 
 // Update list of events that user is interested on
 // add: boolean specifying if we want to add (true) or remove (false) the eventId from the userId's iterested events list.
