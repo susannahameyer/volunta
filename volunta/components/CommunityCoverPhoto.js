@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     height: 36,
-    bottom: 84,
+    bottom: 100,
     fontSize: 24,
     color: 'white',
     fontFamily: 'montserrat',
