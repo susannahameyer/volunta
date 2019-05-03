@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import CommunityProfileEventCard from '../components/CommunityProfileEventCard';
 
 export default class CommunityProfileEventCardHorizontalScroll extends React.Component {
@@ -15,6 +11,7 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
     return (
       <CommunityProfileEventCard
         event={item}
+        interested={this.props.interestedIDs.has(item.doc_id)}
       />
     );
   };

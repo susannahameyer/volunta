@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
+import * as c from '../firebase/fb_constants';
 import {
   getEvents,
   getAllUserInterestedEventsDocIds,
@@ -42,6 +43,9 @@ export default class FeedScreen extends React.Component {
 
     // Fetch all event objects into array and initialize interestedMap to all false
     const events = await getEvents();
+    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
+      c.TEST_USER_ID,
+    );
 
     let interestedMap = new Map();
 

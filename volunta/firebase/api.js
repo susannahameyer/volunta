@@ -1,4 +1,5 @@
 import { firestore } from './firebase';
+import * as c from './fb_constants';
 
 // Fetches all events array from firestore. We add doc_id to each event object as well just in case its needed.
 export const getEvents = async () => {
@@ -27,7 +28,10 @@ export const getEventsForCommunity = async () => {
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
+  const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+
   await eventsRef
+    .where('sponsors', 'array-contains', currentUserCommunityRef)
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -98,6 +102,52 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
     });
   return interested;
 };
+
+// Retrieve the community reference object for the current user
+export const getUserCommunity = async userDocId => {
+  let communityRef = '';
+  await firestore
+    .collection('users')
+    .doc(userDocId)
+    .get()
+    .then(snapshot => {
+      communityRef = snapshot.get('community_ref');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return communityRef;
+};
+
+// Retreive cover photo url for a given community reference
+export const getCommunityCoverPhoto = async communityRef => {
+  let url = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      url = snapshot.get('cover_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return url;
+};
+
+// Retrieve name for a given community reference
+export const getCommunityName = async communityRef => {
+  let name = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      name = snapshot.get('name');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return name;
 
 // Update list of events that user is interested on
 // add: boolean specifying if we want to add (true) or remove (false) the eventId from the userId's iterested events list.
