@@ -14,6 +14,7 @@ export default class SingleNotification extends React.Component {
         <Image style={styles.organizationPic} source={require('../assets/images/kanye.png')} />
         <Text style={styles.organizationText}>Puppy Love</Text>
         <Text style={styles.messageText}>{interestName}</Text>
+        <Text style={styles.timeText}>12h</Text>
       </View>
     );
   }
@@ -46,6 +47,13 @@ const styles = StyleSheet.create({
         color: 'black',
         fontFamily: 'montserrat',
         fontSize: 12
+    },
+    timeText: {
+        color: 'black',
+        fontFamily: 'montserrat',
+        fontSize: 14,
+        position: 'absolute',
+        marginTop: 35,
+        marginLeft: 325
     }
-
 });
