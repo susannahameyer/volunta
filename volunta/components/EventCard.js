@@ -4,11 +4,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AsyncImage from './AsyncImage';
 import EventCardConstants from '../constants/EventCardConstants';
 import { getOrganizationName } from '../firebase/api';
+import { timestampToDate } from '../utils';
 
 export default class EventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      date: '',
       org_name: '',
     };
   }
@@ -16,6 +18,7 @@ export default class EventCard extends React.Component {
   // Fetch data here
   async componentWillMount() {
     this.setState({
+      date: timestampToDate(this.props.event.from_date),
       org_name: await getOrganizationName(this.props.event.org_ref),
     });
   }
@@ -33,7 +36,7 @@ export default class EventCard extends React.Component {
   // TODO: add date
   render() {
     const { event, interested, onPress, onClickInterested } = this.props;
-    const { org_name } = this.state;
+    const { org_name, date } = this.state;
     return (
       <View style={styles.shadow}>
         <TouchableOpacity
@@ -67,7 +70,7 @@ export default class EventCard extends React.Component {
                 </Text>
               </View>
               <View style={styles.detailTextContainer}>
-                <Text style={styles.detailText}>{event.date}</Text>
+                <Text style={styles.detailText}>{date}</Text>
                 <Text style={styles.detailText}>{this._getDistance()} mi</Text>
                 <Text style={styles.detailText}>
                   {this._getNumAttendees()} going
