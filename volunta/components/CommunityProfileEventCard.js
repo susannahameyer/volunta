@@ -1,48 +1,36 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { timestampToDate } from '../utils';
-import { getOrganizationName } from '../firebase/api'
+import { getOrganizationName } from '../firebase/api';
 
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default class CommunityProfileEventCard extends React.Component {
-
-  //DB call in place of this to get the current user's community and info
   constructor(props) {
     super(props);
     this.state = {
-      // whether or not a user has starred the event
-      bookmarked: this._getBookmarked(),
       date: '',
       org_name: '',
     };
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     this.setState({
       date: timestampToDate(this.props.event.from_date),
       org_name: await getOrganizationName(this.props.event.org_ref),
     });
   }
 
-  //TODO implement with db logic
-  _getBookmarked = () => {
-    return true;
-  };
-
   render() {
     const event = this.props.event;
+    const interested = this.props.interested;
     const upcoming = event.status == 'upcoming';
     return (
       <View style={styles.shadow}>
         {/* if the event is in the past list, make the height shorter */}
-        <TouchableOpacity style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}>
+        <TouchableOpacity
+          style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}
+        >
           <View style={styles.shadow}>
             <Image
               source={{ uri: event.cover_url }}
@@ -57,15 +45,20 @@ export default class CommunityProfileEventCard extends React.Component {
                   {this.state.org_name}
                 </Text>
               </View>
-              <View style={upcoming ? styles.detailTextContainer : styles.smallDetailTextContainer}>
-                <Text style={styles.dateText}>
-                  {this.state.date}
-                </Text>
+              <View
+                style={
+                  upcoming
+                    ? styles.detailTextContainer
+                    : styles.smallDetailTextContainer
+                }
+              >
+                <Text style={styles.dateText}>{this.state.date}</Text>
                 <Icon
-                  name={"star-circle-outline"}
+                  name={'star-circle-outline'}
                   size={23}
                   style={styles.bookmarkIcon}
-                  color={this.state.bookmarked ? '#0081AF' : 'grey'} />
+                  color={interested ? '#0081AF' : 'grey'}
+                />
               </View>
             </View>
           </View>
@@ -91,14 +84,14 @@ const styles = StyleSheet.create({
   },
   shadow: {
     flex: 1,
-    shadowColor: "black",
+    shadowColor: 'black',
     shadowOffset: {
       width: 0,
       height: 4,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    backgroundColor: "#0000" // invisible color
+    backgroundColor: '#0000', // invisible color
   },
   titleText: {
     fontFamily: 'montserrat',
@@ -136,6 +129,5 @@ const styles = StyleSheet.create({
   smallDetailTextContainer: {
     height: 0,
     width: 0,
-  }
-
+  },
 });

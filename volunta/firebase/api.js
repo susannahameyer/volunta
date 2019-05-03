@@ -1,4 +1,6 @@
 import { firestore } from './firebase';
+var Promise = require('bluebird');
+import * as c from './fb_constants';
 
 // Fetches all events array from firestore. We add doc_id to each event object as well just in case its needed.
 export const getEvents = async () => {
@@ -27,7 +29,10 @@ export const getEventsForCommunity = async () => {
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
+  const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+
   await eventsRef
+    .where('sponsors', 'array-contains', currentUserCommunityRef)
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -45,12 +50,12 @@ export const getEventsForCommunity = async () => {
         if (eventFromDate > currentDate) {
           data.status = 'upcoming';
           returnArrUpcoming.push(data);
-        // An event is in the past if event to_date is less than current date
+          // An event is in the past if event to_date is less than current date
         } else if (eventEndDate < currentDate) {
           data.status = 'past';
           returnArrPast.push(data);
-        // This means that from_date <= current date and to_date >= current date,
-        // so the event is currently ongoing
+          // This means that from_date <= current date and to_date >= current date,
+          // so the event is currently ongoing
         } else {
           data.status = 'ongoing';
           returnArrOngoing.push(data);
@@ -89,12 +94,123 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
     .doc(userDocId)
     .get()
     .then(snapshot => {
-      interested_refs = snapshot.get('event_refs.going');
+      let interested_refs = snapshot.get('event_refs.interested');
+      interested_refs.forEach(ref => interested.add(ref.id));
     })
     .catch(error => {
       console.log(error);
       return null;
     });
-  interested_refs.forEach(ref => interested.add(ref.id));
   return interested;
+};
+
+// Retrieve the community reference object for the current user
+export const getUserCommunity = async userDocId => {
+  let communityRef = '';
+  await firestore
+    .collection('users')
+    .doc(userDocId)
+    .get()
+    .then(snapshot => {
+      communityRef = snapshot.get('community_ref');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return communityRef;
+};
+
+// Retreive cover photo url for a given community reference
+export const getCommunityCoverPhoto = async communityRef => {
+  let url = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      url = snapshot.get('cover_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return url;
+};
+
+// Retrieve name for a given community reference
+export const getCommunityName = async communityRef => {
+  let name = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      name = snapshot.get('name');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return name;
+};
+
+// Update list of events that user is interested on
+// add: boolean specifying if we want to add (true) or remove (false) the eventId from the userId's iterested events list.
+// Returns true if success otherwise false
+// We use a transaction since we both get and update.
+// TODO: make sure we return false in case there is a connection error, this is currently not working. Not sure how to verify if the transaction was successful!! Currently the .catch is never reached..
+export const updateUserInterestedEvents = async (userId, eventId, add) => {
+  const userRef = await firestore.collection('users').doc(userId);
+  const eventToUpdateRef = await firestore.collection('events').doc(eventId);
+  await firestore
+    .runTransaction(async transaction => {
+      const userDoc = await transaction.get(userRef);
+      let events = await userDoc.get('event_refs.interested');
+      if (add) {
+        events.push(eventToUpdateRef); // Simply push the new eventRef
+      } else {
+        // Make set of all current ids except the one we are removing (probably do not want to check for reference inclusion) since reference objects are large.
+        // We use a set to make sure there are no duplicates.
+        updatedSet = new Set();
+        events.forEach(eventRef => {
+          if (eventRef.id !== eventId) updatedSet.add(eventRef.id);
+        });
+        events = new Array();
+        updatedSet.forEach(eventId => {
+          events.push(firestore.collection('events').doc(eventId));
+        });
+      }
+      transaction.update(userRef, 'event_refs.interested', events);
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+  return true;
+};
+
+// userRefs: array of user references for whom we want to get data from
+// attributes: array of strings representing the attributes we want to get from each user. ex: ['name', 'profile_pic_url' ]
+// Uses concurrency, should be able to work for many users (more than 100)
+// Returns a map, where each key is a user id (from the ref) and the value is another map where each key is an attribute
+// specified in attributes and the value is the one that corresponds to the user.
+export const getUsersAttributes = async (userRefs, attributes) => {
+  // Easy way: https://medium.com/@justintulk/how-to-query-arrays-of-data-in-firebase-aa28a90181ba
+  // Robust implementation: http://bluebirdjs.com/docs/api/promise.map.html
+  let results = {};
+  Promise.map(userRefs, ref => {
+    // Promise.map awaits for returned promises as well.
+    return ref.get();
+  })
+    .then(snapshots => {
+      snapshots.forEach(snapshot => {
+        let result = {};
+        attributes.forEach(attribute => {
+          result[attribute] = snapshot.get(attribute);
+        });
+        results[snapshot.id] = result;
+      });
+      return results;
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
 };
