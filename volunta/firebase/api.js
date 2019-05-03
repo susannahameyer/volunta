@@ -186,7 +186,7 @@ export const updateUserInterestedEvents = async (userId, eventId, add) => {
   return true;
 };
 
-// userDocIds: array of user doc ids for whom we want to get data from
+// userRefs: array of user references for whom we want to get data from
 // attributes: array of strings representing the attributes we want to get from each user. ex: ['name', 'profile_pic_url' ]
 // Uses concurrency, should be able to work for many users (more than 100)
 // Returns a map, where each key is a user id (from the ref) and the value is another map where each key is an attribute
@@ -201,7 +201,7 @@ export const getUsersAttributes = async (userRefs, attributes) => {
   })
     .then(snapshots => {
       snapshots.forEach(snapshot => {
-        result = {};
+        let result = {};
         attributes.forEach(attribute => {
           result[attribute] = snapshot.get(attribute);
         });
