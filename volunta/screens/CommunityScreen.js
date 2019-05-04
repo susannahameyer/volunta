@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import Facepile from '../components/Facepile';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
@@ -21,6 +27,7 @@ export default class CommunityScreen extends React.Component {
       communityPhoto: '',
       communityName: '',
       interestedEventDocIds: new Set(),
+      refreshing: false,
     };
   }
 
@@ -29,6 +36,10 @@ export default class CommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
+    this.setState({
+      refreshing: true,
+    });
+
     // Get event data
     const [
       upcomingEvents,
@@ -54,6 +65,7 @@ export default class CommunityScreen extends React.Component {
       communityPhoto,
       communityName,
       interestedEventDocIds,
+      refreshing: false,
     });
   };
 
@@ -64,40 +76,51 @@ export default class CommunityScreen extends React.Component {
       communityPhoto,
       communityName,
       interestedEventDocIds,
+      refreshing,
     } = this.state;
 
     return (
-      <View>
-        <CommunityCoverPhoto
-          communityPhoto={communityPhoto}
-          communityName={communityName}
-        />
-        <View style={styles.topText}>
-          <Text style={styles.titleText}>{'in my community'}</Text>
-        </View>
-        <View style={styles.facepileContainer}>
-          <Facepile totalWidth={335} maxNumImages={10} imageDiameter={50} />
-        </View>
-
-        <View style={styles.middleText}>
-          <Text style={styles.titleText}>{'coming up'}</Text>
-        </View>
-        <View style={styles.upcomingScroll}>
-          <CommunityProfileEventCardHorizontalScroll
-            events={upcomingEvents}
-            interestedIDs={interestedEventDocIds}
+      // Invisible ScrollView component to add pull-down refresh functionality
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => this._loadData()}
           />
-        </View>
-        <View style={styles.bottomText}>
-          <Text style={styles.titleText}>{"how we've helped"}</Text>
-          <View style={styles.pastScroll}>
+        }
+      >
+        <View>
+          <CommunityCoverPhoto
+            communityPhoto={communityPhoto}
+            communityName={communityName}
+          />
+          <View style={styles.topText}>
+            <Text style={styles.titleText}>{'in my community'}</Text>
+          </View>
+          <View style={styles.facepileContainer}>
+            <Facepile totalWidth={335} maxNumImages={10} imageDiameter={50} />
+          </View>
+
+          <View style={styles.middleText}>
+            <Text style={styles.titleText}>{'coming up'}</Text>
+          </View>
+          <View style={styles.upcomingScroll}>
             <CommunityProfileEventCardHorizontalScroll
-              events={pastEvents}
+              events={upcomingEvents}
               interestedIDs={interestedEventDocIds}
             />
           </View>
+          <View style={styles.bottomText}>
+            <Text style={styles.titleText}>{"how we've helped"}</Text>
+            <View style={styles.pastScroll}>
+              <CommunityProfileEventCardHorizontalScroll
+                events={pastEvents}
+                interestedIDs={interestedEventDocIds}
+              />
+            </View>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -110,17 +133,17 @@ const styles = StyleSheet.create({
     left: 19,
   },
   topText: {
-    top: -44,
+    top: -85,
   },
   facepileContainer: {
     left: 19,
-    top: -42,
+    top: -80,
   },
   middleText: {
-    top: -30,
+    top: -65,
   },
   bottomText: {
-    top: -20,
+    top: -50,
   },
   placeholder: {
     width: 335,
@@ -131,10 +154,11 @@ const styles = StyleSheet.create({
   },
   upcomingScroll: {
     left: 15,
-    top: -25,
+    top: -60,
   },
   pastScroll: {
     left: 15,
     top: 7,
+    height: 0, //removes extra blank space at bottom of scroll
   },
 });
