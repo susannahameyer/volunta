@@ -22,13 +22,14 @@ export default class CommunityProfileEventCard extends React.Component {
   }
 
   render() {
-    const { event, interested } = this.props;
+    const { event, interested, onPress } = this.props;
     const upcoming = event.status == 'upcoming';
     return (
       <View style={styles.shadow}>
         {/* if the event is in the past list, make the height shorter */}
         <TouchableOpacity
           style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}
+          onPress={() => onPress(event)}
         >
           <View style={styles.shadow}>
             <Image
