@@ -13,7 +13,14 @@ import Colors from '../constants/Colors';
 
 
 export default class SignUpScreen extends React.Component {
-  state = { email: '', password: '', errorMessage: null }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+      password: '',
+    };
+  }
 
   // TODO: implement FB Sign in
   _onPressSignUpWithFB = event => { };
@@ -29,10 +36,6 @@ export default class SignUpScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
         <Image
           source={require('../assets/images/logo.png')}
           style={styles.logo}
@@ -49,7 +52,7 @@ export default class SignUpScreen extends React.Component {
             </View>
           </TouchableOpacity>
         </View>
-        <Divider style={styles.divider} />;
+        <Divider style={styles.divider} />
         <TextInput
           placeholder="email"
           autoCapitalize="none"
