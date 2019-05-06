@@ -89,16 +89,12 @@ export default class SignUpScreen extends React.Component {
           confirmBtnText="confirm"
           cancelBtnText="cancel"
           customStyles={{
-            dateIcon: {
-              position: 'absolute',
-              left: 0,
-              top: 4,
-              marginLeft: 0
-            },
-            dateInput: {
-              marginLeft: 36
+            dateText: {
+              fontFamily: "montserrat",
             }
           }}
+          showIcon={false}
+          style={AuthStyle.datePicker}
           onDateChange={(date) => { this.setState({ birthdate: date }) }}
         />
         <TouchableOpacity onPress={this.handleSignUp}>
