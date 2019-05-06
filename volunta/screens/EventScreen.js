@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import EventPageHeader from '../components/EventPageHeader';
+import EventPageButtonBar from '../components/EventPageButtonBar';
 
 export default class EventScreen extends React.Component {
   constructor(props) {
@@ -24,13 +25,12 @@ export default class EventScreen extends React.Component {
             'https://cdn.aarp.net/content/dam/aarp/work/on-the-job/2015-08/740-Volunteer-your-way-to-next-job.imgcache.rev3e04f10287417ea880532326d1613331.jpg/jcr:content/renditions/cq5dam.web.420.270.jpeg'
           }
         />
+        <EventPageButtonBar interested={false} going={true} />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 20,
-  },
+  container: {},
 });
