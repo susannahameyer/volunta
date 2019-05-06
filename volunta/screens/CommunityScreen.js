@@ -24,7 +24,7 @@ export default class CommunityScreen extends React.Component {
     this.state = {
       upcomingEvents: [],
       pastEvents: [],
-      communityPhoto: '',
+      communityPhoto: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
       communityName: '',
       interestedEventDocIds: new Set(),
       refreshing: false,
@@ -69,6 +69,12 @@ export default class CommunityScreen extends React.Component {
     });
   };
 
+  _onPressOpenEventPage = event => {
+    this.props.navigation.push('Event', {
+      event,
+    });
+  };
+
   render() {
     const {
       upcomingEvents,
@@ -107,6 +113,7 @@ export default class CommunityScreen extends React.Component {
           <View style={styles.upcomingScroll}>
             <CommunityProfileEventCardHorizontalScroll
               events={upcomingEvents}
+              onPress={this._onPressOpenEventPage}
               interestedIDs={interestedEventDocIds}
             />
           </View>
@@ -116,6 +123,7 @@ export default class CommunityScreen extends React.Component {
               <CommunityProfileEventCardHorizontalScroll
                 events={pastEvents}
                 interestedIDs={interestedEventDocIds}
+                onPress={this._onPressOpenEventPage}
               />
             </View>
           </View>
