@@ -1,5 +1,5 @@
 import Colors from '../constants/Colors';
-import StyleSheet from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   buttonText: {
@@ -39,12 +39,11 @@ export default StyleSheet.create({
     resizeMode: 'contain',
   },
   inputPromptText: {
-    color: Colors.mediumGray,
+    color: Colors.darkGray,
     fontFamily: 'montserrat',
     fontSize: 18,
     fontWeight: 'normal',
     marginLeft: 0,
-    marginTop: 20,
   },
   socialButton: {
     alignItems: 'center',
