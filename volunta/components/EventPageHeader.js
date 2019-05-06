@@ -71,13 +71,13 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     fontSize: 24,
-    fontFamily: 'montserrat',
+    fontFamily: 'montserrat-medium',
     width: 235,
   },
   orgName: {
     fontSize: 14,
     color: '#838383',
-    fontFamily: 'montserrat',
+    fontFamily: 'montserrat-medium',
     marginTop: 5,
     width: 235,
   },
