@@ -14,6 +14,10 @@ export default StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
   },
+  datePicker: {
+    marginTop: 20,
+    width: 306,
+  },
   divider: {
     backgroundColor: Colors.mediumGray,
     height: 3,
