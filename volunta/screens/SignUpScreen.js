@@ -9,15 +9,24 @@ import {
 } from 'react-native';
 import AuthStyle from '../stylesheets/AuthStyle';
 import AssetFilePaths from '../constants/AssetFilePaths';
+import DatePicker from 'react-native-datepicker'
+
+const today = new Date();
 
 export default class SignUpScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      birthdate: today,
       email: '',
       password: '',
     };
+    this.setDate = this.setDate.bind(this);
+  }
+
+  setDate(newDate) {
+    this.setState({ birthdate: newDate });
   }
 
   // TODO: implement FB Sign in
@@ -70,6 +79,28 @@ export default class SignUpScreen extends React.Component {
             value={this.state.password}
           />
         </View>
+        <DatePicker
+          date={this.state.birthdate}
+          mode="date"
+          placeholder="birthdate"
+          format="MM-DD-YYYY"
+          minDate="1919-01-01"
+          maxDate={today}
+          confirmBtnText="confirm"
+          cancelBtnText="cancel"
+          customStyles={{
+            dateIcon: {
+              position: 'absolute',
+              left: 0,
+              top: 4,
+              marginLeft: 0
+            },
+            dateInput: {
+              marginLeft: 36
+            }
+          }}
+          onDateChange={(date) => { this.setState({ birthdate: date }) }}
+        />
         <TouchableOpacity onPress={this.handleSignUp}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>sign up</Text>
