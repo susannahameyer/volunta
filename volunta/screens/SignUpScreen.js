@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import Colors from '../constants/Colors';
+import AssetFilePaths from '../constants/AssetFilePaths';
 
 
 export default class SignUpScreen extends React.Component {
@@ -36,7 +37,7 @@ export default class SignUpScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          source={require('../assets/images/logo.png')}
+          source={require(AssetFilePaths.logo)}
           style={styles.logo}
         />
         <View>
