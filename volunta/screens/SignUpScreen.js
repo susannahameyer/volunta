@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Divider } from 'react-native-elements';
 import Colors from '../constants/Colors';
 
 
@@ -42,36 +41,44 @@ export default class SignUpScreen extends React.Component {
         />
         <View>
           <TouchableOpacity onPress={this._onPressSignUpWithFB}>
-            <View style={styles.button}>
+            <View style={styles.socialButton}>
               <Text style={styles.buttonText}>sign up with facebook</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._onPressSignUpWithGoogle}>
-            <View style={styles.button}>
+            <View style={styles.socialButton}>
               <Text style={styles.buttonText}>sign up with google</Text>
             </View>
           </TouchableOpacity>
         </View>
-        <Divider style={styles.divider} />
-        <TextInput
-          placeholder="email"
-          autoCapitalize="none"
-          style={styles.textInput}
-          onChangeText={email => this.setState({ email })}
-          value={this.state.email}
-        />
-        <TextInput
-          secureTextEntry
-          placeholder="password"
-          autoCapitalize="none"
-          style={styles.textInput}
-          onChangeText={password => this.setState({ password })}
-          value={this.state.password}
-        />
-        <Button title="Sign Up" onPress={this.handleSignUp} />
+        <View style={styles.divider} />
+        <View style={styles.inputView}>
+          <Text styles={styles.inputPromptText}>email:</Text>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.textInput}
+            onChangeText={email => this.setState({ email })}
+            value={this.state.email}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <Text styles={styles.inputPromptText}>password:</Text>
+          <TextInput
+            secureTextEntry
+            autoCapitalize="none"
+            style={styles.textInput}
+            onChangeText={password => this.setState({ password })}
+            value={this.state.password}
+          />
+        </View>
+        <TouchableOpacity onPress={this.handleSignUp}>
+          <View style={styles.signUpButton}>
+            <Text style={styles.buttonText}>sign up</Text>
+          </View>
+        </TouchableOpacity>
         <Button
           title="Already have an account? Login"
-          onPress={() => this.props.navigation.navigate('Login')}
+          onPress={() => this.props.navigation.navigate('LogIn')}
         />
       </View>
     );
@@ -79,16 +86,6 @@ export default class SignUpScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#0081AF',
-    borderRadius: 15,
-    height: 46,
-    justifyContent: 'center',
-    marginTop: 20,
-    opacity: 0.5,
-    width: 306,
-  },
   buttonText: {
     color: "#FFFFFF",
     fontFamily: 'montserrat',
@@ -103,18 +100,51 @@ const styles = StyleSheet.create({
   },
   divider: {
     backgroundColor: Colors.mediumGray,
-    height: 1,
+    height: 3,
+    marginTop: 20,
+    width: 306,
+  },
+  inputView: {
+    marginTop: 20,
   },
   logo: {
     width: 234,
     height: 223,
     resizeMode: 'contain',
   },
+  inputPromptText: {
+    color: Colors.mediumGray,
+    fontFamily: 'montserrat',
+    fontSize: 18,
+    fontWeight: 'normal',
+    marginLeft: 0,
+    marginTop: 20,
+  },
+  signUpButton: {
+    alignItems: 'center',
+    backgroundColor: '#0081AF',
+    borderRadius: 15,
+    height: 46,
+    justifyContent: 'center',
+    marginTop: 20,
+    opacity: 0.5,
+    width: 167,
+  },
+  socialButton: {
+    alignItems: 'center',
+    backgroundColor: '#0081AF',
+    borderRadius: 15,
+    height: 46,
+    justifyContent: 'center',
+    marginTop: 20,
+    opacity: 0.5,
+    width: 306,
+  },
   textInput: {
     height: 40,
-    width: '90%',
+    width: 306,
     borderColor: 'gray',
     borderWidth: 1,
-    marginTop: 8
+    marginTop: 2,
   },
 });
