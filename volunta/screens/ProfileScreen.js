@@ -58,6 +58,7 @@ export default class ProfileScreen extends React.Component {
     });
   };
 
+  // onPress function to pass to CommunityProfileEventCards using screen navigation
   _onPressOpenEventPage = event => {
     this.props.navigation.push('Event', {
       event,
