@@ -11,7 +11,6 @@ import {
 import Colors from '../constants/Colors';
 import AssetFilePaths from '../constants/AssetFilePaths';
 
-
 export default class SignUpScreen extends React.Component {
 
   constructor(props) {
