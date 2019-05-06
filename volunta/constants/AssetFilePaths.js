@@ -1,5 +1,5 @@
 export default {
-  logo: '../assets/images/logo.png',
-  logoNoText: '../assets/images/logo2.png',
-  icon: '../assets/images/icon.png',
+  logo: require('../assets/images/logo.png'),
+  logoNoText: require('../assets/images/logo2.png'),
+  icon: require('../assets/images/icon.png'),
 };

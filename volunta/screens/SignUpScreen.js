@@ -37,7 +37,7 @@ export default class SignUpScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          source={require(AssetFilePaths.logo)}
+          source={AssetFilePaths.logo}
           style={styles.logo}
         />
         <View>
