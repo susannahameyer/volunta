@@ -8,7 +8,10 @@ import {
   View,
 } from 'react-native';
 import AssetFilePaths from '../constants/AssetFilePaths';
+<<<<<<< HEAD
 import AuthStyle from '../stylesheets/AuthStyle';
+=======
+>>>>>>> 7f0056840e0d52c6a64b7966a241a94339cfd44f
 
 export default class SignUpScreen extends React.Component {
 
