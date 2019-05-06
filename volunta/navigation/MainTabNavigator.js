@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import {
   createStackNavigator,
-  createBottomTabNavigator
+  createBottomTabNavigator,
 } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
@@ -21,33 +21,35 @@ FeedStack.navigationOptions = {
   tabBarLabel: 'Feed',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={'ios-menu'} />
-  )
+  ),
 };
 
 const CommunityStack = createStackNavigator({
-  Community: CommunityScreen
+  Community: CommunityScreen,
+  Event: EventScreen,
 });
 
 CommunityStack.navigationOptions = {
   tabBarLabel: 'Community',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={'ios-people'} />
-  )
+  ),
 };
 
 const NotificationsStack = createStackNavigator({
-  Notifications: NotificationsScreen
+  Notifications: NotificationsScreen,
 });
 
 NotificationsStack.navigationOptions = {
   tabBarLabel: 'Notifications',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={'ios-notifications'} />
-  )
+  ),
 };
 
 const ProfileStack = createStackNavigator({
-  Profile: ProfileScreen
+  Profile: ProfileScreen,
+  Event: EventScreen,
 });
 
 ProfileStack.navigationOptions = {
@@ -57,14 +59,19 @@ ProfileStack.navigationOptions = {
       focused={focused}
       name={Platform.OS === 'ios' ? 'ios-person' : 'md-person'}
     />
-  )
+  ),
 };
 
-export default createBottomTabNavigator({
-  FeedStack,
-  CommunityStack,
-  NotificationsStack,
-  ProfileStack
-}, {tabBarOptions: {
-  showLabel: false,
-},});
+export default createBottomTabNavigator(
+  {
+    FeedStack,
+    CommunityStack,
+    NotificationsStack,
+    ProfileStack,
+  },
+  {
+    tabBarOptions: {
+      showLabel: false,
+    },
+  }
+);
