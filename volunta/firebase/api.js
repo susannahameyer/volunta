@@ -217,6 +217,7 @@ export const getUsersAttributes = async (userRefs, attributes) => {
 };
 
 // Returns a DefaultDict that maps from each eventDocId to the number of users going to it.
+// Note: Assumes there are no duplicates in the going list.
 // If eventId is not a key, the value will default to zero.
 // For each user, for each of the events they are going to:
 //    a) if event is not in our results map, add it with value 1
