@@ -69,6 +69,12 @@ export default class CommunityScreen extends React.Component {
     });
   };
 
+  _onPressOpenEventPage = event => {
+    this.props.navigation.push('Event', {
+      event,
+    });
+  };
+
   render() {
     const {
       upcomingEvents,

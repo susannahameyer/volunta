@@ -58,6 +58,12 @@ export default class ProfileScreen extends React.Component {
     });
   };
 
+  _onPressOpenEventPage = event => {
+    this.props.navigation.push('Event', {
+      event,
+    });
+  };
+
   render() {
     const {
       upcomingEvents,
