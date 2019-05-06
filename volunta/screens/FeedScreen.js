@@ -14,10 +14,11 @@ export default class FeedScreen extends React.Component {
     super(props);
     this.state = {
       events: [],
+      displayedEvents: [],
       isRefreshing: false,
       search: '',
       interestedEventDocIds: new Set(), // IDs of all events that user is interested on
-      userId: 'kgxbnXxwNXKIupPuIrcV', // TODO: pass in as prop
+      userId: c.TEST_USER_ID, // TODO: pass in as prop
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
     };
   }
@@ -32,7 +33,7 @@ export default class FeedScreen extends React.Component {
   }
 
   // Load data needed for the screen and its components
-  // 1) Detch list of events using api call.
+  // 1) Fetch list of events using api call.
   // 2) Retrieve all events the user is interested in for the interested prop in EventCard
   // TODO: Using hard coded user doc id, make that a constant for now...
   // TODO: show error message in case fetching goes wrong (if anything returns null or error?)...
@@ -43,10 +44,6 @@ export default class FeedScreen extends React.Component {
 
     // Fetch all event objects into array and initialize interestedMap to all false
     const events = await getEvents();
-    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
-      c.TEST_USER_ID,
-    );
-
     let interestedMap = new Map();
 
     // Fetch event doc ids that user is interested on and set them to true in the map
@@ -59,17 +56,33 @@ export default class FeedScreen extends React.Component {
     });
 
     // Update state and restore refreshing
+    // this.searchBar.clear(); // Clear search bar on refresh, simple UX
     this.setState({
       isRefreshing: false,
       events,
       interestedMap,
     });
+
+    // Enable refresh while searching
+    if (!this.state.search) {
+      this.setState({
+        displayedEvents: events,
+      });
+    } else {
+      this._updateSearchAndFilter(this.state.search);
+    }
   };
 
   // Called when user types something into search bar.
-  // Right now simply update displayed text.
-  _updateSearch = search => {
-    this.setState({ search });
+  // Update displayed text.
+  // Filter events by titles that contain the search input.
+  _updateSearchAndFilter = search => {
+    this.setState({
+      search,
+      displayedEvents: this.state.events.filter(event =>
+        event.title.includes(search)
+      ),
+    });
   };
 
   // Function we pass to EventCard, pushes screen onto current stack with the corresponding event page
@@ -123,23 +136,24 @@ export default class FeedScreen extends React.Component {
   };
 
   render() {
-    const { search, events, isRefreshing } = this.state;
+    const { search, displayedEvents, isRefreshing } = this.state;
     return (
       <View style={styles.pageContainer}>
         <SearchBar
           placeholder=""
-          onChangeText={this._updateSearch}
+          onChangeText={this._updateSearchAndFilter}
           value={search}
           lightTheme
           round
           containerStyle={styles.searchContainerStyle}
           inputContainerStyle={styles.searchInputContainerStyle}
+          ref={searchBar => (this.searchBar = searchBar)}
         />
-        {events !== [] && (
+        {displayedEvents !== [] && (
           <FlatList
             style={styles.flatListStyle}
             renderItem={this._renderEventCard}
-            data={events}
+            data={displayedEvents}
             extraData={this.state} // Needed for child to update when 'interested' changes
             onRefresh={() => this._loadData()}
             keyExtractor={this._keyExtractor}
