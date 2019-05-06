@@ -21,15 +21,15 @@ export default class LoginScreen extends React.Component {
     };
   }
 
-  // TODO: implement FB Sign in
+  // TODO: implement FB Login
   _onPressLogInWithFB = event => { };
 
-  // TODO: implement Google Sign in
+  // TODO: implement Google Login
   _onPressLogInWithGoogle = event => { };
 
   handleLogIn = () => {
     // TODO: Firebase stuff...
-    console.log('handleSignUp')
+    console.log('handleLogIn')
   }
 
   render() {
@@ -71,14 +71,14 @@ export default class LoginScreen extends React.Component {
             value={this.state.password}
           />
         </View>
-        <TouchableOpacity onPress={this.handleSignUp}>
-          <View style={styles.signUpButton}>
-            <Text style={styles.buttonText}>sign up</Text>
+        <TouchableOpacity onPress={this.handleLogIn}>
+          <View style={styles.logInButton}>
+            <Text style={styles.buttonText}>log in</Text>
           </View>
         </TouchableOpacity>
         <Button
-          title="Already have an account? Login"
-          onPress={() => this.props.navigation.navigate('LogIn')}
+          title="Don't have an account? Sign up"
+          onPress={() => this.props.navigation.navigate('SignUp')}
         />
       </View>
     );
@@ -107,6 +107,16 @@ const styles = StyleSheet.create({
   inputView: {
     marginTop: 20,
   },
+  logInButton: {
+    alignItems: 'center',
+    backgroundColor: '#0081AF',
+    borderRadius: 15,
+    height: 46,
+    justifyContent: 'center',
+    marginTop: 20,
+    opacity: 0.5,
+    width: 167,
+  },
   logo: {
     width: 234,
     height: 223,
@@ -119,16 +129,6 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     marginLeft: 0,
     marginTop: 20,
-  },
-  signUpButton: {
-    alignItems: 'center',
-    backgroundColor: '#0081AF',
-    borderRadius: 15,
-    height: 46,
-    justifyContent: 'center',
-    marginTop: 20,
-    opacity: 0.5,
-    width: 167,
   },
   socialButton: {
     alignItems: 'center',
