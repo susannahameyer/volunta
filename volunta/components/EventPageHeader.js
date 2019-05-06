@@ -19,13 +19,15 @@ export default class EventPageHeader extends React.Component {
         <View style={styles.shadow}>
           <Image source={{ uri: coverPhoto }} style={styles.coverPhoto} />
         </View>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <View style={styles.headerText}>
-              <Text style={styles.eventTitle}>{eventTitle}</Text>
-              <Text style={styles.orgName}>{organizationName}</Text>
+        <View style={styles.divider}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <View style={styles.headerText}>
+                <Text style={styles.eventTitle}>{eventTitle}</Text>
+                <Text style={styles.orgName}>{organizationName}</Text>
+              </View>
+              <Image source={{ uri: organizationLogo }} style={styles.logo} />
             </View>
-            <Image source={{ uri: organizationLogo }} style={styles.logo} />
           </View>
         </View>
       </View>
@@ -46,13 +48,15 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
   },
-
+  divider: {
+    marginTop: 5,
+    borderBottomColor: '#DADADA',
+    borderBottomWidth: 1,
+  },
   container: {
     width: Dimensions.get('window').width,
     marginHorizontal: 35,
     marginTop: 5,
-    borderBottomColor: '#DADADA',
-    borderBottomWidth: 1,
   },
   header: {
     flexDirection: 'row',
