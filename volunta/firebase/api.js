@@ -1,6 +1,7 @@
 import { firestore } from './firebase';
 var Promise = require('bluebird');
 import * as c from './fb_constants';
+import { DefaultDict } from '../utils';
 
 // Fetches all events array from firestore. We add doc_id to each event object as well just in case its needed.
 export const getEvents = async () => {
@@ -213,4 +214,31 @@ export const getUsersAttributes = async (userRefs, attributes) => {
       console.log(error);
       return null;
     });
+};
+
+// Returns a DefaultDict that maps from each eventDocId to the number of users going to it.
+// If eventId is not a key, the value will default to zero.
+// For each user, for each of the events they are going to:
+//    a) if event is not in our results map, add it with value 1
+//    b) otherwise increment value by 1 for that event.
+export const getNumGoingForAllEvents = async () => {
+  const counts = new DefaultDict(0);
+  var usersRef = firestore.collection('users');
+  await usersRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(userDoc => {
+        try {
+          let going = userDoc.get('event_refs.going');
+          going.forEach(eventRef => {
+            counts[eventRef.id] += 1;
+          });
+        } catch (error) {}
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return counts;
 };
