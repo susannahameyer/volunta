@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, Dimensions, View } from 'react-native';
+// import { Divider } from 'react-native-elements';
 
 export default class EventPageHeader extends React.Component {
   constructor(props) {
@@ -47,8 +48,11 @@ const styles = StyleSheet.create({
   },
 
   container: {
+    width: Dimensions.get('window').width,
     marginHorizontal: 35,
     marginTop: 5,
+    borderBottomColor: '#DADADA',
+    borderBottomWidth: 1,
   },
   header: {
     flexDirection: 'row',
