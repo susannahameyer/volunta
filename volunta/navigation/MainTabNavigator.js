@@ -11,6 +11,8 @@ import CommunityScreen from '../screens/CommunityScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import EventScreen from '../screens/EventScreen';
+import FacepileDetailScreen from '../screens/FacepileDetailScreen';
+import Facepile from '../components/Facepile';
 
 const FeedStack = createStackNavigator({
   Feed: FeedScreen,
@@ -27,6 +29,7 @@ FeedStack.navigationOptions = {
 const CommunityStack = createStackNavigator({
   Community: CommunityScreen,
   Event: EventScreen,
+  Facepile: FacepileDetailScreen,
 });
 
 CommunityStack.navigationOptions = {
@@ -50,6 +53,7 @@ NotificationsStack.navigationOptions = {
 const ProfileStack = createStackNavigator({
   Profile: ProfileScreen,
   Event: EventScreen,
+  Facepile: FacepileDetailScreen,
 });
 
 ProfileStack.navigationOptions = {
