@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
-const assetFilePath = '../assets/images/';
+import AssetFilePaths from '../constants/AssetFilePaths';
 
 export default class WelcomeScreen extends React.Component {
 
@@ -29,7 +28,7 @@ export default class WelcomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          source={require(assetFilePath + 'logo.png')}
+          source={AssetFilePaths.logo}
           style={styles.logo}
         />
         <View>
