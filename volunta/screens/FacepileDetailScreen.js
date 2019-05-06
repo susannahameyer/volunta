@@ -20,10 +20,21 @@ export default class FacepileDetailScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            users: this.props.navigation.getParam('users')
+            users: this.props.navigation.getParam('users'),
+            displayedUsers: this.props.navigation.getParam('users'),
+            searchText: ''
         };
     }
+    
+    //Search callback for the searchbar
+    _filterFacePile = input => {
+        this.setState({
+            displayedUsers: this.state.users.filter(user => user.name.includes(input)),
+            searchText: input,
+        });
+    }
 
+    //Renders a single user that can be clicked to enter their profile
     _renderUser = user => {
         return (
             <TouchableOpacity
@@ -36,7 +47,12 @@ export default class FacepileDetailScreen extends React.Component {
                 </Text>
                 <Icon
                     name={'right'}
-                    size={30}/>
+                    size={20}
+                    color={'grey'}
+                    style={{
+                        marginLeft: 'auto',
+                        marginRight: 5,
+                    }}/>
             </TouchableOpacity>
         )
         
@@ -45,15 +61,17 @@ export default class FacepileDetailScreen extends React.Component {
     render() {
 
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <SearchBar
-                    placeholder=""
+                    placeholder={"Search " + this.props.navigation.getParam('title', 'Details')}
+                    onChangeText={(text) => this._filterFacePile(text)}
+                    value={this.state.searchText}
                     lightTheme
                     round
                     containerStyle={styles.searchContainerStyle}
                     inputContainerStyle={styles.searchInputContainerStyle}/>
                 <FlatList
-                    data={this.state.users}
+                    data={this.state.displayedUsers}
                     renderItem={({item}) => this._renderUser(item)}
                 />
 
@@ -67,7 +85,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderBottomColor: 'transparent',
       borderTopColor: 'transparent',
-      marginHorizontal: 8
+      marginHorizontal: 8,
     },
     searchInputContainerStyle: {
       backgroundColor: '#E8E8E8'
