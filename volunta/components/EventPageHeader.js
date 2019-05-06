@@ -49,14 +49,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
   },
   divider: {
-    marginTop: 5,
+    paddingBottom: 10,
     borderBottomColor: '#DADADA',
     borderBottomWidth: 1,
   },
   container: {
     width: Dimensions.get('window').width,
     marginHorizontal: 35,
-    marginTop: 5,
+    marginBottom: 5,
   },
   header: {
     flexDirection: 'row',
@@ -65,24 +65,25 @@ const styles = StyleSheet.create({
     width: 74,
     height: 74,
     borderRadius: 37,
-    marginRight: 20,
-    marginBottom: 8,
-    marginTop: 10,
+    marginRight: 15,
+    marginBottom: 0,
+    marginTop: 15,
     alignSelf: 'center',
   },
   headerText: {
+    marginTop: 15,
     justifyContent: 'center',
   },
   eventTitle: {
     fontSize: 24,
     fontFamily: 'montserrat',
-    width: 220,
+    width: 235,
   },
   orgName: {
     fontSize: 14,
     color: '#838383',
     fontFamily: 'montserrat',
     marginTop: 5,
-    width: 220,
+    width: 235,
   },
 });
