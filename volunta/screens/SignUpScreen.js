@@ -2,13 +2,11 @@ import React from 'react';
 import {
   Button,
   Image,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import Colors from '../constants/Colors';
 import AssetFilePaths from '../constants/AssetFilePaths';
 import AuthStyle from '../stylesheets/AuthStyle';
 
