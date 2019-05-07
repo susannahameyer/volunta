@@ -3,10 +3,12 @@ import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
+import { DefaultDict } from '../utils';
 import {
   getEvents,
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
+  getNumGoingForAllEvents,
 } from '../firebase/api';
 
 export default class FeedScreen extends React.Component {
@@ -20,6 +22,7 @@ export default class FeedScreen extends React.Component {
       interestedEventDocIds: new Set(), // IDs of all events that user is interested on
       userId: c.TEST_USER_ID, // TODO: pass in as prop
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
+      goingCounts: new DefaultDict(0), // <eventId, numGoing>
     };
   }
 
@@ -55,12 +58,15 @@ export default class FeedScreen extends React.Component {
       });
     });
 
+    let goingCounts = await getNumGoingForAllEvents();
+
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
     this.setState({
       isRefreshing: false,
       events,
       interestedMap,
+      goingCounts,
     });
 
     // Enable refresh while searching
@@ -104,6 +110,7 @@ export default class FeedScreen extends React.Component {
         onPress={this._onPressEventCard}
         interested={this.state.interestedMap.get(item.doc_id)}
         onClickInterested={this._updateInterested}
+        numGoing={this.state.goingCounts[item.doc_id]}
       />
     );
   };
