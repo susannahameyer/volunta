@@ -28,14 +28,14 @@ export default class EventCard extends React.Component {
     return 1.2;
   };
 
-  // TODO: implement logic to get number of attendees
-  _getNumAttendees = () => {
-    return 40;
-  };
-
-  // TODO: add date
   render() {
-    const { event, interested, onPress, onClickInterested } = this.props;
+    const {
+      event,
+      interested,
+      onPress,
+      onClickInterested,
+      numGoing,
+    } = this.props;
     const { org_name, date } = this.state;
     return (
       <View style={styles.shadow}>
@@ -72,9 +72,7 @@ export default class EventCard extends React.Component {
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{date}</Text>
                 <Text style={styles.detailText}>{this._getDistance()} mi</Text>
-                <Text style={styles.detailText}>
-                  {this._getNumAttendees()} going
-                </Text>
+                <Text style={styles.detailText}>{numGoing} going</Text>
               </View>
             </View>
           </View>
