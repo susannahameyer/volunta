@@ -1,6 +1,16 @@
 import React from 'react';
 import { Image, StyleSheet, Text, Dimensions, View } from 'react-native';
 
+/*
+This component displays at the header of a single event page.
+
+Props:
+    - eventTitle
+    - organizationName
+    - organizationLogo
+    - coverPhoto
+*/
+
 export default class EventPageHeader extends React.Component {
   render() {
     const {
@@ -50,7 +60,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: Dimensions.get('window').width,
-    marginHorizontal: 35,
+    marginHorizontal: 30,
     marginBottom: 5,
   },
   header: {

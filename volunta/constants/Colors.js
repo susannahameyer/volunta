@@ -14,4 +14,5 @@ export default {
   mediumGray: '#D4D4D4',
   iconGray: '#838383',
   iconBlue: '#0081AF',
+  aboutIconGray: '#727171',
 };

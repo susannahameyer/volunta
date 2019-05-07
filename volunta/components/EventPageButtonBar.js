@@ -4,6 +4,17 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 
+/*
+This component displays below the header of a single event page with 
+buttons for RSVPing to an event ('going'), bookmarking an event ('interested'),
+and more options (TBD). The 'going' button is blue if a user is going
+to the event and gray otherwise, and 'interested' works the same way.
+
+Props:
+    - interested
+    - going
+*/
+
 export default class EventPageButtonBar extends React.Component {
   render() {
     const { interested, going } = this.props;
