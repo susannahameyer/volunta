@@ -8,13 +8,13 @@ import {
 
 export default class SingleNotification extends React.Component {
   render() {
-    const {interestName} = this.props
+    const {orgName, orgPhoto, message, timeAsStr} = this.props
     return (
       <View style={styles.box}>
-        <Image style={styles.organizationPic} source={require('../assets/images/kanye.png')} />
-        <Text style={styles.organizationText}>Puppy Love</Text>
-        <Text style={styles.messageText}>{interestName}</Text>
-        <Text style={styles.timeText}>12h</Text>
+        {/* <Image style={styles.organizationPic} source={require({orgPhoto})} /> */}
+        <Text style={styles.organizationText}>{orgName}</Text>
+        <Text style={styles.messageText}>{message}</Text>
+        <Text style={styles.timeText}>{timeAsStr}</Text>
       </View>
     );
   }
