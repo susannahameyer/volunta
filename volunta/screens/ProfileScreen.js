@@ -52,13 +52,15 @@ export default class ProfileScreen extends React.Component {
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
       c.TEST_USER_ID
     );
-    
+
     //TODO change this to actual volunteer network
-    const volunteerNetwork = await firestore.collection('users')
-    .get()
-    .then(async snapshot => 
-      await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
-    );
+    const volunteerNetwork = await firestore
+      .collection('users')
+      .get()
+      .then(
+        async snapshot =>
+          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+      );
 
     this.setState({
       upcomingEvents,
@@ -75,8 +77,6 @@ export default class ProfileScreen extends React.Component {
       event,
     });
   };
-
-  
 
   render() {
     const {
@@ -146,13 +146,16 @@ export default class ProfileScreen extends React.Component {
             <Text style={styles.sectionTitle}>volunteer network:</Text>
           </View>
           <View style={styles.facepileContainer}>
-            {this.state.volunteerNetwork !== [] && (<Facepile 
-              totalWidth={335} 
-              maxNumImages={10} 
-              imageDiameter={50} 
-              navigation={this.props.navigation}
-              members={this.state.volunteerNetwork}
-              title='Volunteer Network'/>)}
+            {this.state.volunteerNetwork !== [] && (
+              <Facepile
+                totalWidth={335}
+                maxNumImages={10}
+                imageDiameter={50}
+                navigation={this.props.navigation}
+                members={this.state.volunteerNetwork}
+                pileTitle="Volunteer Network"
+              />
+            )}
           </View>
         </View>
       </ScrollView>
