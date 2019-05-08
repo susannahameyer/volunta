@@ -4,14 +4,42 @@ import EventPageHeader from '../components/EventPageHeader';
 import EventPageButtonBar from '../components/EventPageButtonBar';
 import EventPageAboutSection from '../components/EventPageAboutSection';
 import Facepile from '../components/Facepile';
+import { firestore } from '../firebase/firebase';
+import { getUsersAttributes } from '../firebase/api';
 
 export default class EventScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       event: this.props.navigation.getParam('event'),
+      attendees: [],
+      refreshing: false,
     };
   }
+
+  async componentDidMount() {
+    this._loadData();
+  }
+
+  _loadData = async () => {
+    this.setState({
+      refreshing: true,
+    });
+
+    //TODO change this to be the actual attendees
+    const attendees = await firestore
+      .collection('users')
+      .get()
+      .then(
+        async snapshot =>
+          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+      );
+
+    this.setState({
+      refreshing: false,
+      attendees,
+    });
+  };
 
   // TODO: get event info needed to pass to different components, all hard-coded for now
   // Title, organization name, organization logo, event cover photo --> EventPageHeader
@@ -37,13 +65,16 @@ export default class EventScreen extends React.Component {
         <View style={styles.divider}>
           <View style={styles.facepileContainer}>
             <Text style={styles.sectionText}>{"Who's going?"}</Text>
-            <Facepile
-              totalWidth={335}
-              maxNumImages={10}
-              imageDiameter={50}
-              pileTitle="Event Attendees"
-              navigation={this.props.navigation}
-            />
+            {this.state.attendees !== [] && (
+              <Facepile
+                totalWidth={335}
+                maxNumImages={10}
+                imageDiameter={50}
+                members={this.state.attendees}
+                pileTitle="Event Attendees"
+                navigation={this.props.navigation}
+              />
+            )}
             <Text style={[styles.detailText, styles.numGoingText]}>
               {'84 going or interested including 36 from your community'}
             </Text>

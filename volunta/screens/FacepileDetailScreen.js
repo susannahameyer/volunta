@@ -41,7 +41,7 @@ export default class FacepileDetailScreen extends React.Component {
                 style={styles.userDetailsContainer}>
                 <Image
                     style={styles.profileImage}
-                    source={user.photo}/>
+                    source={{ uri: user.profile_pic_url}}/>
                 <Text style={styles.profileText}>
                     {user.name}
                 </Text>
@@ -72,6 +72,7 @@ export default class FacepileDetailScreen extends React.Component {
                     inputContainerStyle={styles.searchInputContainerStyle}/>
                 <FlatList
                     data={this.state.displayedUsers}
+                    keyExtractor={item => item.id} 
                     renderItem={({item}) => this._renderUser(item)}
                 />
 
