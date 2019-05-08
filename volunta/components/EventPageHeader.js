@@ -1,6 +1,5 @@
 import React from 'react';
 import { Image, StyleSheet, Text, Dimensions, View } from 'react-native';
-
 /*
 This component displays at the header of a single event page.
 
@@ -13,6 +12,7 @@ Props:
 
 export default class EventPageHeader extends React.Component {
   render() {
+    console.log(this.props);
     const {
       eventTitle,
       organizationName,

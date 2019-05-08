@@ -8,10 +8,12 @@ import {
 
 export default class SingleNotification extends React.Component {
   render() {
+    console.log(this.props)
     const {orgName, orgPhoto, message, timeAsStr} = this.props
+    console.log(typeof(orgPhoto))
     return (
       <View style={styles.box}>
-        {/* <Image style={styles.organizationPic} source={require({orgPhoto})} /> */}
+        <Image style={styles.organizationPic} source={{uri: orgPhoto}} />
         <Text style={styles.organizationText}>{orgName}</Text>
         <Text style={styles.messageText}>{message}</Text>
         <Text style={styles.timeText}>{timeAsStr}</Text>
@@ -27,12 +29,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     organizationPic: {
-        position: 'absolute',
         height: 60,
         width: 60,
         marginLeft: 15, 
         marginTop: 12,
-        borderRadius: 30
+        borderRadius: 30,
+        position: 'absolute',
     },
     organizationText: {
         marginTop: 18,

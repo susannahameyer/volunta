@@ -12,15 +12,15 @@ import {
 import SingleNotification from '../components/SingleNotification';
 
 export default class NotificationsScreen extends React.Component {
-s
+
   constructor(props) {
     super(props);
     this.state = {
       notifications: [
-        {orgName: 'Girls Who Code', orgPhoto: 'hello', message: 'Remember to come 10 minutes early to set up one of the workstations!', timeAsStr: '2h' },
-        {orgName: 'Lion\'s Club', orgPhoto: 'hello', message: 'The cookie baking contest has been postponed until Saturday.', timeAsStr: '10h' },
-        {orgName: 'Beach Cleanup', orgPhoto: 'hello', message: 'The weather is going to be perfect! Bring sunscreen and a hat.', timeAsStr: '5d' },
-        {orgName: 'Community Culture', orgPhoto: 'hello', message: 'Please sign up for a dish at the potluck after registering!', timeAsStr: '2w' },
+        {orgName: 'Girls Who Code', orgPhoto: 'https://i.imgur.com/VuKnN5P.jpg', message: 'Remember to come 10 minutes early to set up one of the workstations!', timeAsStr: '2h' },
+        {orgName: 'Lion\'s Club', orgPhoto: 'https://i.imgur.com/PZB82WT.jpg', message: 'The cookie baking contest has been postponed until Saturday.', timeAsStr: '10h' },
+        {orgName: 'Beach Cleanup', orgPhoto: 'https://i.imgur.com/C6PL9tB.jpg', message: 'The weather is going to be perfect! Bring sunscreen and a hat.', timeAsStr: '5d' },
+        {orgName: 'Community Culture', orgPhoto: 'https://i.imgur.com/9ncYySC.jpg', message: 'Please sign up for a dish at the potluck after registering!', timeAsStr: '2w' },
       ],
       //isRefreshing: false,
       search: '',
@@ -38,6 +38,7 @@ s
       <SingleNotification
         id={item.orgName}
         orgName={item.orgName}
+        orgPhoto={item.orgPhoto}
         // onPress={this._onPressEventCard}
         message={item.message}
         timeAsStr={item.timeAsStr}
