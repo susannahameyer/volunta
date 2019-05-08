@@ -187,7 +187,7 @@ export const updateUserInterestedEvents = async (userId, eventId, add) => {
   return true;
 };
 
-// userRefs: array of user references for whom we want to get data from
+// userDocSnapshots: array of user snapshots for whom we want to get data from
 // attributes: array of strings representing the attributes we want to get from each user. ex: ['name', 'profile_pic_url' ]
 // Uses concurrency, should be able to work for many users (more than 100)
 // Returns an array of user objects, where each object is a map with the attribute names as keys
@@ -195,11 +195,6 @@ export const updateUserInterestedEvents = async (userId, eventId, add) => {
 export const getUsersAttributes = async (userDocSnapshots, attributes) => {
   // Easy way: https://medium.com/@justintulk/how-to-query-arrays-of-data-in-firebase-aa28a90181ba
   // Robust implementation: http://bluebirdjs.com/docs/api/promise.map.html
-  // let results = {};
-  // Promise.map(userRefs, ref => {
-  //   // Promise.map awaits for returned promises as well.
-  //   return ref.get();
-  // })
 
   let results = [];
   userDocSnapshots.forEach(snapshot => {
@@ -211,10 +206,6 @@ export const getUsersAttributes = async (userDocSnapshots, attributes) => {
     results.push(result);
   });
   return results;
-  // .catch(error => {
-  //   console.log(error);
-  //   return null;
-  // });
 };
 
 // Returns a DefaultDict that maps from each eventDocId to the number of users going to it.
