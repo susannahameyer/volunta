@@ -17,6 +17,7 @@ import Facepile from '../components/Facepile';
 const FeedStack = createStackNavigator({
   Feed: FeedScreen,
   Event: EventScreen,
+  Facepile: FacepileDetailScreen,
 });
 
 FeedStack.navigationOptions = {
