@@ -159,7 +159,7 @@ export default class Facepile extends React.Component {
                           });
                     }}>
                     <Image
-                    source={{ uri: item['profile_pic_url']}}
+                    source={{ uri: item.profile_pic_url}}
                     style={[
                         styles.profileImage,
                         imageStyle,
@@ -181,7 +181,7 @@ export default class Facepile extends React.Component {
                 alignItems: 'center',
               }}
             keyExtractor={item => item.id}
-            //TODO: change key extractor to the userID once API is working
+            scrollEnabled = {false}
             renderItem={({item, index}) => this._renderFacepilePhoto(item,  index)}
            />;
 

@@ -72,6 +72,7 @@ export default class FacepileDetailScreen extends React.Component {
                     inputContainerStyle={styles.searchInputContainerStyle}/>
                 <FlatList
                     data={this.state.displayedUsers}
+                    keyExtractor={item => item.id} 
                     renderItem={({item}) => this._renderUser(item)}
                 />
 
