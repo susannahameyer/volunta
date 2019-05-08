@@ -180,6 +180,7 @@ export default class Facepile extends React.Component {
                 flex:1,
                 alignItems: 'center',
               }}
+            keyExtractor={item => item.id}
             //TODO: change key extractor to the userID once API is working
             renderItem={({item, index}) => this._renderFacepilePhoto(item,  index)}
            />;
