@@ -150,6 +150,7 @@ export default class ProfileScreen extends React.Component {
               totalWidth={335} 
               maxNumImages={10} 
               imageDiameter={50} 
+              navigation={this.props.navigation}
               members={this.state.volunteerNetwork}
               title='Volunteer Network'/>)}
           </View>
