@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     box: {
         backgroundColor:'#EEEEEE',
         height: 90,
-        marginVertical: 7,
+        marginBottom: 10,
     },
     organizationPic: {
         position: 'absolute',
