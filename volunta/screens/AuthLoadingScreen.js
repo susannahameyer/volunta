@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import firebase from 'react-native-firebase'
 
 // This component is meant to check if a user is logged in. If they are,
 // it navigates to the MainTabNavigator, otherwise to the AuthStack.
@@ -13,6 +14,12 @@ export default class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
     this._bootstrapAsync();
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.props.navigation.navigate(user ? 'Main' : 'SignUp')
+    })
   }
 
   // Fetch the token from storage then navigate to our appropriate place
