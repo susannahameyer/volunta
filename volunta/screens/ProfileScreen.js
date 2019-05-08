@@ -15,6 +15,7 @@ import Feather from '@expo/vector-icons/Feather';
 import {
   getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
+  getUsersAttributes,
 } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
@@ -37,6 +38,7 @@ export default class ProfileScreen extends React.Component {
   _loadData = async () => {
     this.setState({
       refreshing: true,
+      volunteerNetwork: []
     });
 
     const [
@@ -49,12 +51,20 @@ export default class ProfileScreen extends React.Component {
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
       c.TEST_USER_ID
     );
+    
+    //TODO change this to actual volunteer network
+    const volunteerNetwork = await firestore.collection('users')
+    .get()
+    .then(async snapshot => 
+      await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+    );
 
     this.setState({
       upcomingEvents,
       pastEvents,
       interestedEventDocIds,
       refreshing: false,
+      volunteerNetwork,
     });
   };
 
@@ -64,6 +74,8 @@ export default class ProfileScreen extends React.Component {
       event,
     });
   };
+
+  
 
   render() {
     const {
@@ -133,7 +145,12 @@ export default class ProfileScreen extends React.Component {
             <Text style={styles.sectionTitle}>volunteer network:</Text>
           </View>
           <View style={styles.facepileContainer}>
-            <Facepile totalWidth={335} maxNumImages={10} imageDiameter={50} />
+            {this.state.volunteerNetwork !== [] && (<Facepile 
+              totalWidth={335} 
+              maxNumImages={10} 
+              imageDiameter={50} 
+              members={this.state.volunteerNetwork}
+              title='Volunteer Network'/>)}
           </View>
         </View>
       </ScrollView>

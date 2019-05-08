@@ -12,6 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 
+
 /*
 This component recieves a list of user IDs passed in through props
 and creates a facestack to display the photos of these users. When
@@ -24,7 +25,7 @@ Props:
     - totalWidth
     - pileTitle: What will be displayed when the user click in, default: 'details'
     - navigation: required to make sure that the pile can go to another screen
-    - TODO: list of photoIDs
+    - members: list  of User IDs
 */
 export default class Facepile extends React.Component {
 
@@ -113,11 +114,6 @@ export default class Facepile extends React.Component {
         ]
     }
 
-    componentWillMount = () => {
-        this.setState({
-            users: this._getUsersFromIDs()
-        });
-    }
 
     _renderFacepilePhoto = (item, index) => {
          //Calculates the overlap between the images based on width and image size
@@ -158,12 +154,12 @@ export default class Facepile extends React.Component {
                 <TouchableOpacity
                     onPress={() => {
                         this.props.navigation.push('Facepile', {
-                            users: this.state.users,
+                            users: this.props.members,
                             title: this.props.pileTitle,
                           });
                     }}>
                     <Image
-                    source={item.photo}
+                    source={{ uri: item['profile_pic_url']}}
                     style={[
                         styles.profileImage,
                         imageStyle,
@@ -178,7 +174,7 @@ export default class Facepile extends React.Component {
 
     render() {
         return <FlatList
-            data={this.state.users.slice(0,this.props.maxNumImages)}
+            data={this.props.members.slice(0,this.props.maxNumImages)}
             horizontal={true}
             contentContainerStyle={{
                 flex:1,
