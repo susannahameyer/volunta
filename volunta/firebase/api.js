@@ -207,6 +207,7 @@ export const getUsersAttributes = async (userDocSnapshots, attributes) => {
     attributes.forEach(attribute => {
       result[attribute] = snapshot.get(attribute);
     });
+    result['id'] = snapshot.id;
     results.push(result);
   });
   return results;

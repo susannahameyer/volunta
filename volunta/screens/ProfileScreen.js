@@ -17,6 +17,7 @@ import {
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
 } from '../firebase/api';
+import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
 
 export default class ProfileScreen extends React.Component {
@@ -25,6 +26,7 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       upcomingEvents: [],
       pastEvents: [],
+      volunteerNetwork: [],
       interestedEventDocIds: new Set(),
       refreshing: false,
     };
@@ -38,7 +40,6 @@ export default class ProfileScreen extends React.Component {
   _loadData = async () => {
     this.setState({
       refreshing: true,
-      volunteerNetwork: []
     });
 
     const [
