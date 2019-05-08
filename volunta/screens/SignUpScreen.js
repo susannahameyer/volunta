@@ -19,6 +19,7 @@ export default class SignUpScreen extends React.Component {
     super(props);
     this.state = {
       birthdate: today,
+      community: '',
       email: '',
       password: '',
     };
@@ -97,6 +98,14 @@ export default class SignUpScreen extends React.Component {
           style={AuthStyle.datePicker}
           onDateChange={(date) => { this.setState({ birthdate: date }) }}
         />
+        <Picker
+          selectedValue={this.state.language}
+          style={{ height: 50, width: AuthStyle.datePicker.width }}
+          onValueChange={(itemValue, itemIndex) =>
+            this.setState({ community: itemValue })
+          }>
+          <Picker.Item label="Stanford University" value="Stanford University" />
+        </Picker>
         <TouchableOpacity onPress={this.handleSignUp}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>sign up</Text>
