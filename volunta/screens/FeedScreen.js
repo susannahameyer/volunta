@@ -147,7 +147,7 @@ export default class FeedScreen extends React.Component {
     return (
       <View style={styles.pageContainer}>
         <SearchBar
-          placeholder=""
+          placeholder="Search for service events"
           onChangeText={this._updateSearchAndFilter}
           value={search}
           lightTheme

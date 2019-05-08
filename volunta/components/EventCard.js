@@ -53,6 +53,12 @@ export default class EventCard extends React.Component {
             />
 
             <Icon
+              name="circle"
+              size={43}
+              style={styles.circle}
+              color={'white'}
+            />
+            <Icon
               name="star-circle-outline"
               size={45}
               style={styles.interestedIcon}
@@ -141,5 +147,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: EventCardConstants.cardWidth - 45,
     bottom: EventCardConstants.cardHeight / 2,
+  },
+  circle: {
+    marginLeft: EventCardConstants.cardWidth - 45,
+    top: 57,
+    position: 'absolute',
   },
 });
