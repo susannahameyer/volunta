@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import EventPageHeader from '../components/EventPageHeader';
 import EventPageButtonBar from '../components/EventPageButtonBar';
@@ -36,17 +37,17 @@ export default class EventScreen extends React.Component {
   _loadData = async () => {
     const org_ref = this.state.event.org_ref;
 
-    const org_name = await getOrganizationName(org_ref);
-    const org_logo = await getOrganizationLogo(org_ref);
-
-    //TODO change this to be the actual attendees
-    const attendees = await firestore
-      .collection('users')
-      .get()
-      .then(
-        async snapshot =>
-          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
-      );
+    const [org_name, org_logo, attendees] = await Promise.all([
+      getOrganizationName(org_ref),
+      getOrganizationLogo(org_ref),
+      firestore
+        .collection('users')
+        .get()
+        .then(
+          async snapshot =>
+            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+        ),
+    ]);
 
     this.setState({
       attendees: attendees,
@@ -108,7 +109,11 @@ export default class EventScreen extends React.Component {
         </ScrollView>
       );
     } else {
-      return <ActivityIndicator />;
+      return (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size={0} />
+        </View>
+      );
     }
   }
 }
@@ -134,5 +139,8 @@ const styles = StyleSheet.create({
   numGoingText: {
     marginTop: 10,
     marginBottom: 3,
+  },
+  activityIndicator: {
+    marginTop: 300,
   },
 });
