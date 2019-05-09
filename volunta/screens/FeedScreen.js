@@ -3,7 +3,8 @@ import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
-import { DefaultDict } from '../utils';
+import { DefaultDict, distance } from '../utils';
+import { Location } from 'expo';
 import {
   getEvents,
   getAllUserInterestedEventsDocIds,
@@ -19,16 +20,17 @@ export default class FeedScreen extends React.Component {
       displayedEvents: [],
       isRefreshing: true,
       search: '',
-      interestedEventDocIds: new Set(), // IDs of all events that user is interested on
       userId: c.TEST_USER_ID, // TODO: pass in as prop
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
+      location: false, // Initialize to false, then update to location object
     };
   }
 
   // Fetch any data needed from api
   async componentDidMount() {
     this._loadData();
+    await this._askPermissionAsync();
   }
 
   componentWillUnmount() {
@@ -99,6 +101,32 @@ export default class FeedScreen extends React.Component {
   // Not explicit used now but will potentially be.
   _keyExtractor = (item, index) => item.doc_id;
 
+  // Get distance between user and event
+  // Returns a formatted string with the respective sign.
+  // TODO: only do this if permission has been granted! (location not false)
+  _getDistance = eventCoords => {
+    console.log(this.state.location);
+    if (!!this.state.location) {
+      userCoords = this.state.location.coords;
+      const dist = distance(
+        userCoords.latitude,
+        userCoords.longitude,
+        eventCoords._lat,
+        eventCoords._long,
+        'M'
+      );
+      console.log(userCoords.latitude);
+      console.log(userCoords.longitude);
+      console.log(eventCoords._lat);
+      console.log(eventCoords._long);
+
+      console.log(dist);
+      return String(dist) + ' mi';
+    } else {
+      return '';
+    }
+  };
+
   // Render card. The 'item' is an event object. Must be named item for function to work.
   _renderEventCard = ({ item }) => {
     return (
@@ -109,6 +137,7 @@ export default class FeedScreen extends React.Component {
         interested={this.state.interestedMap.get(item.doc_id)}
         onClickInterested={this._updateInterested}
         numGoing={this.state.goingCounts[item.doc_id]}
+        distance={this._getDistance(item.location.coords)}
       />
     );
   };
@@ -137,6 +166,25 @@ export default class FeedScreen extends React.Component {
     if (!success) {
       interestedMap.set(eventId, !interestedMap.get(eventId));
       this.setState({ interestedMap });
+    }
+  };
+
+  /**
+   * Ask for location permissions if the user has not been asked yet.
+   * TODO: Get location before Feed mounts, its too slow right now.
+   * Also sets the location state variable.
+   */
+  _askPermissionAsync = async () => {
+    const { status } = await Expo.Permissions.askAsync(
+      Expo.Permissions.LOCATION
+    );
+    if (status != 'granted') {
+      console.log('PERMISSION NOT GRANTED!');
+    } else {
+      const location = await Expo.Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      this.setState({ location });
     }
   };
 
