@@ -15,7 +15,6 @@ export const timestampToDate = timestamp => {
 
 // Similar to default dict in python
 // Use: const counts = new DefaultDict(0)
-//      console.log(counts.c); // 0
 export class DefaultDict {
   constructor(defaultVal) {
     return new Proxy(
