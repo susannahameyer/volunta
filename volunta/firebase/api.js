@@ -73,7 +73,7 @@ export const getEventsForCommunity = async () => {
 
 // Logic to retrieve organization name from an organization reference
 export const getOrganizationName = async orgRef => {
-  name = '';
+  let name = '';
   await orgRef
     .get()
     .then(snapshot => {
@@ -84,6 +84,21 @@ export const getOrganizationName = async orgRef => {
       return null;
     });
   return name;
+};
+
+// Retrieve logo url given an organization reference
+export const getOrganizationLogo = async orgRef => {
+  let logo = '';
+  await orgRef
+    .get()
+    .then(snapshot => {
+      logo = snapshot.get('logo_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return logo;
 };
 
 // Given a user doc id, returns a set with the doc ids of all events the user is interested in
