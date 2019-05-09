@@ -3,7 +3,9 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 
 export default class SingleNotification extends React.Component {
   render() {
+    console.log(this.props);
     const { orgName, orgPhoto, message, timeAsStr } = this.props;
+    console.log(typeof orgPhoto);
     return (
       <View style={styles.box}>
         <Image style={styles.organizationPic} source={{ uri: orgPhoto }} />

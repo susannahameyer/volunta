@@ -5,7 +5,7 @@ import EventPageButtonBar from '../components/EventPageButtonBar';
 import EventPageAboutSection from '../components/EventPageAboutSection';
 import Facepile from '../components/Facepile';
 import { firestore } from '../firebase/firebase';
-import { getUsersAttributes } from '../firebase/api';
+import { getUsersAttributes, getOrganizationName } from '../firebase/api';
 
 export default class EventScreen extends React.Component {
   constructor(props) {
@@ -14,6 +14,7 @@ export default class EventScreen extends React.Component {
       event: this.props.navigation.getParam('event'),
       attendees: [],
       refreshing: false,
+      org_name: '',
     };
   }
 
@@ -25,6 +26,8 @@ export default class EventScreen extends React.Component {
     this.setState({
       refreshing: true,
     });
+
+    const org_name = await getOrganizationName(this.props.event.org_ref);
 
     //TODO change this to be the actual attendees
     const attendees = await firestore
@@ -38,6 +41,7 @@ export default class EventScreen extends React.Component {
     this.setState({
       refreshing: false,
       attendees,
+      org_name,
     });
   };
 
@@ -47,14 +51,15 @@ export default class EventScreen extends React.Component {
   // Event from_date and to_date --> EventPageAboutSection
   // userIDs of users attending / interested --> Facepile + number in user's community
   render() {
-    const event = this.state.event;
+    const { event, attendees, refreshing, org_name } = this.state;
+    // const event = this.state.event;
     return (
       <ScrollView>
         <EventPageHeader
           eventTitle={event.title}
-          organizationName={'Girls Teaching Girls to Code'}
+          organizationName={org_name}
           organizationLogo={'https://i.imgur.com/1GvJojw.png'}
-          coverPhoto={'https://i.imgur.com/PZB82WT.jpg'}
+          coverPhoto={event.cover_url}
         />
         <EventPageButtonBar interested={false} going={true} />
         <EventPageAboutSection
