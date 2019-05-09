@@ -41,7 +41,7 @@ export default class EventCard extends React.Component {
       <View style={styles.shadow}>
         <TouchableOpacity
           style={styles.cardContainer}
-          onPress={() => onPress(event)}
+          onPress={() => onPress(event, org_name, interested)}
         >
           <View style={styles.shadow}>
             <AsyncImage

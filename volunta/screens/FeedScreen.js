@@ -92,9 +92,11 @@ export default class FeedScreen extends React.Component {
   };
 
   // Function we pass to EventCard, pushes screen onto current stack with the corresponding event page
-  _onPressEventCard = event => {
+  _onPressEventCard = (event, org_name, interested) => {
     this.props.navigation.push('Event', {
       event,
+      org_name,
+      interested,
     });
   };
 

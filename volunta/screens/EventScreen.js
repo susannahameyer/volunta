@@ -23,9 +23,10 @@ export default class EventScreen extends React.Component {
     super(props);
     this.state = {
       event: this.props.navigation.getParam('event'),
+      interested: this.props.navigation.getParam('interested'),
       attendees: [],
       refreshing: true,
-      org_name: '',
+      org_name: this.props.navigation.getParam('org_name'),
       org_logo: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
     };
   }
@@ -37,8 +38,7 @@ export default class EventScreen extends React.Component {
   _loadData = async () => {
     const org_ref = this.state.event.org_ref;
 
-    const [org_name, org_logo, attendees] = await Promise.all([
-      getOrganizationName(org_ref),
+    const [org_logo, attendees] = await Promise.all([
       getOrganizationLogo(org_ref),
       firestore
         .collection('users')
@@ -52,9 +52,7 @@ export default class EventScreen extends React.Component {
     this.setState({
       attendees: attendees,
       refreshing: false,
-      org_name: org_name,
       org_logo: org_logo,
-      loading: false,
     });
   };
 
@@ -64,7 +62,14 @@ export default class EventScreen extends React.Component {
   // Event from_date and to_date --> EventPageAboutSection
   // userIDs of users attending / interested --> Facepile + number in user's community
   render() {
-    const { event, attendees, refreshing, org_name, org_logo } = this.state;
+    const {
+      event,
+      interested,
+      attendees,
+      refreshing,
+      org_name,
+      org_logo,
+    } = this.state;
     if (!refreshing) {
       return (
         <ScrollView>
@@ -74,7 +79,7 @@ export default class EventScreen extends React.Component {
             organizationLogo={org_logo}
             coverPhoto={event.cover_url}
           />
-          <EventPageButtonBar interested={false} going={true} />
+          <EventPageButtonBar interested={interested} going={true} />
           <EventPageAboutSection
             fromDate={event.from_date}
             toDate={event.to_date}
