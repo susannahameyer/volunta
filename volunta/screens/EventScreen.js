@@ -101,7 +101,7 @@ export default class EventScreen extends React.Component {
   // Event from_date and to_date --> EventPageAboutSection
   // userIDs of users attending / interested --> Facepile + number in user's community
   render() {
-    const {
+    var {
       event,
       interested,
       facePileAttendees,
@@ -112,6 +112,33 @@ export default class EventScreen extends React.Component {
       numGoing,
       numGoingFromCommunity,
     } = this.state;
+
+    // Render Facepile view only if there are users interested or going
+    var facepileView = (
+      <Text style={[styles.detailText, styles.numGoingText]}>
+        Be the first to join the event!
+      </Text>
+    );
+    if (numGoing > 0) {
+      facepileView = (
+        <View>
+          <Facepile
+            totalWidth={335}
+            maxNumImages={10}
+            imageDiameter={50}
+            members={facePileAttendees}
+            pileTitle="Event Attendees"
+            navigation={this.props.navigation}
+          />
+          <Text style={[styles.detailText, styles.numGoingText]}>
+            {numGoing +
+              ' going or interested including ' +
+              numGoingFromCommunity +
+              ' from your community'}
+          </Text>
+        </View>
+      );
+    }
 
     if (!refreshing) {
       return (
@@ -131,22 +158,7 @@ export default class EventScreen extends React.Component {
           <View style={styles.divider}>
             <View style={styles.facepileContainer}>
               <Text style={styles.sectionText}>{"Who's going?"}</Text>
-              {facePileAttendees !== [] && (
-                <Facepile
-                  totalWidth={335}
-                  maxNumImages={10}
-                  imageDiameter={50}
-                  members={facePileAttendees}
-                  pileTitle="Event Attendees"
-                  navigation={this.props.navigation}
-                />
-              )}
-              <Text style={[styles.detailText, styles.numGoingText]}>
-                {numGoing +
-                  ' going or interested including ' +
-                  numGoingFromCommunity +
-                  ' from your community'}
-              </Text>
+              {facepileView}
             </View>
           </View>
           <View style={styles.facepileContainer}>
