@@ -45,8 +45,18 @@ export default class EventScreen extends React.Component {
     const eventRef = firestore.collection('events').doc(event.doc_id);
     const orgLogo = await getOrganizationLogo(event.org_ref);
 
+    // Get dictionary of all events attendendees to be used to check whether user is going
+    // Get current user community to find attendees in common with community members
     // Get users going and interested in the event for Facepile
-    const [attendeesGoing, attendeesInterested] = await Promise.all([
+    const [
+      allEventsAttendees,
+      currentUserCommunityRef,
+      attendeesGoing,
+      attendeesInterested,
+    ] = await Promise.all([
+      getUsersGoingForAllEvents(),
+      // TODO: Change to current user
+      getUserCommunity(c.TEST_USER_ID),
       firestore
         .collection('users')
         .where('event_refs.going', 'array-contains', eventRef)
@@ -73,8 +83,7 @@ export default class EventScreen extends React.Component {
       allGoingOrInterestedIds.push(user['id']);
     });
 
-    // TODO: Change to current user
-    const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+    // Get number of attendees in common with user's community members
     const allCommunityMembers = await getCommunityMemberUserIds(
       currentUserCommunityRef
     );
@@ -82,16 +91,13 @@ export default class EventScreen extends React.Component {
       allCommunityMembers.includes(user)
     ).length;
 
-    // Used to find whether the current user is going to the event
-    const allEventsAttendees = await getUsersGoingForAllEvents();
-
     this.setState({
-      facePileAttendees: facePileAttendees,
+      facePileAttendees,
       refreshing: false,
-      orgLogo: orgLogo,
+      orgLogo,
       going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
       numGoing: facePileAttendees.length,
-      numGoingFromCommunity: numGoingFromCommunity,
+      numGoingFromCommunity,
     });
   };
 

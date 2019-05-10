@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
   aboutInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    // height: 30,
     width: Dimensions.get('window').width - 70,
   },
   aboutInfoText: {
