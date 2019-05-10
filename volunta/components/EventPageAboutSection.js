@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
-import { timestampToDate, dateToWords } from '../utils';
+import { timestampToDate, dateToWords, timestampToTimeOfDay } from '../utils';
 
 /*
 This component displays as a section within a single event page to give 
@@ -16,9 +16,10 @@ Props:
 
 export default class EventPageAboutSection extends React.Component {
   render() {
-    //TODO: convert timestamp to string date / times and fill in info, hard-coded for now
     const { fromDate, toDate, location } = this.props;
     const dateFormatted = dateToWords(timestampToDate(fromDate));
+    const timeFormatted =
+      timestampToTimeOfDay(fromDate) + '  -  ' + timestampToTimeOfDay(toDate);
     return (
       <View style={styles.divider}>
         <View style={styles.container}>
@@ -33,7 +34,7 @@ export default class EventPageAboutSection extends React.Component {
           </View>
           <View style={styles.aboutInfo}>
             <Ionicons name="ios-clock" size={24} color={Colors.aboutIconGray} />
-            <Text style={styles.aboutInfoText}>{'6:30PM - 9:30PM'}</Text>
+            <Text style={styles.aboutInfoText}>{timeFormatted}</Text>
           </View>
           <View style={styles.aboutInfo}>
             <Ionicons

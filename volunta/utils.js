@@ -3,8 +3,8 @@
 // Pass in from_date or to_date from an event object
 // Returns date in 'MM/DD/YY' string format
 export const timestampToDate = timestamp => {
-  let date = new Date(null);
-  date.setSeconds(timestamp.seconds);
+  let date = new Date(0);
+  date.setUTCSeconds(timestamp.seconds);
   let month = date.getMonth() + 1;
   let day = date.getDate();
   let year = date.getFullYear();
@@ -51,4 +51,31 @@ export const dateToWords = date => {
   // Add year prefix
   let year = '20' + result[3];
   return month + ' ' + day + ', ' + year;
+};
+
+// Pass in to_date or from_date from an event object
+// Returns time of day in '12:00PM' format
+export const timestampToTimeOfDay = timestamp => {
+  let date = new Date(0);
+  date.setUTCSeconds(timestamp.seconds);
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let meridian = 'AM';
+  if (hours >= 12) {
+    meridian = 'PM';
+  }
+  if (hours == 0) {
+    hours = 12;
+  } else if (hours > 12) {
+    hours = hours - 12;
+  }
+  hours = hours.toString();
+
+  if (minutes < 10) {
+    minutes = minutes.toString();
+    minutes = '0' + minutes;
+  } else {
+    minutes = minutes.toString();
+  }
+  return hours + ':' + minutes + ' ' + meridian;
 };
