@@ -250,3 +250,31 @@ export const getNumGoingForAllEvents = async () => {
     });
   return counts;
 };
+
+// Returns a DefaultDict that maps from each eventDocID to a Set of user ids going
+export const getUsersGoingForAllEvents = async () => {
+  var attendees = {};
+  var usersRef = firestore.collection('users');
+  await usersRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(userDoc => {
+        try {
+          let going = userDoc.get('event_refs.going');
+          going.forEach(eventRef => {
+            if (!(eventRef.id in attendees)) {
+              attendees[eventRef.id] = [];
+            }
+            attendees[eventRef.id].push(userDoc.id);
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return attendees;
+};

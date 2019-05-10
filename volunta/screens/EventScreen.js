@@ -14,9 +14,11 @@ import Facepile from '../components/Facepile';
 import { firestore } from '../firebase/firebase';
 import {
   getUsersAttributes,
-  getOrganizationName,
   getOrganizationLogo,
+  getUsersGoingForAllEvents,
 } from '../firebase/api';
+import { DefaultDict } from '../utils';
+import * as c from '../firebase/fb_constants';
 
 export default class EventScreen extends React.Component {
   constructor(props) {
@@ -28,6 +30,7 @@ export default class EventScreen extends React.Component {
       refreshing: true,
       org_name: this.props.navigation.getParam('org_name'),
       org_logo: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
+      event_attendees: new DefaultDict([]),
     };
   }
 
@@ -36,7 +39,8 @@ export default class EventScreen extends React.Component {
   }
 
   _loadData = async () => {
-    const org_ref = this.state.event.org_ref;
+    const event = this.state.event;
+    const org_ref = event.org_ref;
 
     const [org_logo, attendees] = await Promise.all([
       getOrganizationLogo(org_ref),
@@ -49,10 +53,13 @@ export default class EventScreen extends React.Component {
         ),
     ]);
 
+    const event_attendees = await getUsersGoingForAllEvents();
+
     this.setState({
       attendees: attendees,
       refreshing: false,
       org_logo: org_logo,
+      event_attendees: event_attendees[event.doc_id],
     });
   };
 
@@ -69,7 +76,9 @@ export default class EventScreen extends React.Component {
       refreshing,
       org_name,
       org_logo,
+      event_attendees,
     } = this.state;
+
     if (!refreshing) {
       return (
         <ScrollView>
@@ -79,7 +88,11 @@ export default class EventScreen extends React.Component {
             organizationLogo={org_logo}
             coverPhoto={event.cover_url}
           />
-          <EventPageButtonBar interested={interested} going={true} />
+          <EventPageButtonBar
+            interested={interested}
+            // TODO: change to current user
+            going={event_attendees.includes(c.TEST_USER_ID)}
+          />
           <EventPageAboutSection
             fromDate={event.from_date}
             toDate={event.to_date}
