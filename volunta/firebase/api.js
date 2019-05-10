@@ -251,7 +251,7 @@ export const getNumGoingForAllEvents = async () => {
   return counts;
 };
 
-// Returns a DefaultDict that maps from each eventDocID to a Set of user ids going
+// Returns a DefaultDict that maps from each eventDocID to an array of user ids going
 export const getUsersGoingForAllEvents = async () => {
   var attendees = {};
   var usersRef = firestore.collection('users');
@@ -277,4 +277,24 @@ export const getUsersGoingForAllEvents = async () => {
       return null;
     });
   return attendees;
+};
+
+// Takes in reference to a community object, such as the output of getUserCommunity
+// Returns a list of user ids of members in the specified community
+export const getCommunityMemberUserIds = async communityRef => {
+  var communityMembers = [];
+  var usersRef = firestore.collection('users');
+  await usersRef
+    .where('community_ref', '==', communityRef)
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(userDoc => {
+        communityMembers.push(userDoc.id);
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return communityMembers;
 };

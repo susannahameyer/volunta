@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native';
 import EventPageHeader from '../components/EventPageHeader';
 import EventPageButtonBar from '../components/EventPageButtonBar';
@@ -16,8 +15,9 @@ import {
   getUsersAttributes,
   getOrganizationLogo,
   getUsersGoingForAllEvents,
+  getCommunityMemberUserIds,
+  getUserCommunity,
 } from '../firebase/api';
-import { DefaultDict } from '../utils';
 import * as c from '../firebase/fb_constants';
 
 export default class EventScreen extends React.Component {
@@ -32,6 +32,7 @@ export default class EventScreen extends React.Component {
       orgLogo: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
       going: false,
       numGoing: 0,
+      numGoingFromCommunity: 0,
     };
   }
 
@@ -44,6 +45,7 @@ export default class EventScreen extends React.Component {
     const eventRef = firestore.collection('events').doc(event.doc_id);
     const orgLogo = await getOrganizationLogo(event.org_ref);
 
+    // Get users going and interested in the event for Facepile
     const [attendeesGoing, attendeesInterested] = await Promise.all([
       firestore
         .collection('users')
@@ -62,8 +64,25 @@ export default class EventScreen extends React.Component {
             await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
         ),
     ]);
+    // Merge going and interested users to display on Facepile
     const facePileAttendees = attendeesGoing.concat(attendeesInterested);
 
+    // Isolate IDs for users displayed on Facepile to compare to community members
+    allGoingOrInterestedIds = [];
+    facePileAttendees.forEach(user => {
+      allGoingOrInterestedIds.push(user['id']);
+    });
+
+    // TODO: Change to current user
+    const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+    const allCommunityMembers = await getCommunityMemberUserIds(
+      currentUserCommunityRef
+    );
+    const numGoingFromCommunity = allGoingOrInterestedIds.filter(user =>
+      allCommunityMembers.includes(user)
+    ).length;
+
+    // Used to find whether the current user is going to the event
     const allEventsAttendees = await getUsersGoingForAllEvents();
 
     this.setState({
@@ -72,6 +91,7 @@ export default class EventScreen extends React.Component {
       orgLogo: orgLogo,
       going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
       numGoing: facePileAttendees.length,
+      numGoingFromCommunity: numGoingFromCommunity,
     });
   };
 
@@ -90,6 +110,7 @@ export default class EventScreen extends React.Component {
       orgLogo,
       going,
       numGoing,
+      numGoingFromCommunity,
     } = this.state;
 
     if (!refreshing) {
@@ -101,11 +122,7 @@ export default class EventScreen extends React.Component {
             organizationLogo={orgLogo}
             coverPhoto={event.cover_url}
           />
-          <EventPageButtonBar
-            interested={interested}
-            // TODO: change to current user
-            going={going}
-          />
+          <EventPageButtonBar interested={interested} going={going} />
           <EventPageAboutSection
             fromDate={event.from_date}
             toDate={event.to_date}
@@ -126,17 +143,15 @@ export default class EventScreen extends React.Component {
               )}
               <Text style={[styles.detailText, styles.numGoingText]}>
                 {numGoing +
-                  ' going or interested including 36 from your community'}
+                  ' going or interested including ' +
+                  numGoingFromCommunity +
+                  ' from your community'}
               </Text>
             </View>
           </View>
           <View style={styles.facepileContainer}>
             <Text style={styles.sectionText}>{'Details'}</Text>
-            <Text style={styles.detailText}>
-              {
-                "American Lung Association's annual Fight For Air Climb is coming up on June 1st at 555 California Street in San Francisco!! We need help with registration, food, kids crafts, cheering on our climbers, event set-up and take down, and more. Please reach out to us if you are interested!\n\nThe Fight For Air Climb, a competitive stair climb to the top of a skyscraper, is an opportunity for the American Lung Association and the Bay Area community to rally together and raise funds to support lung disease research, anti-tobacco policies, and clean air initiatives. \n\nCOME JOIN US! Register as a Volunteer at http://FightForAirClimb.org/SanFrancisco"
-              }
-            </Text>
+            <Text style={styles.detailText}>{event.description}</Text>
           </View>
         </ScrollView>
       );
