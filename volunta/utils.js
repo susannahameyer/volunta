@@ -25,3 +25,30 @@ export class DefaultDict {
     );
   }
 }
+
+export const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+// Pass in date in 'MM/DD/YY' string format
+// Returns date formatted like: 'June 20, 2019'
+export const dateToWords = date => {
+  let dateRegex = /(\d+)\/(\d+)\/(\d+)/;
+  let result = dateRegex.exec(date);
+  let month = monthNames[Number(result[1])];
+  let day = result[2];
+  // Add year prefix
+  let year = '20' + result[3];
+  return month + ' ' + day + ', ' + year;
+};
