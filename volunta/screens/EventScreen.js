@@ -26,11 +26,12 @@ export default class EventScreen extends React.Component {
     this.state = {
       event: this.props.navigation.getParam('event'),
       interested: this.props.navigation.getParam('interested'),
-      attendees: [],
+      facePileAttendees: [],
       refreshing: true,
-      org_name: this.props.navigation.getParam('org_name'),
-      org_logo: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
-      event_attendees: new DefaultDict([]),
+      orgName: this.props.navigation.getParam('org_name'),
+      orgLogo: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
+      going: false,
+      numGoing: 0,
     };
   }
 
@@ -40,26 +41,37 @@ export default class EventScreen extends React.Component {
 
   _loadData = async () => {
     const event = this.state.event;
-    const org_ref = event.org_ref;
+    const eventRef = firestore.collection('events').doc(event.doc_id);
+    const orgLogo = await getOrganizationLogo(event.org_ref);
 
-    const [org_logo, attendees] = await Promise.all([
-      getOrganizationLogo(org_ref),
+    const [attendeesGoing, attendeesInterested] = await Promise.all([
       firestore
         .collection('users')
+        .where('event_refs.going', 'array-contains', eventRef)
+        .get()
+        .then(
+          async snapshot =>
+            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+        ),
+      firestore
+        .collection('users')
+        .where('event_refs.interested', 'array-contains', eventRef)
         .get()
         .then(
           async snapshot =>
             await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
         ),
     ]);
+    const facePileAttendees = attendeesGoing.concat(attendeesInterested);
 
-    const event_attendees = await getUsersGoingForAllEvents();
+    const allEventsAttendees = await getUsersGoingForAllEvents();
 
     this.setState({
-      attendees: attendees,
+      facePileAttendees: facePileAttendees,
       refreshing: false,
-      org_logo: org_logo,
-      event_attendees: event_attendees[event.doc_id],
+      orgLogo: orgLogo,
+      going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
+      numGoing: facePileAttendees.length,
     });
   };
 
@@ -72,11 +84,12 @@ export default class EventScreen extends React.Component {
     const {
       event,
       interested,
-      attendees,
+      facePileAttendees,
       refreshing,
-      org_name,
-      org_logo,
-      event_attendees,
+      orgName,
+      orgLogo,
+      going,
+      numGoing,
     } = this.state;
 
     if (!refreshing) {
@@ -84,14 +97,14 @@ export default class EventScreen extends React.Component {
         <ScrollView>
           <EventPageHeader
             eventTitle={event.title}
-            organizationName={org_name}
-            organizationLogo={org_logo}
+            organizationName={orgName}
+            organizationLogo={orgLogo}
             coverPhoto={event.cover_url}
           />
           <EventPageButtonBar
             interested={interested}
             // TODO: change to current user
-            going={event_attendees.includes(c.TEST_USER_ID)}
+            going={going}
           />
           <EventPageAboutSection
             fromDate={event.from_date}
@@ -101,18 +114,19 @@ export default class EventScreen extends React.Component {
           <View style={styles.divider}>
             <View style={styles.facepileContainer}>
               <Text style={styles.sectionText}>{"Who's going?"}</Text>
-              {attendees !== [] && (
+              {facePileAttendees !== [] && (
                 <Facepile
                   totalWidth={335}
                   maxNumImages={10}
                   imageDiameter={50}
-                  members={attendees}
+                  members={facePileAttendees}
                   pileTitle="Event Attendees"
                   navigation={this.props.navigation}
                 />
               )}
               <Text style={[styles.detailText, styles.numGoingText]}>
-                {'84 going or interested including 36 from your community'}
+                {numGoing +
+                  ' going or interested including 36 from your community'}
               </Text>
             </View>
           </View>
