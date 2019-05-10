@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { timestampToDate, dateToWords, timestampToTimeOfDay } from '../utils';
@@ -20,6 +20,15 @@ export default class EventPageAboutSection extends React.Component {
     const dateFormatted = dateToWords(timestampToDate(fromDate));
     const timeFormatted =
       timestampToTimeOfDay(fromDate) + '  -  ' + timestampToTimeOfDay(toDate);
+    const addressFormatted =
+      location.street_addr +
+      ', ' +
+      location.city +
+      ', ' +
+      location.state +
+      ', ' +
+      location.zip_code;
+
     return (
       <View style={styles.divider}>
         <View style={styles.container}>
@@ -43,9 +52,7 @@ export default class EventPageAboutSection extends React.Component {
               style={styles.pin}
               color={Colors.aboutIconGray}
             />
-            <Text style={styles.aboutInfoText}>
-              {'450 Serra Mall, Stanford, CA 94305'}
-            </Text>
+            <Text style={styles.aboutInfoText}>{addressFormatted}</Text>
           </View>
         </View>
       </View>
@@ -70,7 +77,8 @@ const styles = StyleSheet.create({
   aboutInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 30,
+    // height: 30,
+    width: Dimensions.get('window').width - 70,
   },
   aboutInfoText: {
     fontSize: 14,
