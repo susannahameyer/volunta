@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import firebase from 'react-native-firebase'
+import * as firebase from 'firebase';
 
 // This component is meant to check if a user is logged in. If they are,
 // it navigates to the MainTabNavigator, otherwise to the AuthStack.
