@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import AssetFilePaths from '../constants/AssetFilePaths';
 import AuthStyle from '../stylesheets/AuthStyle';
+import * as firebase from 'firebase';
 
 export default class LoginScreen extends React.Component {
 

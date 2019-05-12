@@ -10,6 +10,7 @@ import {
 import AuthStyle from '../stylesheets/AuthStyle';
 import AssetFilePaths from '../constants/AssetFilePaths';
 import DatePicker from 'react-native-datepicker'
+import * as firebase from 'firebase';
 
 const today = new Date();
 
