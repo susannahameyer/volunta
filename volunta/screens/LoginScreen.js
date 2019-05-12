@@ -26,10 +26,16 @@ export default class LoginScreen extends React.Component {
   // TODO: implement Google Login
   _onPressLogInWithGoogle = event => { };
 
-  handleLogIn = () => {
-    // TODO: Firebase stuff...
-    console.log('handleLogIn')
-  }
+  LogIn = (email, password) => {
+    try {
+      firebase.auth().signInWithEmailAndPassword(email, password);
+      firebase.auth().onAuthStateChanged(user => {
+        alert(user.email);
+      })
+    } catch (error) {
+      console.log(error.toString(error));
+    }
+  };
 
   render() {
     return (
@@ -70,7 +76,7 @@ export default class LoginScreen extends React.Component {
             value={this.state.password}
           />
         </View>
-        <TouchableOpacity onPress={this.handleLogIn}>
+        <TouchableOpacity onPress={() => this.LogIn(this.state.email, this.state.password)}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>log in</Text>
           </View>
