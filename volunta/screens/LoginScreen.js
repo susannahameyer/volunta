@@ -2,13 +2,14 @@ import React from 'react';
 import {
   Button,
   Image,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Colors from '../constants/Colors';
 import AssetFilePaths from '../constants/AssetFilePaths';
-import AuthStyle from '../stylesheets/AuthStyle';
 
 export default class LoginScreen extends React.Component {
 
@@ -26,53 +27,60 @@ export default class LoginScreen extends React.Component {
   // TODO: implement Google Login
   _onPressLogInWithGoogle = event => { };
 
-  handleLogIn = () => {
-    // TODO: Firebase stuff...
-    console.log('handleLogIn')
-  }
+  SignIn = (email, password) => {
+    try {
+      firebase.auth().signInWithEmailAndPassword(email, password);
+      firebase.auth().onAuthStateChanged(user => {
+        alert(user.email);
+      })
+      this.props.navigation.navigate('Main');
+    } catch (error) {
+      console.log(error.toString(error));
+    }
+  };
 
   render() {
     return (
-      <View style={AuthStyle.container}>
+      <View style={styles.container}>
         <Image
           source={AssetFilePaths.logo}
-          style={AuthStyle.logo}
+          style={styles.logo}
         />
         <View>
           <TouchableOpacity onPress={this._onPressLogInWithFB}>
-            <View style={AuthStyle.socialButton}>
-              <Text style={AuthStyle.buttonText}>log in with facebook</Text>
+            <View style={styles.socialButton}>
+              <Text style={styles.buttonText}>log in with facebook</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._onPressLogInWithGoogle}>
-            <View style={AuthStyle.socialButton}>
-              <Text style={AuthStyle.buttonText}>log in with google</Text>
+            <View style={styles.socialButton}>
+              <Text style={styles.buttonText}>log in with google</Text>
             </View>
           </TouchableOpacity>
         </View>
-        <View style={AuthStyle.divider} />
-        <View style={AuthStyle.inputView}>
-          <Text style={AuthStyle.inputPromptText}>email:</Text>
+        <View style={styles.divider} />
+        <View style={styles.inputView}>
+          <Text styles={styles.inputPromptText}>email:</Text>
           <TextInput
             autoCapitalize="none"
-            style={AuthStyle.textInput}
+            style={styles.textInput}
             onChangeText={email => this.setState({ email })}
             value={this.state.email}
           />
         </View>
-        <View style={AuthStyle.inputView}>
-          <Text style={AuthStyle.inputPromptText}>password:</Text>
+        <View style={styles.inputView}>
+          <Text styles={styles.inputPromptText}>password:</Text>
           <TextInput
             secureTextEntry
             autoCapitalize="none"
-            style={AuthStyle.textInput}
+            style={styles.textInput}
             onChangeText={password => this.setState({ password })}
             value={this.state.password}
           />
         </View>
-        <TouchableOpacity onPress={this.handleLogIn}>
-          <View style={AuthStyle.logInButton}>
-            <Text style={AuthStyle.buttonText}>log in</Text>
+        <TouchableOpacity onPress={() => this.SignIn(this.state.email, this.state.password)}>
+          <View style={styles.logInButton}>
+            <Text style={styles.buttonText}>log in</Text>
           </View>
         </TouchableOpacity>
         <Button
@@ -83,3 +91,67 @@ export default class LoginScreen extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  buttonText: {
+    color: "#FFFFFF",
+    fontFamily: 'montserrat',
+    fontSize: 18,
+    fontWeight: 'normal',
+  },
+  container: {
+    alignItems: 'center',
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  divider: {
+    backgroundColor: Colors.mediumGray,
+    height: 3,
+    marginTop: 20,
+    width: 306,
+  },
+  inputView: {
+    marginTop: 20,
+  },
+  logInButton: {
+    alignItems: 'center',
+    backgroundColor: '#0081AF',
+    borderRadius: 15,
+    height: 46,
+    justifyContent: 'center',
+    marginTop: 20,
+    opacity: 0.5,
+    width: 167,
+  },
+  logo: {
+    width: 234,
+    height: 223,
+    resizeMode: 'contain',
+  },
+  inputPromptText: {
+    color: Colors.mediumGray,
+    fontFamily: 'montserrat',
+    fontSize: 18,
+    fontWeight: 'normal',
+    marginLeft: 0,
+    marginTop: 20,
+  },
+  socialButton: {
+    alignItems: 'center',
+    backgroundColor: '#0081AF',
+    borderRadius: 15,
+    height: 46,
+    justifyContent: 'center',
+    marginTop: 20,
+    opacity: 0.5,
+    width: 306,
+  },
+  textInput: {
+    height: 40,
+    width: 306,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: 2,
+  },
+});
