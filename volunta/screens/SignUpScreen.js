@@ -36,10 +36,13 @@ export default class SignUpScreen extends React.Component {
   // TODO: implement Google Sign in
   _onPressSignUpWithGoogle = event => { };
 
-  handleSignUp = () => {
-    // TODO: Firebase stuff...
-    console.log('handleSignUp')
-  }
+  SignUp = (email, password) => {
+    try {
+      firebase.auth().createUserWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.log(error.toString(error));
+    }
+  };
 
   render() {
     return (
@@ -106,7 +109,7 @@ export default class SignUpScreen extends React.Component {
           }>
           <Picker.Item label="Stanford University" value="Stanford University" />
         </Picker>
-        <TouchableOpacity onPress={this.handleSignUp}>
+        <TouchableOpacity onPress={() => this.SignUp(this.state.email, this.state.password)}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>sign up</Text>
           </View>
