@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import AuthStyle from '../stylesheets/AuthStyle';
 import AssetFilePaths from '../constants/AssetFilePaths';
-import DatePicker from 'react-native-datepicker';
-import * as firebase from "firebase";
+import DatePicker from 'react-native-datepicker'
 
 const today = new Date();
 
@@ -22,7 +21,6 @@ export default class SignUpScreen extends React.Component {
       birthdate: today,
       community: '',
       email: '',
-      errorMessage: null,
       password: '',
     };
     this.setDate = this.setDate.bind(this);
@@ -38,13 +36,9 @@ export default class SignUpScreen extends React.Component {
   // TODO: implement Google Sign in
   _onPressSignUpWithGoogle = event => { };
 
-  SignUp = (email, password) => {
-    try {
-      firebase.auth().createUserWithEmailAndPassword(email, password);
-      this.props.navigation.navigate('Main');
-    } catch (error) {
-      console.log(error.toString(error));
-    }
+  handleSignUp = () => {
+    // TODO: Firebase stuff...
+    console.log('handleSignUp')
   }
 
   render() {
@@ -104,7 +98,15 @@ export default class SignUpScreen extends React.Component {
           style={AuthStyle.datePicker}
           onDateChange={(date) => { this.setState({ birthdate: date }) }}
         />
-        <TouchableOpacity onPress={() => this.SignUp(this.state.email, this.state.password)}>
+        <Picker
+          selectedValue={this.state.language}
+          style={{ height: 50, width: AuthStyle.datePicker.width }}
+          onValueChange={(itemValue, itemIndex) =>
+            this.setState({ community: itemValue })
+          }>
+          <Picker.Item label="Stanford University" value="Stanford University" />
+        </Picker>
+        <TouchableOpacity onPress={this.handleSignUp}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>sign up</Text>
           </View>
