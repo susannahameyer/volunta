@@ -73,7 +73,7 @@ export const getEventsForCommunity = async () => {
 
 // Logic to retrieve organization name from an organization reference
 export const getOrganizationName = async orgRef => {
-  name = '';
+  let name = '';
   await orgRef
     .get()
     .then(snapshot => {
@@ -84,6 +84,21 @@ export const getOrganizationName = async orgRef => {
       return null;
     });
   return name;
+};
+
+// Retrieve logo url given an organization reference
+export const getOrganizationLogo = async orgRef => {
+  let logo = '';
+  await orgRef
+    .get()
+    .then(snapshot => {
+      logo = snapshot.get('logo_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return logo;
 };
 
 // Given a user doc id, returns a set with the doc ids of all events the user is interested in
@@ -234,4 +249,52 @@ export const getNumGoingForAllEvents = async () => {
       return null;
     });
   return counts;
+};
+
+// Returns a DefaultDict that maps from each eventDocID to an array of user ids going
+export const getUsersGoingForAllEvents = async () => {
+  var attendees = {};
+  var usersRef = firestore.collection('users');
+  await usersRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(userDoc => {
+        try {
+          let going = userDoc.get('event_refs.going');
+          going.forEach(eventRef => {
+            if (!(eventRef.id in attendees)) {
+              attendees[eventRef.id] = [];
+            }
+            attendees[eventRef.id].push(userDoc.id);
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return attendees;
+};
+
+// Takes in reference to a community object, such as the output of getUserCommunity
+// Returns a list of user ids of members in the specified community
+export const getCommunityMemberUserIds = async communityRef => {
+  var communityMembers = [];
+  var usersRef = firestore.collection('users');
+  await usersRef
+    .where('community_ref', '==', communityRef)
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(userDoc => {
+        communityMembers.push(userDoc.id);
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return communityMembers;
 };
