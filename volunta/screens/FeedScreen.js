@@ -5,7 +5,7 @@ import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
 import { DefaultDict } from '../utils';
 import {
-  getEvents,
+  getFeedEvents,
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
@@ -42,7 +42,7 @@ export default class FeedScreen extends React.Component {
   // TODO: show error message in case fetching goes wrong (if anything returns null or error?)...
   _loadData = async () => {
     // Fetch all event objects into array and initialize interestedMap to all false
-    const events = await getEvents();
+    const events = await getFeedEvents();
     let interestedMap = new Map();
 
     // Fetch event doc ids that user is interested on and set them to true in the map
