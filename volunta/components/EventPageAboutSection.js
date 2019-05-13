@@ -1,7 +1,8 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import { timestampToDate, dateToWords, timestampToTimeOfDay } from '../utils';
 
 /*
 This component displays as a section within a single event page to give 
@@ -15,8 +16,19 @@ Props:
 
 export default class EventPageAboutSection extends React.Component {
   render() {
-    //TODO: convert timestamp to string date / times and fill in info, hard-coded for now
     const { fromDate, toDate, location } = this.props;
+    const dateFormatted = dateToWords(timestampToDate(fromDate));
+    const timeFormatted =
+      timestampToTimeOfDay(fromDate) + '  -  ' + timestampToTimeOfDay(toDate);
+    const addressFormatted =
+      location.street_addr +
+      ', ' +
+      location.city +
+      ', ' +
+      location.state +
+      ', ' +
+      location.zip_code;
+
     return (
       <View style={styles.divider}>
         <View style={styles.container}>
@@ -27,11 +39,11 @@ export default class EventPageAboutSection extends React.Component {
               size={24}
               color={Colors.aboutIconGray}
             />
-            <Text style={styles.aboutInfoText}>{'June 20, 2019'}</Text>
+            <Text style={styles.aboutInfoText}>{dateFormatted}</Text>
           </View>
           <View style={styles.aboutInfo}>
             <Ionicons name="ios-clock" size={24} color={Colors.aboutIconGray} />
-            <Text style={styles.aboutInfoText}>{'6:30PM - 9:30PM'}</Text>
+            <Text style={styles.aboutInfoText}>{timeFormatted}</Text>
           </View>
           <View style={styles.aboutInfo}>
             <Ionicons
@@ -40,9 +52,7 @@ export default class EventPageAboutSection extends React.Component {
               style={styles.pin}
               color={Colors.aboutIconGray}
             />
-            <Text style={styles.aboutInfoText}>
-              {'450 Serra Mall, Stanford, CA 94305'}
-            </Text>
+            <Text style={styles.aboutInfoText}>{addressFormatted}</Text>
           </View>
         </View>
       </View>
@@ -67,7 +77,7 @@ const styles = StyleSheet.create({
   aboutInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 30,
+    width: Dimensions.get('window').width - 70,
   },
   aboutInfoText: {
     fontSize: 14,
