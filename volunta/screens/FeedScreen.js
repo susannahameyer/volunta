@@ -17,7 +17,7 @@ export default class FeedScreen extends React.Component {
     this.state = {
       events: [],
       displayedEvents: [],
-      isRefreshing: false,
+      isRefreshing: true,
       search: '',
       interestedEventDocIds: new Set(), // IDs of all events that user is interested on
       userId: c.TEST_USER_ID, // TODO: pass in as prop
@@ -41,10 +41,6 @@ export default class FeedScreen extends React.Component {
   // TODO: Using hard coded user doc id, make that a constant for now...
   // TODO: show error message in case fetching goes wrong (if anything returns null or error?)...
   _loadData = async () => {
-    this.setState({
-      isRefreshing: true, // Needed for FlatList to know
-    });
-
     // Fetch all event objects into array and initialize interestedMap to all false
     const events = await getEvents();
     let interestedMap = new Map();

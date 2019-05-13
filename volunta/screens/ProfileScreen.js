@@ -28,7 +28,7 @@ export default class ProfileScreen extends React.Component {
       pastEvents: [],
       volunteerNetwork: [],
       interestedEventDocIds: new Set(),
-      refreshing: false,
+      refreshing: true,
     };
   }
 
@@ -38,10 +38,6 @@ export default class ProfileScreen extends React.Component {
 
   //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
   _loadData = async () => {
-    this.setState({
-      refreshing: true,
-    });
-
     const [
       upcomingEvents,
       pastEvents,

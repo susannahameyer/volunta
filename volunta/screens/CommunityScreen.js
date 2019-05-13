@@ -30,7 +30,7 @@ export default class CommunityScreen extends React.Component {
       communityPhoto: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
       communityName: '',
       interestedEventDocIds: new Set(),
-      refreshing: false,
+      refreshing: true,
       communityMembers: [],
     };
   }
@@ -40,10 +40,6 @@ export default class CommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
-    this.setState({
-      refreshing: true,
-    });
-
     // Get event data
     const [
       upcomingEvents,
@@ -62,13 +58,14 @@ export default class CommunityScreen extends React.Component {
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
       c.TEST_USER_ID
     );
-    
 
     //TODO change this to be the actual community members
-    const communityMembers= await firestore.collection('users')
+    const communityMembers = await firestore
+      .collection('users')
       .get()
-      .then(async snapshot => 
-        await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+      .then(
+        async snapshot =>
+          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
       );
     this.setState({
       upcomingEvents,
@@ -117,14 +114,16 @@ export default class CommunityScreen extends React.Component {
             <Text style={styles.titleText}>{'in my community'}</Text>
           </View>
           <View style={styles.facepileContainer}>
-            {this.state.communityMembers !== [] && (<Facepile
-              totalWidth={335}
-              maxNumImages={10}
-              imageDiameter={50}
-              members={this.state.communityMembers}
-              pileTitle='Community Members'
-              navigation={this.props.navigation}
-            />)}
+            {this.state.communityMembers !== [] && (
+              <Facepile
+                totalWidth={335}
+                maxNumImages={10}
+                imageDiameter={50}
+                members={this.state.communityMembers}
+                pileTitle="Community Members"
+                navigation={this.props.navigation}
+              />
+            )}
           </View>
 
           <View style={styles.middleText}>
