@@ -8,9 +8,7 @@ import {
 
 export default class SingleNotification extends React.Component {
   render() {
-    console.log(this.props)
-    const {orgName, orgPhoto, message, timeAsStr} = this.props
-    console.log(typeof(orgPhoto))
+    const {orgName, orgPhoto, message, timeAsStr} = this.props;
     return (
       <View style={styles.box}>
         <Image style={styles.organizationPic} source={{uri: orgPhoto}} />
@@ -26,7 +24,6 @@ const styles = StyleSheet.create({
     box: {
         backgroundColor:'#EEEEEE',
         height: 90,
-        marginBottom: 10,
     },
     organizationPic: {
         height: 60,
