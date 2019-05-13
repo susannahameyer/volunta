@@ -102,14 +102,6 @@ export default class SignUpScreen extends React.Component {
           style={AuthStyle.datePicker}
           onDateChange={(date) => { this.setState({ birthdate: date }) }}
         />
-        <Picker
-          selectedValue={this.state.language}
-          style={{ height: 50, width: AuthStyle.datePicker.width }}
-          onValueChange={(itemValue, itemIndex) =>
-            this.setState({ community: itemValue })
-          }>
-          <Picker.Item label="Stanford University" value="Stanford University" />
-        </Picker>
         <TouchableOpacity onPress={() => this.SignUp(this.state.email, this.state.password)}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>sign up</Text>
