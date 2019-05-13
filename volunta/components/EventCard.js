@@ -23,11 +23,6 @@ export default class EventCard extends React.Component {
     });
   }
 
-  // TODO: implement logic to get distance to event from the location (return distance in miles for now)
-  _getDistance = () => {
-    return 1.2;
-  };
-
   render() {
     const {
       event,

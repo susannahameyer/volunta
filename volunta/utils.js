@@ -1,3 +1,5 @@
+import { auth } from 'firebase';
+
 // Shared utils functions
 
 // Pass in from_date or to_date from an event object
@@ -132,5 +134,14 @@ export const distance = (lat1, lon1, lat2, lon2, unit) => {
       dist = dist * 0.8684;
     }
     return dist;
+  }
+};
+
+// Format distance float into string
+export const formatDist = (dist, unitStr, roundTo) => {
+  if (dist < 100) {
+    return String(dist.toFixed(roundTo)) + ' ' + unitStr;
+  } else {
+    return '';
   }
 };

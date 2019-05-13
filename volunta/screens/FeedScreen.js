@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
-import { DefaultDict, distance } from '../utils';
+import { DefaultDict, distance, formatDist } from '../utils';
 import { Location } from 'expo';
 import {
   getEvents,
@@ -30,7 +30,6 @@ export default class FeedScreen extends React.Component {
   // Fetch any data needed from api
   async componentDidMount() {
     this._loadData();
-    await this._askPermissionAsync();
   }
 
   componentWillUnmount() {
@@ -43,20 +42,24 @@ export default class FeedScreen extends React.Component {
   // TODO: Using hard coded user doc id, make that a constant for now...
   // TODO: show error message in case fetching goes wrong (if anything returns null or error?)...
   _loadData = async () => {
-    // Fetch all event objects into array and initialize interestedMap to all false
-    const events = await getEvents();
     let interestedMap = new Map();
 
-    // Fetch event doc ids that user is interested on and set them to true in the map
-    await getAllUserInterestedEventsDocIds(
-      this.state.userId // TODO: make user id a prop
-    ).then(event_doc_ids => {
-      event_doc_ids.forEach(event_doc_id => {
-        interestedMap.set(event_doc_id, true);
-      });
-    });
+    const [_, __, events, goingCounts] = await Promise.all([
+      this._askPermissionAsync(), // Get location data
 
-    let goingCounts = await getNumGoingForAllEvents();
+      // Fetch event doc ids that user is interested on and set them to true in the map
+      getAllUserInterestedEventsDocIds(
+        this.state.userId // TODO: make user id a prop
+      ).then(event_doc_ids => {
+        event_doc_ids.forEach(event_doc_id => {
+          interestedMap.set(event_doc_id, true);
+        });
+      }),
+
+      // Fetch all event objects into array and initialize interestedMap to all false
+      getEvents(),
+      getNumGoingForAllEvents(),
+    ]);
 
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
@@ -105,7 +108,6 @@ export default class FeedScreen extends React.Component {
   // Returns a formatted string with the respective sign.
   // TODO: only do this if permission has been granted! (location not false)
   _getDistance = eventCoords => {
-    console.log(this.state.location);
     if (!!this.state.location) {
       userCoords = this.state.location.coords;
       const dist = distance(
@@ -115,13 +117,7 @@ export default class FeedScreen extends React.Component {
         eventCoords._long,
         'M'
       );
-      console.log(userCoords.latitude);
-      console.log(userCoords.longitude);
-      console.log(eventCoords._lat);
-      console.log(eventCoords._long);
-
-      console.log(dist);
-      return String(dist) + ' mi';
+      return formatDist(dist, 'mi', 1);
     } else {
       return '';
     }
