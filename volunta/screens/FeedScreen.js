@@ -6,7 +6,7 @@ import * as c from '../firebase/fb_constants';
 import { DefaultDict, distance, formatDist } from '../utils';
 import { Location } from 'expo';
 import {
-  getEvents,
+  getFeedEvents,
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
