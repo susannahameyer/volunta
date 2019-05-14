@@ -3,7 +3,8 @@ import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
-import { DefaultDict } from '../utils';
+import { DefaultDict, distance, formatDist } from '../utils';
+import { Location } from 'expo';
 import {
   getEvents,
   getAllUserInterestedEventsDocIds,
@@ -19,10 +20,10 @@ export default class FeedScreen extends React.Component {
       displayedEvents: [],
       isRefreshing: true,
       search: '',
-      interestedEventDocIds: new Set(), // IDs of all events that user is interested on
       userId: c.TEST_USER_ID, // TODO: pass in as prop
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
+      location: false, // Initialize to false, then update to location object
     };
   }
 
@@ -41,20 +42,24 @@ export default class FeedScreen extends React.Component {
   // TODO: Using hard coded user doc id, make that a constant for now...
   // TODO: show error message in case fetching goes wrong (if anything returns null or error?)...
   _loadData = async () => {
-    // Fetch all event objects into array and initialize interestedMap to all false
-    const events = await getEvents();
     let interestedMap = new Map();
 
-    // Fetch event doc ids that user is interested on and set them to true in the map
-    await getAllUserInterestedEventsDocIds(
-      this.state.userId // TODO: make user id a prop
-    ).then(event_doc_ids => {
-      event_doc_ids.forEach(event_doc_id => {
-        interestedMap.set(event_doc_id, true);
-      });
-    });
+    const [_, __, events, goingCounts] = await Promise.all([
+      this._askPermissionAsync(), // Get location data
 
-    let goingCounts = await getNumGoingForAllEvents();
+      // Fetch event doc ids that user is interested on and set them to true in the map
+      getAllUserInterestedEventsDocIds(
+        this.state.userId // TODO: make user id a prop
+      ).then(event_doc_ids => {
+        event_doc_ids.forEach(event_doc_id => {
+          interestedMap.set(event_doc_id, true);
+        });
+      }),
+
+      // Fetch all event objects into array and initialize interestedMap to all false
+      getEvents(),
+      getNumGoingForAllEvents(),
+    ]);
 
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
@@ -99,6 +104,25 @@ export default class FeedScreen extends React.Component {
   // Not explicit used now but will potentially be.
   _keyExtractor = (item, index) => item.doc_id;
 
+  // Get distance between user and event
+  // Returns a formatted string with the respective sign.
+  // TODO: only do this if permission has been granted! (location not false)
+  _getDistance = eventCoords => {
+    if (!!this.state.location) {
+      userCoords = this.state.location.coords;
+      const dist = distance(
+        userCoords.latitude,
+        userCoords.longitude,
+        eventCoords._lat,
+        eventCoords._long,
+        'M' // unit: miles
+      );
+      return formatDist(dist, 'mi', 1); // mi: abbreviation for miles, 1: decimal places
+    } else {
+      return '';
+    }
+  };
+
   // Render card. The 'item' is an event object. Must be named item for function to work.
   _renderEventCard = ({ item }) => {
     return (
@@ -109,6 +133,7 @@ export default class FeedScreen extends React.Component {
         interested={this.state.interestedMap.get(item.doc_id)}
         onClickInterested={this._updateInterested}
         numGoing={this.state.goingCounts[item.doc_id]}
+        distance={this._getDistance(item.location.coords)}
       />
     );
   };
@@ -137,6 +162,25 @@ export default class FeedScreen extends React.Component {
     if (!success) {
       interestedMap.set(eventId, !interestedMap.get(eventId));
       this.setState({ interestedMap });
+    }
+  };
+
+  /**
+   * Ask for location permissions if the user has not been asked yet.
+   * TODO: Get location before Feed mounts, its too slow right now.
+   * Also sets the location state variable.
+   */
+  _askPermissionAsync = async () => {
+    const { status } = await Expo.Permissions.askAsync(
+      Expo.Permissions.LOCATION
+    );
+    if (status != 'granted') {
+      console.log('PERMISSION NOT GRANTED!');
+    } else {
+      const location = await Expo.Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      this.setState({ location });
     }
   };
 

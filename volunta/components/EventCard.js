@@ -23,11 +23,6 @@ export default class EventCard extends React.Component {
     });
   }
 
-  // TODO: implement logic to get distance to event from the location (return distance in miles for now)
-  _getDistance = () => {
-    return 1.2;
-  };
-
   render() {
     const {
       event,
@@ -35,6 +30,7 @@ export default class EventCard extends React.Component {
       onPress,
       onClickInterested,
       numGoing,
+      distance,
     } = this.props;
     const { org_name, date } = this.state;
     return (
@@ -77,8 +73,10 @@ export default class EventCard extends React.Component {
               </View>
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{date}</Text>
-                <Text style={styles.detailText}>{this._getDistance()} mi</Text>
                 <Text style={styles.detailText}>{numGoing} going</Text>
+                {distance !== '' && (
+                  <Text style={styles.detailText}>{distance}</Text>
+                )}
               </View>
             </View>
           </View>
