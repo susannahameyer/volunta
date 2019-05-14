@@ -19,6 +19,7 @@ import {
   getCommunityMemberUserIds,
   getUserCommunity,
   getEventInterestNames,
+  getEvent,
 } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
@@ -44,8 +45,10 @@ export default class EventScreen extends React.Component {
   }
 
   _loadData = async () => {
-    const event = this.state.event;
+    var event = this.state.event;
     const eventRef = firestore.collection('events').doc(event.doc_id);
+    // Get event to load any updates on refresh
+    event = await getEvent(eventRef);
 
     const [
       // Get list of interests that correspond to the event
@@ -120,6 +123,7 @@ export default class EventScreen extends React.Component {
     ).length;
 
     this.setState({
+      event,
       facePileAttendees,
       refreshing: false,
       orgLogo,
