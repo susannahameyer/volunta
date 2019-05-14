@@ -23,6 +23,35 @@ export const getEvents = async () => {
   return returnArr;
 };
 
+// Fetches events that are either ongoing or upcoming  from firestore. We add doc_id to each event object as well just in case its needed.
+export const getFeedEvents = async () => {
+  var returnArr = [];
+  var eventsRef = firestore.collection('events');
+  await eventsRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        data = doc.data();
+        data.doc_id = doc.id;
+
+        // start time of the event in seconds
+        let eventFromDate = data.from_date.seconds;
+        // current time in seconds
+        let currentDate = Date.now() / 1000.0;
+
+        // An event is upcoming if event from_date is greater than current date
+        if (eventFromDate > currentDate) {
+          returnArr.push(data);
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return returnArr;
+};
+
 // Fetch event data for the community page
 // TODO: finalize logic for upcoming vs past vs ongoing events
 export const getEventsForCommunity = async () => {

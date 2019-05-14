@@ -6,7 +6,7 @@ import * as c from '../firebase/fb_constants';
 import { DefaultDict, distance, formatDist } from '../utils';
 import { Location } from 'expo';
 import {
-  getEvents,
+  getFeedEvents,
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
@@ -57,7 +57,7 @@ export default class FeedScreen extends React.Component {
       }),
 
       // Fetch all event objects into array and initialize interestedMap to all false
-      getEvents(),
+      getFeedEvents(),
       getNumGoingForAllEvents(),
     ]);
 
