@@ -115,9 +115,9 @@ export default class FeedScreen extends React.Component {
         userCoords.longitude,
         eventCoords._lat,
         eventCoords._long,
-        'M'
+        'M' // unit: miles
       );
-      return formatDist(dist, 'mi', 1);
+      return formatDist(dist, 'mi', 1); // mi: abbreviation for miles, 1: decimal places
     } else {
       return '';
     }
