@@ -1,6 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import InterestBubble from './InterestBubble';
+
+/*
+This component displays the interests associated with a
+particular event in the event page's about section
+
+Props:
+    - interests
+*/
 
 export default class EventPageInterestsScroll extends React.Component {
   constructor(props) {
@@ -15,7 +23,7 @@ export default class EventPageInterestsScroll extends React.Component {
     return (
       <View
         style={{
-          marginRight: 10,
+          marginRight: 7,
         }}
       />
     );
@@ -25,14 +33,13 @@ export default class EventPageInterestsScroll extends React.Component {
     const { interests } = this.props;
 
     return (
-      <View style={{ height: 40 }}>
+      <View>
         <FlatList
           horizontal={true}
           data={interests}
           renderItem={this._renderInterestBubble}
           keyExtractor={(_, index) => index.toString()}
           ItemSeparatorComponent={this._renderSeparator}
-          //   contentContainerStyle={{ paddingRight: 30 }}
         />
       </View>
     );

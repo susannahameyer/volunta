@@ -45,19 +45,22 @@ export default class EventScreen extends React.Component {
   _loadData = async () => {
     const event = this.state.event;
     const eventRef = firestore.collection('events').doc(event.doc_id);
-    const orgLogo = await getOrganizationLogo(event.org_ref);
-    const interests = await getEventInterestNames(eventRef);
-    console.log(interests);
 
-    // Get dictionary of all events attendendees to be used to check whether user is going
-    // Get current user community to find attendees in common with community members
-    // Get users going and interested in the event for Facepile
     const [
+      // Get list of interests that correspond to the event
+      interests,
+      // Get organization logo URL
+      orgLogo,
+      // Get dictionary of all events attendendees to be used to check whether user is going
       allEventsAttendees,
+      // Get current user community to find attendees in common with community members
       currentUserCommunityRef,
+      // Get users going and interested in the event for Facepile
       attendeesGoing,
       attendeesInterested,
     ] = await Promise.all([
+      getEventInterestNames(eventRef),
+      getOrganizationLogo(event.org_ref),
       getUsersGoingForAllEvents(),
       // TODO: Change to current user
       getUserCommunity(c.TEST_USER_ID),
@@ -102,6 +105,7 @@ export default class EventScreen extends React.Component {
       going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
       numGoing: facePileAttendees.length,
       numGoingFromCommunity,
+      interests,
     });
   };
 
@@ -121,6 +125,7 @@ export default class EventScreen extends React.Component {
       going,
       numGoing,
       numGoingFromCommunity,
+      interests,
     } = this.state;
 
     // Render Facepile view only if there are users interested or going
@@ -164,6 +169,7 @@ export default class EventScreen extends React.Component {
             fromDate={event.from_date}
             toDate={event.to_date}
             location={event.location}
+            interests={interests}
           />
           <View style={styles.divider}>
             <View style={styles.facepileContainer}>

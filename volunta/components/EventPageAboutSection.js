@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { timestampToDate, dateToWords, timestampToTimeOfDay } from '../utils';
+import EventPageInterestsScroll from './EventPageInterestsScroll';
 
 /*
 This component displays as a section within a single event page to give 
@@ -16,7 +17,7 @@ Props:
 
 export default class EventPageAboutSection extends React.Component {
   render() {
-    const { fromDate, toDate, location } = this.props;
+    const { fromDate, toDate, location, interests } = this.props;
     const dateFormatted = dateToWords(timestampToDate(fromDate));
     const timeFormatted =
       timestampToTimeOfDay(fromDate) + '  -  ' + timestampToTimeOfDay(toDate);
@@ -28,6 +29,7 @@ export default class EventPageAboutSection extends React.Component {
       location.state +
       ', ' +
       location.zip_code;
+    console.log(interests);
 
     return (
       <View style={styles.divider}>
@@ -53,6 +55,9 @@ export default class EventPageAboutSection extends React.Component {
               color={Colors.aboutIconGray}
             />
             <Text style={styles.aboutInfoText}>{addressFormatted}</Text>
+          </View>
+          <View style={styles.interests}>
+            <EventPageInterestsScroll interests={interests} />
           </View>
         </View>
       </View>
@@ -86,5 +91,8 @@ const styles = StyleSheet.create({
   },
   pin: {
     marginLeft: 3,
+  },
+  interests: {
+    marginTop: 5,
   },
 });
