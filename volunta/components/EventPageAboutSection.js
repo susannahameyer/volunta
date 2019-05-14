@@ -29,7 +29,6 @@ export default class EventPageAboutSection extends React.Component {
       location.state +
       ', ' +
       location.zip_code;
-    console.log(interests);
 
     return (
       <View style={styles.divider}>

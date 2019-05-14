@@ -338,8 +338,7 @@ export const getEventInterestNames = async eventRef => {
   return await Promise.all(
     interestRefs.map(async interestRef => {
       var interestSnapshot = await interestRef.get();
-      var name = interestSnapshot.get('name');
-      return name;
+      return interestSnapshot.get('name');
     })
   );
 };
