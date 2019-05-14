@@ -34,13 +34,13 @@ export const getFeedEvents = async () => {
         data = doc.data();
         data.doc_id = doc.id;
 
-        // end time of the event in seconds
-        let eventEndDate = data.to_date.seconds;
+        // start time of the event in seconds
+        let eventFromDate = data.from_date.seconds;
         // current time in seconds
         let currentDate = Date.now() / 1000.0;
 
         // An event is upcoming if event from_date is greater than current date
-        if (eventEndDate > currentDate) {
+        if (eventFromDate > currentDate) {
           returnArr.push(data);
         }
       });
