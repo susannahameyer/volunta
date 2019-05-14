@@ -57,7 +57,7 @@ export default class FeedScreen extends React.Component {
       }),
 
       // Fetch all event objects into array and initialize interestedMap to all false
-      getEvents(),
+      getFeedEvents(),
       getNumGoingForAllEvents(),
     ]);
 

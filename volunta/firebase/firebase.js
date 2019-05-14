@@ -7,7 +7,7 @@ import FIREBASE_API_KEY from './apiKey';
 const config = {
   apiKey: FIREBASE_API_KEY,
   projectId: c.FIREBASE_PROJECT_ID,
-  databaseURL: c.FIREBASE_DATABASE_URL
+  databaseURL: c.FIREBASE_DATABASE_URL,
 };
 
 firebase.initializeApp(config);
