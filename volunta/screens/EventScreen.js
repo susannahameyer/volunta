@@ -17,6 +17,7 @@ import {
   getUsersGoingForAllEvents,
   getCommunityMemberUserIds,
   getUserCommunity,
+  getEventInterestNames,
 } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
@@ -33,6 +34,7 @@ export default class EventScreen extends React.Component {
       going: false,
       numGoing: 0,
       numGoingFromCommunity: 0,
+      interests: [],
     };
   }
 
@@ -44,6 +46,8 @@ export default class EventScreen extends React.Component {
     const event = this.state.event;
     const eventRef = firestore.collection('events').doc(event.doc_id);
     const orgLogo = await getOrganizationLogo(event.org_ref);
+    const interests = await getEventInterestNames(eventRef);
+    console.log(interests);
 
     // Get dictionary of all events attendendees to be used to check whether user is going
     // Get current user community to find attendees in common with community members

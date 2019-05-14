@@ -327,3 +327,19 @@ export const getCommunityMemberUserIds = async communityRef => {
     });
   return communityMembers;
 };
+
+// Takes in a reference to an event object
+// Returns a list of the event's interest names
+export const getEventInterestNames = async eventRef => {
+  var interestRefs = [];
+  await eventRef.get().then(snapshot => {
+    interestRefs = snapshot.get('interest_refs');
+  });
+  return await Promise.all(
+    interestRefs.map(async interestRef => {
+      var interestSnapshot = await interestRef.get();
+      var name = interestSnapshot.get('name');
+      return name;
+    })
+  );
+};
