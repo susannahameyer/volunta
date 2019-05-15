@@ -231,6 +231,40 @@ export const updateUserInterestedEvents = async (userId, eventId, add) => {
   return true;
 };
 
+// Update list of events that user is going to
+// add: boolean specifying if we want to add (true) or remove (false) the eventId from the userId's iterested events list.
+// Returns true if success otherwise false
+// We use a transaction since we both get and update.
+export const updateUserGoingEvents = async (userId, eventId, add) => {
+  const userRef = await firestore.collection('users').doc(userId);
+  const eventToUpdateRef = await firestore.collection('events').doc(eventId);
+  await firestore
+    .runTransaction(async transaction => {
+      const userDoc = await transaction.get(userRef);
+      let events = await userDoc.get('event_refs.going');
+      if (add) {
+        events.push(eventToUpdateRef); // Simply push the new eventRef
+      } else {
+        // Make set of all current ids except the one we are removing (probably do not want to check for reference inclusion) since reference objects are large.
+        // We use a set to make sure there are no duplicates.
+        updatedSet = new Set();
+        events.forEach(eventRef => {
+          if (eventRef.id !== eventId) updatedSet.add(eventRef.id);
+        });
+        events = new Array();
+        updatedSet.forEach(eventId => {
+          events.push(firestore.collection('events').doc(eventId));
+        });
+      }
+      transaction.update(userRef, 'event_refs.going', events);
+    })
+    .catch(error => {
+      console.log(error);
+      return false;
+    });
+  return true;
+};
+
 // userDocSnapshots: array of user snapshots for whom we want to get data from
 // attributes: array of strings representing the attributes we want to get from each user. ex: ['name', 'profile_pic_url' ]
 // Uses concurrency, should be able to work for many users (more than 100)

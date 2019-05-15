@@ -22,6 +22,7 @@ import {
   getEvent,
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
+  updateUserGoingEvents,
 } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
@@ -39,7 +40,6 @@ export default class EventScreen extends React.Component {
       numGoing: 0,
       numGoingFromCommunity: 0,
       interests: [],
-      interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
     };
   }
 
@@ -52,15 +52,6 @@ export default class EventScreen extends React.Component {
     const eventRef = firestore.collection('events').doc(event.doc_id);
     // Get event to load any updates on refresh
     event = await getEvent(eventRef);
-
-    let interestedMap = new Map();
-    await getAllUserInterestedEventsDocIds(
-      c.TEST_USER_ID // TODO: make current user
-    ).then(event_doc_ids => {
-      event_doc_ids.forEach(event_doc_id => {
-        interestedMap.set(event_doc_id, true);
-      });
-    });
 
     const [
       // Get list of interests that correspond to the event
@@ -143,7 +134,6 @@ export default class EventScreen extends React.Component {
       numGoing: facePileAttendees.length,
       numGoingFromCommunity,
       interests,
-      interestedMap,
     });
   };
 
@@ -165,6 +155,28 @@ export default class EventScreen extends React.Component {
     if (!success) {
       this.setState({
         interested: !newInterested,
+      });
+    }
+  };
+
+  _updateGoing = async () => {
+    // Toggle button in frontend
+    var newGoing = !this.state.going;
+    this.setState({
+      going: newGoing,
+    });
+
+    // // Try to update in database.
+    success = await updateUserGoingEvents(
+      c.TEST_USER_ID, //TODO: Make this the current user
+      this.state.event.doc_id,
+      newGoing
+    );
+
+    // // Toggle back if database update failed.
+    if (!success) {
+      this.setState({
+        going: !newGoing,
       });
     }
   };
@@ -230,6 +242,7 @@ export default class EventScreen extends React.Component {
             interested={interested}
             going={going}
             onClickInterested={this._updateInterested}
+            onClickGoing={this._updateGoing}
           />
           <EventPageAboutSection
             fromDate={event.from_date}
