@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import EventPageHeader from '../components/EventPageHeader';
 import EventPageButtonBar from '../components/EventPageButtonBar';
@@ -18,6 +19,7 @@ import {
   getCommunityMemberUserIds,
   getUserCommunity,
   getEventInterestNames,
+  getEvent,
 } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
@@ -43,8 +45,10 @@ export default class EventScreen extends React.Component {
   }
 
   _loadData = async () => {
-    const event = this.state.event;
+    var event = this.state.event;
     const eventRef = firestore.collection('events').doc(event.doc_id);
+    // Get event to load any updates on refresh
+    event = await getEvent(eventRef);
 
     const [
       // Get list of interests that correspond to the event
@@ -81,11 +85,31 @@ export default class EventScreen extends React.Component {
             await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
         ),
     ]);
-    // Merge going and interested users to display on Facepile
-    const facePileAttendees = attendeesGoing.concat(attendeesInterested);
+
+    // Get IDs of all users going to event
+    var allGoingIds = [];
+    attendeesGoing.forEach(user => {
+      allGoingIds.push(user['id']);
+    });
+
+    // Get IDs of all users interested in event
+    // Don't include user in interested list if
+    // they are already going to avoid duplicates
+    var allInterestedIds = [];
+    var attendeesOnlyInterested = [];
+
+    attendeesInterested.forEach(user => {
+      if (!allGoingIds.includes(user['id'])) {
+        allInterestedIds.push(user['id']);
+        attendeesOnlyInterested.push(user);
+      }
+    });
+
+    // Merge going and interested lists to display users on Facepile
+    var facePileAttendees = attendeesGoing.concat(attendeesOnlyInterested);
 
     // Isolate IDs for users displayed on Facepile to compare to community members
-    allGoingOrInterestedIds = [];
+    var allGoingOrInterestedIds = [];
     facePileAttendees.forEach(user => {
       allGoingOrInterestedIds.push(user['id']);
     });
@@ -99,6 +123,7 @@ export default class EventScreen extends React.Component {
     ).length;
 
     this.setState({
+      event,
       facePileAttendees,
       refreshing: false,
       orgLogo,
@@ -157,7 +182,14 @@ export default class EventScreen extends React.Component {
 
     if (!refreshing) {
       return (
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => this._loadData()}
+            />
+          }
+        >
           <EventPageHeader
             eventTitle={event.title}
             organizationName={orgName}

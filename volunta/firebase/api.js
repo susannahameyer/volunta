@@ -342,3 +342,15 @@ export const getEventInterestNames = async eventRef => {
     })
   );
 };
+
+// Takes in a reference to an event object
+// Returns the actual event object with data we need
+export const getEvent = async eventRef => {
+  var event = {};
+  event = await eventRef.get().then(snapshot => {
+    var data = snapshot.data();
+    data.doc_id = snapshot.id;
+    return data;
+  });
+  return event;
+};
