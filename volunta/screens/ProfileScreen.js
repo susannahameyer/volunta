@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActionSheetIOS,
   Image,
   StyleSheet,
   Text,
@@ -11,7 +12,7 @@ import {
 import Facepile from '../components/Facepile';
 import InterestBubble from '../components/InterestBubble';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
-import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
@@ -19,6 +20,7 @@ import {
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
+import * as firebase from 'firebase';
 
 export default class ProfileScreen extends React.Component {
   constructor(props) {
@@ -76,6 +78,19 @@ export default class ProfileScreen extends React.Component {
     });
   };
 
+  _onPressSettings = () => {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['Cancel', 'Logout', 'Edit Profile'],
+      destructiveButtonIndex: 1,
+      cancelButtonIndex: 0,
+    },
+    (buttonIndex) => {
+      if (buttonIndex === 1) {
+        firebase.auth().signOut();
+      }
+    },);
+  }
+
   render() {
     const {
       upcomingEvents,
@@ -104,8 +119,8 @@ export default class ProfileScreen extends React.Component {
               <Text style={styles.personName}>Kanye West</Text>
               <Text style={styles.communityName}>Stanford University</Text>
             </View>
-            <TouchableOpacity style={styles.editIcon}>
-              <Feather name="edit" size={30} color="#0081AF" />
+            <TouchableOpacity onPress={this._onPressSettings} style={styles.editIcon}>
+              <Ionicons name="ios-settings" size={30} color="#0081AF" />
             </TouchableOpacity>
           </View>
           <View style={styles.interestBar}>
