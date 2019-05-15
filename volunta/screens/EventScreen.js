@@ -241,8 +241,8 @@ export default class EventScreen extends React.Component {
           <EventPageButtonBar
             interested={interested}
             going={going}
-            onClickInterested={this._updateInterested}
-            onClickGoing={this._updateGoing}
+            onPressInterested={this._updateInterested}
+            onPressGoing={this._updateGoing}
           />
           <EventPageAboutSection
             fromDate={event.from_date}

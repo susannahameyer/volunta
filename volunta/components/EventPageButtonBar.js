@@ -17,7 +17,7 @@ Props:
 
 export default class EventPageButtonBar extends React.Component {
   render() {
-    const { interested, going, onClickInterested, onClickGoing } = this.props;
+    const { interested, going, onPressInterested, onPressGoing } = this.props;
 
     return (
       <View style={styles.divider}>
@@ -27,7 +27,7 @@ export default class EventPageButtonBar extends React.Component {
               name="star-circle-outline"
               size={54}
               color={interested ? Colors.iconBlue : Colors.iconGray}
-              onPress={() => onClickInterested()}
+              onPress={() => onPressInterested()}
             />
             <Text
               style={[
@@ -43,7 +43,7 @@ export default class EventPageButtonBar extends React.Component {
               name="check-circle-outline"
               size={54}
               color={going ? Colors.iconBlue : Colors.iconGray}
-              onPress={() => onClickGoing()}
+              onPress={() => onPressGoing()}
             />
             <Text
               style={[
