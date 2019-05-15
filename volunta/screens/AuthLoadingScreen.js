@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   AsyncStorage,
   StatusBar,
-  StyleSheet,
   View,
 } from 'react-native';
 import * as firebase from 'firebase';
@@ -16,8 +15,10 @@ export default class AuthLoadingScreen extends React.Component {
   }
 
   componentDidMount() {
+    // TODO: Check for whether or not user has been stored in user table,
+    // if not, navigate to NUX instead of Main
     firebase.auth().onAuthStateChanged(user => {
-      this.props.navigation.navigate(user ? 'Main' : 'SignUp');
+      this.props.navigation.navigate(user ? 'Main' : 'Auth');
     })
   }
 

@@ -30,9 +30,6 @@ export default class LoginScreen extends React.Component {
   LogIn = (email, password) => {
     try {
       firebase.auth().signInWithEmailAndPassword(email, password);
-      firebase.auth().onAuthStateChanged(user => {
-        alert(user.email);
-      })
     } catch (error) {
       console.log(error.toString(error));
     }

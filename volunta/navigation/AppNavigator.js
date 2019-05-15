@@ -10,6 +10,8 @@ import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import LogInScreen from '../screens/LoginScreen';
+import NUXCommunityScreen from '../screens/NUXCommunityScreen';
+import InterestsScreen from '../screens/InterestsScreen';
 
 export const AuthStack = createStackNavigator({
   Welcome: {
@@ -19,6 +21,18 @@ export const AuthStack = createStackNavigator({
     screen: SignUpScreen,
     navigationOptions: {
       title: "Sign Up"
+    }
+  },
+  NUXCommunity: {
+    screen: NUXCommunityScreen,
+    navigationOptions: {
+      title: "Community"
+    }
+  },
+  Interests: {
+    screen: InterestsScreen,
+    navigationOptions: {
+      title: "Interests"
     }
   },
   LogIn: {

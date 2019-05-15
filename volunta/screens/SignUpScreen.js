@@ -40,6 +40,7 @@ export default class SignUpScreen extends React.Component {
   SignUp = (email, password) => {
     try {
       firebase.auth().createUserWithEmailAndPassword(email, password);
+      this.props.navigation.navigate("NUXCommunity");
     } catch (error) {
       console.log(error.toString(error));
     }
