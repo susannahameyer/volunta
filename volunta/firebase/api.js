@@ -100,6 +100,85 @@ export const getEventsForCommunity = async () => {
   return [returnArrUpcoming, returnArrPast, returnArrOngoing];
 };
 
+// Given a user doc id, returns a set with the event objects the user is going to or interested in
+export const getEventsForProfile = async userDocId => {
+  const eventIds = await getAllUserEventsRef(userDocId);
+  const profileEvents = await getEventsFromArrOfRefs(eventIds);
+  return profileEvents;
+}
+
+// Given a user doc id, returns a set with the doc ids of events user is going to or interested in
+// Returns none in case of error.
+export const getAllUserEventsRef = async userDocId => {
+  eventRefs = new Set();
+  await firestore
+    .collection('users')
+    .doc(userDocId)
+    .get()
+    .then(snapshot => {
+      let interestedRefs = snapshot.get('event_refs.interested');
+      interestedRefs.forEach(ref => eventRefs.add(ref.id));
+      let goingRefs = snapshot.get('event_refs.going');
+      goingRefs.forEach(ref => eventRefs.add(ref.id));
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return eventRefs;
+};
+
+// Given a list of event references, returns a set with the event objects a user is going to or interested in
+// Returns none in case of error.
+export const getEventsFromArrOfRefs = async eventRefsArr => {
+  let returnArrUpcoming = [];
+  let returnArrPast = [];
+  let returnArrOngoing = [];
+  let eventsRef = firestore.collection('events');
+  // const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+
+  await eventsRef
+    // .where('sponsors', 'array-contains', currentUserCommunityRef)
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        if (eventRefsArr.has(doc.id)) {
+          data = doc.data();
+          data.doc_id = doc.id;
+
+          // start time of the event in seconds
+          let eventFromDate = data.from_date.seconds;
+          // end time of the event in seconds
+          let eventEndDate = data.to_date.seconds;
+          // current time in seconds
+          let currentDate = Date.now() / 1000.0;
+
+          // An event is upcoming if event from_date is greater than current date
+          if (eventFromDate > currentDate) {
+            data.status = 'upcoming';
+            returnArrUpcoming.push(data);
+            // An event is in the past if event to_date is less than current date
+          } else if (eventEndDate < currentDate) {
+            data.status = 'past';
+            returnArrPast.push(data);
+            // This means that from_date <= current date and to_date >= current date,
+            // so the event is currently ongoing
+          } else {
+            data.status = 'ongoing';
+            returnArrOngoing.push(data);
+          }
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+
+  return [returnArrUpcoming, returnArrPast, returnArrOngoing];
+
+};
+
 // Logic to retrieve organization name from an organization reference
 export const getOrganizationName = async orgRef => {
   let name = '';

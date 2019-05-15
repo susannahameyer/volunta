@@ -16,6 +16,7 @@ import {
   getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
+  getEventsForProfile,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -42,7 +43,7 @@ export default class ProfileScreen extends React.Component {
       upcomingEvents,
       pastEvents,
       ongoingEvents,
-    ] = await getEventsForCommunity();
+    ] = await getEventsForProfile(c.TEST_USER_ID);
 
     // Get doc IDs the current user has bookmarked
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
