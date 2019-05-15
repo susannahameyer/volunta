@@ -144,14 +144,14 @@ export default class EventScreen extends React.Component {
       interested: newInterested,
     });
 
-    // // Try to update in database.
+    // Try to update in database
     success = await updateUserInterestedEvents(
       c.TEST_USER_ID, //TODO: Make this the current user
       this.state.event.doc_id,
       newInterested
     );
 
-    // // Toggle back if database update failed.
+    // Toggle back if database update failed.
     if (!success) {
       this.setState({
         interested: !newInterested,
@@ -166,14 +166,14 @@ export default class EventScreen extends React.Component {
       going: newGoing,
     });
 
-    // // Try to update in database.
+    // Try to update in database
     success = await updateUserGoingEvents(
       c.TEST_USER_ID, //TODO: Make this the current user
       this.state.event.doc_id,
       newGoing
     );
 
-    // // Toggle back if database update failed.
+    // Toggle back if database update failed.
     if (!success) {
       this.setState({
         going: !newGoing,
