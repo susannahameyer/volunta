@@ -44,9 +44,12 @@ export default class ProfileScreen extends React.Component {
       ongoingEvents,
     ] = await getEventsForCommunity();
 
+    //If we are navigating to another user's profile
+    const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
+
     // Get doc IDs the current user has bookmarked
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
-      c.TEST_USER_ID
+      userId
     );
 
     //TODO change this to actual volunteer network
@@ -64,6 +67,7 @@ export default class ProfileScreen extends React.Component {
       interestedEventDocIds,
       refreshing: false,
       volunteerNetwork,
+      userId,
     });
   };
 

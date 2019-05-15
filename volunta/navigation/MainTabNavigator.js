@@ -18,6 +18,7 @@ const FeedStack = createStackNavigator({
   Feed: FeedScreen,
   Event: EventScreen,
   Facepile: FacepileDetailScreen,
+  Profile: ProfileScreen,
 });
 
 FeedStack.navigationOptions = {
@@ -31,6 +32,7 @@ const CommunityStack = createStackNavigator({
   Community: CommunityScreen,
   Event: EventScreen,
   Facepile: FacepileDetailScreen,
+  Profile: ProfileScreen,
 });
 
 CommunityStack.navigationOptions = {
@@ -55,6 +57,7 @@ const ProfileStack = createStackNavigator({
   Profile: ProfileScreen,
   Event: EventScreen,
   Facepile: FacepileDetailScreen,
+  Profile: ProfileScreen,
 });
 
 ProfileStack.navigationOptions = {
