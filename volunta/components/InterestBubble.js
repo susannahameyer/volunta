@@ -1,16 +1,14 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-
+import { StyleSheet, Text, View } from 'react-native';
 
 export default class InterestBubble extends React.Component {
   render() {
-    const {interestName} = this.props
+    const { interestName, onLayout, id, marginRight } = this.props;
     return (
-      <View style={styles.bubble}>
+      <View
+        style={[styles.bubble, { marginRight: marginRight }]}
+        onLayout={e => onLayout(e, id)}
+      >
         <Text style={styles.bubbleText}>{interestName}</Text>
       </View>
     );
@@ -18,16 +16,15 @@ export default class InterestBubble extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    bubble: {
-        backgroundColor:'#0081AF',
-        alignSelf: 'flex-start',
-        borderRadius: 20
-    },
-    bubbleText: {
-        marginVertical: 7,
-        marginHorizontal: 15,
-        color: 'white',
-        fontFamily: 'montserrat'
-    }
-
+  bubble: {
+    backgroundColor: '#0081AF',
+    alignSelf: 'flex-start',
+    borderRadius: 20,
+  },
+  bubbleText: {
+    marginVertical: 7,
+    marginHorizontal: 15,
+    color: 'white',
+    fontFamily: 'montserrat',
+  },
 });
