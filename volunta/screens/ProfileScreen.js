@@ -137,17 +137,15 @@ export default class ProfileScreen extends React.Component {
               interests={[
                 'public health',
                 'public',
-                // 'kittiesjkasdfdsajhdfsafajsflasdfjahsdlf',
                 'social good',
+                'really long interest that I love',
                 'kids',
                 'environmental',
                 'civics',
-                'boom',
+                'beach',
                 'kids',
                 'health things',
                 'words',
-
-                '...',
               ]}
             />
           </View>
