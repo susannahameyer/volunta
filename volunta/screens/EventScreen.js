@@ -20,6 +20,8 @@ import {
   getUserCommunity,
   getEventInterestNames,
   getEvent,
+  getAllUserInterestedEventsDocIds,
+  updateUserInterestedEvents,
 } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
@@ -28,7 +30,7 @@ export default class EventScreen extends React.Component {
     super(props);
     this.state = {
       event: this.props.navigation.getParam('event'),
-      interested: this.props.navigation.getParam('interested'),
+      interested: this.props.navigation.getParam('interested') ? true : false,
       facePileAttendees: [],
       refreshing: true,
       orgName: this.props.navigation.getParam('org_name'),
@@ -37,6 +39,7 @@ export default class EventScreen extends React.Component {
       numGoing: 0,
       numGoingFromCommunity: 0,
       interests: [],
+      interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
     };
   }
 
@@ -49,6 +52,15 @@ export default class EventScreen extends React.Component {
     const eventRef = firestore.collection('events').doc(event.doc_id);
     // Get event to load any updates on refresh
     event = await getEvent(eventRef);
+
+    let interestedMap = new Map();
+    await getAllUserInterestedEventsDocIds(
+      c.TEST_USER_ID // TODO: make current user
+    ).then(event_doc_ids => {
+      event_doc_ids.forEach(event_doc_id => {
+        interestedMap.set(event_doc_id, true);
+      });
+    });
 
     const [
       // Get list of interests that correspond to the event
@@ -131,14 +143,32 @@ export default class EventScreen extends React.Component {
       numGoing: facePileAttendees.length,
       numGoingFromCommunity,
       interests,
+      interestedMap,
     });
   };
 
-  // TODO: get event info needed to pass to different components, all hard-coded for now
-  // Title, organization name, organization logo, event cover photo --> EventPageHeader
-  // Whether current user is interested / going --> EventPageButtonBar
-  // Event from_date and to_date --> EventPageAboutSection
-  // userIDs of users attending / interested --> Facepile + number in user's community
+  _updateInterested = async () => {
+    // Toggle button in frontend
+    var newInterested = !this.state.interested;
+    this.setState({
+      interested: newInterested,
+    });
+
+    // // Try to update in database.
+    success = await updateUserInterestedEvents(
+      c.TEST_USER_ID, //TODO: Make this the current user
+      this.state.event.doc_id,
+      newInterested
+    );
+
+    // // Toggle back if database update failed.
+    if (!success) {
+      this.setState({
+        interested: !newInterested,
+      });
+    }
+  };
+
   render() {
     var {
       event,
@@ -196,7 +226,11 @@ export default class EventScreen extends React.Component {
             organizationLogo={orgLogo}
             coverPhoto={event.cover_url}
           />
-          <EventPageButtonBar interested={interested} going={going} />
+          <EventPageButtonBar
+            interested={interested}
+            going={going}
+            onClickInterested={this._updateInterested}
+          />
           <EventPageAboutSection
             fromDate={event.from_date}
             toDate={event.to_date}
