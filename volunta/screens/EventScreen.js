@@ -13,7 +13,6 @@ export default class EventScreen extends React.Component {
     this.state = {
       event: this.props.navigation.getParam('event'),
       attendees: [],
-      interested: [],
       refreshing: false,
     };
   }
@@ -28,41 +27,17 @@ export default class EventScreen extends React.Component {
     });
 
     //TODO change this to be the actual attendees
-    const users = await firestore
+    const attendees = await firestore
       .collection('users')
       .get()
       .then(
         async snapshot =>
-          await getUsersAttributes(snapshot.docs, [
-            'name',
-            'profile_pic_url',
-            'event_refs',
-          ])
+          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
       );
 
-    attendees = [];
-    interested = [];
-    console.log('got here');
-    users.forEach(user => {
-      if (
-        user.event_refs.going.includes('/events/' + this.state.event.doc_id)
-      ) {
-        attendees.push(user);
-      } else if (
-        user.event_refs.interested.includes(
-          '/events/' + this.state.event.doc_id
-        )
-      ) {
-        interested.push(user);
-      }
-    });
-    console.log('attendees and intereted');
-    console.log(attendees);
-    console.log(interested);
     this.setState({
       refreshing: false,
-      attendees: attendees,
-      interested: interested,
+      attendees,
     });
   };
 
@@ -90,17 +65,16 @@ export default class EventScreen extends React.Component {
         <View style={styles.divider}>
           <View style={styles.facepileContainer}>
             <Text style={styles.sectionText}>{"Who's going?"}</Text>
-            {this.state.attendees !== [] ||
-              (this.state.interested !== [] && (
-                <Facepile
-                  totalWidth={335}
-                  maxNumImages={10}
-                  imageDiameter={50}
-                  members={this.state.attendeesAndInterested.attendees}
-                  pileTitle="Event Attendees"
-                  navigation={this.props.navigation}
-                />
-              ))}
+            {this.state.attendees !== [] && (
+              <Facepile
+                totalWidth={335}
+                maxNumImages={10}
+                imageDiameter={50}
+                members={this.state.attendees}
+                pileTitle="Event Attendees"
+                navigation={this.props.navigation}
+              />
+            )}
             <Text style={[styles.detailText, styles.numGoingText]}>
               {'84 going or interested including 36 from your community'}
             </Text>
