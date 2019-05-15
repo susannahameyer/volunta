@@ -15,6 +15,9 @@ Props:
 
 const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
 const SIDE_EXTRA_MARGIN = 4;
+const MAX_WORD_LENGTH = 20;
+const TRUNCATED_STR_ENDING = '...';
+const SHORTENED_LIST_LAST_ITEM = '.  .  .'; // Add bubble with this string at the end of the list if we shorten it
 
 export default class ProfilePageInterests extends React.Component {
   constructor(props) {
@@ -24,18 +27,29 @@ export default class ProfilePageInterests extends React.Component {
       readyToShow: false,
       widths: new Array(this.props.interests.length),
       numWidthsSet: 0,
-      interests: [...this.props.interests, '...'],
+      interests: this._cleanUpInterests(this.props.interests),
     };
   }
+
+  _cleanUpInterests = originalInterests => {
+    cleanInterests = originalInterests.map(interest => {
+      interest = interest.toLowerCase();
+      interest =
+        interest.length > MAX_WORD_LENGTH - TRUNCATED_STR_ENDING.length
+          ? `${interest
+              .substring(0, MAX_WORD_LENGTH - TRUNCATED_STR_ENDING.length)
+              .trim()}` + TRUNCATED_STR_ENDING
+          : interest;
+      return interest;
+    });
+    return [...cleanInterests, SHORTENED_LIST_LAST_ITEM];
+  };
 
   // Called by bubble once rendered
   // Used the first time it renders to get the width of the bubble
   // Note: They are not called in order, that is why we use the bubble id.
   onLayoutGetWidth = (event, bubbleId) => {
     let { widths, numWidthsSet, interests } = this.state;
-
-    // TODO: chunk interests to a max size!
-
     if (this.state.readyToShow) return;
     var { x, y, width, height } = event.nativeEvent.layout;
     widths[bubbleId] = width;
