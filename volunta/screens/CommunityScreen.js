@@ -62,6 +62,7 @@ export default class CommunityScreen extends React.Component {
     //TODO change this to be the actual community members
     const communityMembers = await firestore
       .collection('users')
+      .where('community_ref', '==', currentUserCommunityRef)
       .get()
       .then(
         async snapshot =>
