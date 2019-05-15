@@ -19,6 +19,7 @@ import {
   getUsersAttributes,
   getProfilePhoto,
   getProfileName,
+  getProfileCommunityName,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -57,6 +58,9 @@ export default class ProfileScreen extends React.Component {
     // get url for profile picture
     const profilePhoto = await getProfilePhoto(userId);
 
+    // get community name for a profile
+    const orgName = await getProfileCommunityName(userId);
+
     // Get doc IDs the current user has bookmarked
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
       userId
@@ -76,6 +80,7 @@ export default class ProfileScreen extends React.Component {
       pastEvents,
       profileName,
       profilePhoto,
+      orgName,
       interestedEventDocIds,
       refreshing: false,
       volunteerNetwork,
@@ -131,7 +136,7 @@ export default class ProfileScreen extends React.Component {
             />
             <View style={styles.upperText}>
               <Text style={styles.personName}>{this.state.profileName}</Text>
-              <Text style={styles.communityName}>Stanford University</Text>
+              <Text style={styles.communityName}>{this.state.orgName}</Text>
             </View>
             <TouchableOpacity onPress={this._onPressSettings} style={styles.editIcon}>
               <Ionicons name="ios-settings" size={30} color="#0081AF" />
