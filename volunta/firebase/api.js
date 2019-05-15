@@ -23,6 +23,35 @@ export const getEvents = async () => {
   return returnArr;
 };
 
+// Fetches events that are either ongoing or upcoming  from firestore. We add doc_id to each event object as well just in case its needed.
+export const getFeedEvents = async () => {
+  var returnArr = [];
+  var eventsRef = firestore.collection('events');
+  await eventsRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        data = doc.data();
+        data.doc_id = doc.id;
+
+        // start time of the event in seconds
+        let eventFromDate = data.from_date.seconds;
+        // current time in seconds
+        let currentDate = Date.now() / 1000.0;
+
+        // An event is upcoming if event from_date is greater than current date
+        if (eventFromDate > currentDate) {
+          returnArr.push(data);
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return returnArr;
+};
+
 // Fetch event data for the community page
 // TODO: finalize logic for upcoming vs past vs ongoing events
 export const getEventsForCommunity = async () => {
@@ -73,7 +102,7 @@ export const getEventsForCommunity = async () => {
 
 // Logic to retrieve organization name from an organization reference
 export const getOrganizationName = async orgRef => {
-  name = '';
+  let name = '';
   await orgRef
     .get()
     .then(snapshot => {
@@ -84,6 +113,21 @@ export const getOrganizationName = async orgRef => {
       return null;
     });
   return name;
+};
+
+// Retrieve logo url given an organization reference
+export const getOrganizationLogo = async orgRef => {
+  let logo = '';
+  await orgRef
+    .get()
+    .then(snapshot => {
+      logo = snapshot.get('logo_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return logo;
 };
 
 // Given a user doc id, returns a set with the doc ids of all events the user is interested in
@@ -234,4 +278,79 @@ export const getNumGoingForAllEvents = async () => {
       return null;
     });
   return counts;
+};
+
+// Returns a DefaultDict that maps from each eventDocID to an array of user ids going
+export const getUsersGoingForAllEvents = async () => {
+  var attendees = {};
+  var usersRef = firestore.collection('users');
+  await usersRef
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(userDoc => {
+        try {
+          let going = userDoc.get('event_refs.going');
+          going.forEach(eventRef => {
+            if (!(eventRef.id in attendees)) {
+              attendees[eventRef.id] = [];
+            }
+            attendees[eventRef.id].push(userDoc.id);
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return attendees;
+};
+
+// Takes in reference to a community object, such as the output of getUserCommunity
+// Returns a list of user ids of members in the specified community
+export const getCommunityMemberUserIds = async communityRef => {
+  var communityMembers = [];
+  var usersRef = firestore.collection('users');
+  await usersRef
+    .where('community_ref', '==', communityRef)
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(userDoc => {
+        communityMembers.push(userDoc.id);
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return communityMembers;
+};
+
+// Takes in a reference to an event object
+// Returns a list of the event's interest names
+export const getEventInterestNames = async eventRef => {
+  var interestRefs = [];
+  await eventRef.get().then(snapshot => {
+    interestRefs = snapshot.get('interest_refs');
+  });
+  return await Promise.all(
+    interestRefs.map(async interestRef => {
+      var interestSnapshot = await interestRef.get();
+      return interestSnapshot.get('name');
+    })
+  );
+};
+
+// Takes in a reference to an event object
+// Returns the actual event object with data we need
+export const getEvent = async eventRef => {
+  var event = {};
+  event = await eventRef.get().then(snapshot => {
+    var data = snapshot.data();
+    data.doc_id = snapshot.id;
+    return data;
+  });
+  return event;
 };

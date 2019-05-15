@@ -1,19 +1,12 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 
 export default class SingleNotification extends React.Component {
   render() {
-    console.log(this.props)
-    const {orgName, orgPhoto, message, timeAsStr} = this.props
-    console.log(typeof(orgPhoto))
+    const { orgName, orgPhoto, message, timeAsStr } = this.props;
     return (
       <View style={styles.box}>
-        <Image style={styles.organizationPic} source={{uri: orgPhoto}} />
+        <Image style={styles.organizationPic} source={{ uri: orgPhoto }} />
         <Text style={styles.organizationText}>{orgName}</Text>
         <Text style={styles.messageText}>{message}</Text>
         <Text style={styles.timeText}>{timeAsStr}</Text>
@@ -26,7 +19,6 @@ const styles = StyleSheet.create({
     box: {
         backgroundColor:'#EEEEEE',
         height: 90,
-        marginBottom: 10,
     },
     organizationPic: {
         height: 60,

@@ -23,13 +23,14 @@ export default class CommunityProfileEventCard extends React.Component {
 
   render() {
     const { event, interested, onPress } = this.props;
+    const { date, org_name } = this.state;
     const upcoming = event.status == 'upcoming';
     return (
       <View style={styles.shadow}>
         {/* if the event is in the past list, make the height shorter */}
         <TouchableOpacity
           style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}
-          onPress={() => onPress(event)}
+          onPress={() => onPress(event, org_name, interested)}
         >
           <View style={styles.shadow}>
             <Image
@@ -42,7 +43,7 @@ export default class CommunityProfileEventCard extends React.Component {
                   {event.title}
                 </Text>
                 <Text style={styles.detailText} numberOfLines={1}>
-                  {this.state.org_name}
+                  {org_name}
                 </Text>
               </View>
               <View
@@ -52,7 +53,7 @@ export default class CommunityProfileEventCard extends React.Component {
                     : styles.smallDetailTextContainer
                 }
               >
-                <Text style={styles.dateText}>{this.state.date}</Text>
+                <Text style={styles.dateText}>{date}</Text>
                 <Icon
                   name={'star-circle-outline'}
                   size={23}

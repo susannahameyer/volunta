@@ -9,15 +9,26 @@ import {
 } from 'react-native';
 import AuthStyle from '../stylesheets/AuthStyle';
 import AssetFilePaths from '../constants/AssetFilePaths';
+import DatePicker from 'react-native-datepicker'
+import * as firebase from 'firebase';
+
+const today = new Date();
 
 export default class SignUpScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      birthdate: today,
+      community: '',
       email: '',
       password: '',
     };
+    this.setDate = this.setDate.bind(this);
+  }
+
+  setDate(newDate) {
+    this.setState({ birthdate: newDate });
   }
 
   // TODO: implement FB Sign in
@@ -26,10 +37,13 @@ export default class SignUpScreen extends React.Component {
   // TODO: implement Google Sign in
   _onPressSignUpWithGoogle = event => { };
 
-  handleSignUp = () => {
-    // TODO: Firebase stuff...
-    console.log('handleSignUp')
-  }
+  SignUp = (email, password) => {
+    try {
+      firebase.auth().createUserWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.log(error.toString(error));
+    }
+  };
 
   render() {
     return (
@@ -70,7 +84,25 @@ export default class SignUpScreen extends React.Component {
             value={this.state.password}
           />
         </View>
-        <TouchableOpacity onPress={this.handleSignUp}>
+        <DatePicker
+          date={this.state.birthdate}
+          mode="date"
+          placeholder="birthdate"
+          format="MM-DD-YYYY"
+          minDate="1919-01-01"
+          maxDate={today}
+          confirmBtnText="confirm"
+          cancelBtnText="cancel"
+          customStyles={{
+            dateText: {
+              fontFamily: "montserrat",
+            }
+          }}
+          showIcon={false}
+          style={AuthStyle.datePicker}
+          onDateChange={(date) => { this.setState({ birthdate: date }) }}
+        />
+        <TouchableOpacity onPress={() => this.SignUp(this.state.email, this.state.password)}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>sign up</Text>
           </View>
