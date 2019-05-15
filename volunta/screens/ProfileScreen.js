@@ -17,6 +17,8 @@ import {
   getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
+  getProfilePhoto,
+  getProfileName,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -49,6 +51,12 @@ export default class ProfileScreen extends React.Component {
     //If we are navigating to another user's profile
     const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
 
+    // get name of user
+    const profileName = await getProfileName(userId)
+
+    // get url for profile picture
+    const profilePhoto = await getProfilePhoto(userId);
+
     // Get doc IDs the current user has bookmarked
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
       userId
@@ -66,6 +74,8 @@ export default class ProfileScreen extends React.Component {
     this.setState({
       upcomingEvents,
       pastEvents,
+      profileName,
+      profilePhoto,
       interestedEventDocIds,
       refreshing: false,
       volunteerNetwork,
@@ -117,10 +127,10 @@ export default class ProfileScreen extends React.Component {
           <View style={styles.profileBar}>
             <Image
               style={styles.profilePic}
-              source={require('../assets/images/kanye.png')}
+              source={{ uri: this.state.profilePhoto }}
             />
             <View style={styles.upperText}>
-              <Text style={styles.personName}>Kanye West</Text>
+              <Text style={styles.personName}>{this.state.profileName}</Text>
               <Text style={styles.communityName}>Stanford University</Text>
             </View>
             <TouchableOpacity onPress={this._onPressSettings} style={styles.editIcon}>

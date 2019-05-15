@@ -100,6 +100,40 @@ export const getEventsForCommunity = async () => {
   return [returnArrUpcoming, returnArrPast, returnArrOngoing];
 };
 
+// Retrieve profile photo for a given user id
+export const getProfileName = async userRef => {
+  let name = '';
+  await firestore
+    .collection('users')
+    .doc(userRef)
+    .get()
+    .then(snapshot => {
+      name = snapshot.get('name');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return name;
+};
+
+// Retrieve profile photo for a given user id
+export const getProfilePhoto = async userRef => {
+  let url = '';
+  await firestore
+    .collection('users')
+    .doc(userRef)
+    .get()
+    .then(snapshot => {
+      url = snapshot.get('profile_pic_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return url;
+};
+
 // Logic to retrieve organization name from an organization reference
 export const getOrganizationName = async orgRef => {
   let name = '';
