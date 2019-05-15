@@ -20,6 +20,9 @@ import {
   getUserCommunity,
   getEventInterestNames,
   getEvent,
+  getAllUserInterestedEventsDocIds,
+  updateUserInterestedEvents,
+  updateUserGoingEvents,
 } from '../firebase/api';
 import * as c from '../firebase/fb_constants';
 
@@ -28,7 +31,7 @@ export default class EventScreen extends React.Component {
     super(props);
     this.state = {
       event: this.props.navigation.getParam('event'),
-      interested: this.props.navigation.getParam('interested'),
+      interested: this.props.navigation.getParam('interested') ? true : false,
       facePileAttendees: [],
       refreshing: true,
       orgName: this.props.navigation.getParam('org_name'),
@@ -134,11 +137,50 @@ export default class EventScreen extends React.Component {
     });
   };
 
-  // TODO: get event info needed to pass to different components, all hard-coded for now
-  // Title, organization name, organization logo, event cover photo --> EventPageHeader
-  // Whether current user is interested / going --> EventPageButtonBar
-  // Event from_date and to_date --> EventPageAboutSection
-  // userIDs of users attending / interested --> Facepile + number in user's community
+  _updateInterested = async () => {
+    // Toggle button in frontend
+    var newInterested = !this.state.interested;
+    this.setState({
+      interested: newInterested,
+    });
+
+    // Try to update in database
+    success = await updateUserInterestedEvents(
+      c.TEST_USER_ID, //TODO: Make this the current user
+      this.state.event.doc_id,
+      newInterested
+    );
+
+    // Toggle back if database update failed.
+    if (!success) {
+      this.setState({
+        interested: !newInterested,
+      });
+    }
+  };
+
+  _updateGoing = async () => {
+    // Toggle button in frontend
+    var newGoing = !this.state.going;
+    this.setState({
+      going: newGoing,
+    });
+
+    // Try to update in database
+    success = await updateUserGoingEvents(
+      c.TEST_USER_ID, //TODO: Make this the current user
+      this.state.event.doc_id,
+      newGoing
+    );
+
+    // Toggle back if database update failed.
+    if (!success) {
+      this.setState({
+        going: !newGoing,
+      });
+    }
+  };
+
   render() {
     var {
       event,
@@ -196,7 +238,12 @@ export default class EventScreen extends React.Component {
             organizationLogo={orgLogo}
             coverPhoto={event.cover_url}
           />
-          <EventPageButtonBar interested={interested} going={going} />
+          <EventPageButtonBar
+            interested={interested}
+            going={going}
+            onPressInterested={this._updateInterested}
+            onPressGoing={this._updateGoing}
+          />
           <EventPageAboutSection
             fromDate={event.from_date}
             toDate={event.to_date}
