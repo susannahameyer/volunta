@@ -135,10 +135,8 @@ export const getEventsFromArrOfRefs = async eventRefsArr => {
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
-  // const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
 
   await eventsRef
-    // .where('sponsors', 'array-contains', currentUserCommunityRef)
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
