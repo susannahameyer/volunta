@@ -1,13 +1,23 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+/*
+Interest Bubble Component
+
+Props:
+    - interestName: name for bubble
+    - marginRight (optional): margin to add next to bubble, used for spacing
+    - onLayout (optional): function that takes event and id, called after bubble is rendered, make sure to pass in id if called.
+        Used in bubble component to get bubble width
+    - id (requiered if onLayout is defined): used for identifying bubble in the list its being used. 
+*/
 export default class InterestBubble extends React.Component {
   render() {
-    const { interestName, onLayout, id, marginRight } = this.props;
+    const { interestName, marginRight, onLayout, id } = this.props;
     return (
       <View
         style={[styles.bubble, { marginRight: marginRight }]}
-        onLayout={e => onLayout(e, id)}
+        onLayout={!!onLayout ? e => onLayout(e, id) : null}
       >
         <Text style={styles.bubbleText}>{interestName}</Text>
       </View>
