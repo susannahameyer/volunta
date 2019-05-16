@@ -24,8 +24,6 @@ import * as firebase from 'firebase';
 
 const SIDE_MARGIN = 20;
 
-const SIDE_MARGIN = 20;
-
 export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -87,17 +85,19 @@ export default class ProfileScreen extends React.Component {
   };
 
   _onPressSettings = () => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: ['Cancel', 'Logout', 'Edit Profile'],
-      destructiveButtonIndex: 1,
-      cancelButtonIndex: 0,
-    },
-    (buttonIndex) => {
-      if (buttonIndex === 1) {
-        firebase.auth().signOut();
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ['Cancel', 'Logout', 'Edit Profile'],
+        destructiveButtonIndex: 1,
+        cancelButtonIndex: 0,
+      },
+      buttonIndex => {
+        if (buttonIndex === 1) {
+          firebase.auth().signOut();
+        }
       }
-    },);
-  }
+    );
+  };
 
   render() {
     const {
@@ -127,7 +127,10 @@ export default class ProfileScreen extends React.Component {
               <Text style={styles.personName}>Kanye West</Text>
               <Text style={styles.communityName}>Stanford University</Text>
             </View>
-            <TouchableOpacity onPress={this._onPressSettings} style={styles.editIcon}>
+            <TouchableOpacity
+              onPress={this._onPressSettings}
+              style={styles.editIcon}
+            >
               <Ionicons name="ios-settings" size={30} color="#0081AF" />
             </TouchableOpacity>
           </View>
