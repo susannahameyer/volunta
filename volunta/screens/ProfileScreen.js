@@ -24,6 +24,8 @@ import * as firebase from 'firebase';
 
 const SIDE_MARGIN = 20;
 
+const SIDE_MARGIN = 20;
+
 export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
