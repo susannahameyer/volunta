@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Facepile from '../components/Facepile';
 import ProfilePageInterests from '../components/ProfilePageInterests';
+import ExpandableInterests from '../components/ExpandableInterests';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
@@ -136,7 +137,7 @@ export default class ProfileScreen extends React.Component {
           </View>
           <View style={styles.interestBar}>
             <Text style={styles.sectionTitle}>interests:</Text>
-            <ProfilePageInterests
+            {/* <ProfilePageInterests
               numRows={2}
               sideMargin={SIDE_MARGIN}
               interests={[
@@ -152,7 +153,8 @@ export default class ProfileScreen extends React.Component {
                 'health things',
                 'words',
               ]}
-            />
+            /> */}
+            <ExpandableInterests />
           </View>
           <View style={styles.comingUpBar}>
             <Text style={styles.sectionTitle}>coming up:</Text>

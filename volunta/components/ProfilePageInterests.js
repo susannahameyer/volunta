@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import InterestBubble from './InterestBubble';
 
 /*
@@ -11,6 +11,8 @@ Props:
     - numRows: (optional) max number of rows of interests that we want to display.
     - sideMargin: space between component and screen. 2*sideMargin plus the size of the container component should total the screen width
     - interests: list of strings (interests).
+    - passWidths: (optional) functioned passed if parent wants the widths of all bubbles
+    - passedWidths: (optional) pass if widths of bubbles are precalculated
 */
 
 const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
@@ -50,8 +52,8 @@ export default class ProfilePageInterests extends React.Component {
   // Used the first time it renders to get the width of the bubble
   // Note: They are not called in order, that is why we use the bubble id.
   onLayoutGetWidth = (event, bubbleId) => {
-    let { widths, numWidthsSet, interests } = this.state;
-    if (this.state.readyToShow) return;
+    let { widths, numWidthsSet, interests, readyToShow } = this.state;
+    if (readyToShow) return;
     var { x, y, width, height } = event.nativeEvent.layout;
     widths[bubbleId] = width;
     numWidthsSet += 1;
@@ -62,15 +64,19 @@ export default class ProfilePageInterests extends React.Component {
   };
 
   render() {
-    const { numRows, sideMargin } = this.props;
+    const { numRows, sideMargin, split, passWidths, passedWidths } = this.props;
     const { readyToShow, widths, interests } = this.state;
 
-    let views = [];
+    // Set widths to passedWidths if they are set, otherwise use from state
+    usedWidths = widths;
+    if (!!passedWidths) {
+      usedWidths = passedWidths;
+    }
 
-    // TODO: get rid of this logic, it can be integrated into the other logic path.
+    let views = []; // Rows we will show
+
     if (!readyToShow) {
       // This part is used to render all the components so we can get their widths
-      // TODO: make the number of rows be the same before and after the components show up so there is not a weird lag...
       let currRow = [];
       for (let i = 0; i < interests.length; i++) {
         currRow.push(
@@ -88,6 +94,10 @@ export default class ProfilePageInterests extends React.Component {
         </View>
       );
     } else {
+      if (!!passWidths) {
+        passWidths(usedWidths);
+      }
+
       // At this point we have the widths for all the components, so we can use this
       views = [];
       let currRow = [];
@@ -119,10 +129,9 @@ export default class ProfilePageInterests extends React.Component {
         currWidth = 0;
       };
 
-      console.log('start');
       for (let i = 0; i < interests.length - 1; i++) {
         // We do interests.length-1 since the last object in the array is the '...' (we forced it in)
-        w = widths[i];
+        w = usedWidths[i];
 
         // If we are in the last row
         if (!!views.length && views.length == numRows - 1) {
@@ -133,7 +142,7 @@ export default class ProfilePageInterests extends React.Component {
             currWidth +
             3 * MIN_BUBBLE_SPACING + // before interest, before and after extra
               w +
-              widths[widths.length - 1] +
+              usedWidths[usedWidths.length - 1] +
               SIDE_EXTRA_MARGIN >
               maxWidth
           ) {
@@ -167,13 +176,20 @@ export default class ProfilePageInterests extends React.Component {
       }
     }
 
-    return <View>{views}</View>;
+    if (!!split) {
+      if (split > 0) {
+        return <View>{views.slice(0, split)}</View>;
+      } else {
+        return <View>{views.slice(-split, views.length)}</View>;
+      }
+    } else {
+      return <View>{views}</View>;
+    }
   }
 }
 
 const styles = StyleSheet.create({
   singleInterestRow: {
-    // justifyContent: 'space-evenly',
     flexDirection: 'row',
     marginVertical: 3,
   },
