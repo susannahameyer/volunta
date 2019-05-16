@@ -14,10 +14,10 @@ Props:
 */
 
 const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
-const SIDE_EXTRA_MARGIN = 4;
+const SIDE_EXTRA_MARGIN = 12;
 const MAX_WORD_LENGTH = 20;
 const TRUNCATED_STR_ENDING = '...';
-const SHORTENED_LIST_LAST_ITEM = '.  .  .'; // Add bubble with this string at the end of the list if we shorten it
+const SHORTENED_LIST_LAST_ITEM = '. . .'; // Add bubble with this string at the end of the list if we shorten it
 
 export default class ProfilePageInterests extends React.Component {
   constructor(props) {
@@ -31,6 +31,8 @@ export default class ProfilePageInterests extends React.Component {
     };
   }
 
+  // Truncate interests and add the last SHORTENED_LIST_LAST_ITEM to the list (needed to get
+  // its component length). Important to implement code that takes this into account.
   _cleanUpInterests = originalInterests => {
     cleanInterests = originalInterests.map(interest => {
       interest = interest.toLowerCase();
@@ -72,9 +74,6 @@ export default class ProfilePageInterests extends React.Component {
       // TODO: make the number of rows be the same before and after the components show up so there is not a weird lag...
       let currRow = [];
       for (let i = 0; i < interests.length; i++) {
-        if (i % 3 == 0) {
-          currRow = [];
-        }
         currRow.push(
           <InterestBubble
             key={i}
@@ -83,45 +82,21 @@ export default class ProfilePageInterests extends React.Component {
             onLayout={this.onLayoutGetWidth}
           />
         );
-
-        if ((i - 1) % 3 == 0) {
-          views.push(
-            <View key={i} style={styles.singleInterestRow}>
-              {currRow}
-            </View>
-          );
-        }
       }
+      views.push(
+        <View key={0} style={styles.singleInterestRow}>
+          {currRow}
+        </View>
+      );
     } else {
-      // At this point we have the widths for all the components, so we can use ths
+      // At this point we have the widths for all the components, so we can use this
+      views = [];
       let currRow = [];
       let currWidth = 0;
       let maxWidth = Dimensions.get('window').width - 2 * sideMargin;
 
-      // TODO: better index for row?
-      pushRow = (row, i) => {
-        views.push(
-          <View key={i} style={styles.singleInterestRow}>
-            {row}
-          </View>
-        );
-      };
-
-      for (let i = 0; i < interests.length - 1; i++) {
-        // We do interests.length-1 since the last object in the array is the '...' (we forced it in)
-        w = widths[i];
-
-        // If it does not fit: push row and initialize a new row
-        if (
-          currWidth + MIN_BUBBLE_SPACING + SIDE_EXTRA_MARGIN + w >=
-          maxWidth
-        ) {
-          pushRow(currRow, i);
-          currRow = [];
-          currWidth = 0;
-        }
-
-        // Add to current row
+      // Push bubble into current row
+      pushBubble = i => {
         currRow.push(
           <InterestBubble
             key={i}
@@ -132,18 +107,66 @@ export default class ProfilePageInterests extends React.Component {
           />
         );
         currWidth += w;
-        // TODO: break when we do not need more rows
+      };
+
+      // Push row of bubbles
+      pushRow = row => {
+        views.push(
+          <View key={views.length} style={styles.singleInterestRow}>
+            {row}
+          </View>
+        );
+        currRow = [];
+        currWidth = 0;
+      };
+
+      console.log('start');
+      for (let i = 0; i < interests.length - 1; i++) {
+        // We do interests.length-1 since the last object in the array is the '...' (we forced it in)
+        w = widths[i];
+
+        // If we are in the last row
+        if (!!views.length && views.length == numRows - 1) {
+          // If there are elements left but the element plus the extra would not fit , add the extra
+          // push the row, and break
+          if (
+            i + 1 < interests.length - 1 &&
+            currWidth +
+              MIN_BUBBLE_SPACING +
+              w +
+              MIN_BUBBLE_SPACING +
+              widths[widths.length - 1] +
+              SIDE_EXTRA_MARGIN >
+              maxWidth
+          ) {
+            pushBubble(interests.length - 1);
+            pushRow(currRow);
+            break;
+
+            // Otherwise just push the element
+          } else {
+            pushBubble(i);
+          }
+        } else {
+          // Not on the last row, check if element fits.
+          // If it does not, push the current row and start a new one
+          // Then add the element.
+          if (
+            currWidth + MIN_BUBBLE_SPACING + SIDE_EXTRA_MARGIN + w >=
+            maxWidth
+          ) {
+            pushRow(currRow);
+          }
+
+          // Add to current row
+          pushBubble(i);
+        }
       }
 
       // Push last row if its not empty!
       if (currRow.length > 0) {
-        pushRow(currRow, interests.length);
+        pushRow(currRow);
       }
-
-      // if (!!views.length && views.length == numRows) {
-      //       console.log('BREAKING');
-      //       break;
-      //     }
     }
 
     return <View>{views}</View>;
