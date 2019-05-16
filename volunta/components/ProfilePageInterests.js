@@ -22,7 +22,6 @@ const SHORTENED_LIST_LAST_ITEM = '. . .'; // Add bubble with this string at the 
 export default class ProfilePageInterests extends React.Component {
   constructor(props) {
     super(props);
-    // ADD '...' to interests!
     this.state = {
       readyToShow: false,
       widths: new Array(this.props.interests.length),
@@ -132,9 +131,8 @@ export default class ProfilePageInterests extends React.Component {
           if (
             i + 1 < interests.length - 1 &&
             currWidth +
-              MIN_BUBBLE_SPACING +
+            3 * MIN_BUBBLE_SPACING + // before interest, before and after extra
               w +
-              MIN_BUBBLE_SPACING +
               widths[widths.length - 1] +
               SIDE_EXTRA_MARGIN >
               maxWidth
