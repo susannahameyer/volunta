@@ -83,7 +83,7 @@ export default class ProfilePageInterests extends React.Component {
         );
       }
       views.push(
-        <View key={0} style={styles.singleInterestRow}>
+        <View key={0} style={[styles.singleInterestRow, { opacity: 0 }]}>
           {currRow}
         </View>
       );
