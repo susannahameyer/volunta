@@ -14,7 +14,6 @@ import ExpandableInterests from '../components/ExpandableInterests';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
-  getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
   getUserInterestNames,
@@ -22,6 +21,7 @@ import {
   getProfilePhoto,
   getProfileName,
   getProfileCommunityName,
+  getAllUserGoingEventsDocIds,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -37,6 +37,7 @@ export default class ProfileScreen extends React.Component {
       pastEvents: [],
       volunteerNetwork: [],
       interestedEventDocIds: new Set(),
+      goingEventDocIds: new Set(),
       refreshing: true,
       interests: [],
     };
@@ -48,17 +49,15 @@ export default class ProfileScreen extends React.Component {
 
   //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
   _loadData = async () => {
-    //If we are navigating to another user's profile
+    // If we are navigating to another user's profile
+    // TODO: Change default to current user
     const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
-      interestedEventDocIds,
       volunteerNetwork,
       interests,
     ] = await Promise.all([
       getEventsForProfile(userId),
-      // Get doc IDs the current user has bookmarked
-      getAllUserInterestedEventsDocIds(userId),
       //TODO change this to actual volunteer network
       firestore
         .collection('users')
@@ -73,6 +72,12 @@ export default class ProfileScreen extends React.Component {
     // get name of user
     const profileName = await getProfileName(userId);
 
+    // Get doc IDs the current user has bookmarked and is going to
+    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
+      userId
+    );
+    const goingEventDocIds = await getAllUserGoingEventsDocIds(userId);
+
     // get url for profile picture
     const profilePhoto = await getProfilePhoto(userId);
 
@@ -85,10 +90,10 @@ export default class ProfileScreen extends React.Component {
       profileName,
       profilePhoto,
       communityName,
-      interestedEventDocIds,
-      refreshing: false,
       volunteerNetwork,
-      userId,
+      interestedEventDocIds,
+      goingEventDocIds,
+      refreshing: false,
       interests,
     });
   };
@@ -122,6 +127,7 @@ export default class ProfileScreen extends React.Component {
       upcomingEvents,
       pastEvents,
       interestedEventDocIds,
+      goingEventDocIds,
       refreshing,
       interests,
     } = this.state;
@@ -173,6 +179,7 @@ export default class ProfileScreen extends React.Component {
                 events={upcomingEvents}
                 interestedIDs={interestedEventDocIds}
                 onPress={this._onPressOpenEventPage}
+                goingIDs={goingEventDocIds}
               />
             </View>
           </View>
@@ -182,6 +189,7 @@ export default class ProfileScreen extends React.Component {
               events={pastEvents}
               interestedIDs={interestedEventDocIds}
               onPress={this._onPressOpenEventPage}
+              goingIDs={goingEventDocIds}
             />
           </View>
           <View>
