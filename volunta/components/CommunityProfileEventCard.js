@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { timestampToDate } from '../utils';
 import { getOrganizationName } from '../firebase/api';
+import Colors from '../constants/Colors';
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -57,13 +58,13 @@ export default class CommunityProfileEventCard extends React.Component {
                 <Icon
                   name={'check-circle-outline'}
                   size={23}
-                  color={going ? '#0081AF' : 'grey'}
+                  color={going ? Colors.iconBlue : 'grey'}
                 />
                 <Icon
                   name={'star-circle-outline'}
                   size={23}
                   style={styles.bookmarkIcon}
-                  color={interested ? '#0081AF' : 'grey'}
+                  color={interested ? Colors.iconBlue : 'grey'}
                 />
               </View>
             </View>
