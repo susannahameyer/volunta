@@ -23,7 +23,6 @@ export default class CommunityProfileEventCard extends React.Component {
 
   render() {
     const { event, interested, going, onPress } = this.props;
-    console.log(event.title + ': ' + going);
     const { date, org_name } = this.state;
     const upcoming = event.status == 'upcoming';
     return (
@@ -129,7 +128,6 @@ const styles = StyleSheet.create({
   },
   bookmarkIcon: {
     paddingRight: 3,
-    justifyContent: 'flex-end',
   },
   detailTextContainer: {
     marginLeft: 10,
