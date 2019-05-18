@@ -44,6 +44,7 @@ export const getEventsForCommunity = async () => {
 
   await eventsRef
     .where('sponsors', 'array-contains', currentUserCommunityRef)
+    .orderBy('from_date')
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -78,7 +79,7 @@ export const getEventsForCommunity = async () => {
       return null;
     });
 
-  return [returnArrUpcoming, returnArrPast, returnArrOngoing];
+  return [returnArrUpcoming, returnArrPast.reverse(), returnArrOngoing];
 };
 
 // Given a user doc id, returns a set with the event objects the user is going to or interested in
@@ -135,6 +136,7 @@ export const getEventsFromArrOfRefs = async eventRefsArr => {
   let eventsRef = firestore.collection('events');
 
   await eventsRef
+    .orderBy('from_date')
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -170,7 +172,7 @@ export const getEventsFromArrOfRefs = async eventRefsArr => {
       console.log(error);
       return null;
     });
-  return [returnArrUpcoming, returnArrPast, returnArrOngoing];
+  return [returnArrUpcoming, returnArrPast.reverse(), returnArrOngoing];
 };
 
 // Retrieve profile photo for a given user id
