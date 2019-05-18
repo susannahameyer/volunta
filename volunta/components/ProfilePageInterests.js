@@ -15,6 +15,7 @@ Props:
     - passedWidths: (optional) pass if widths of bubbles are precalculated
     - collapse: function passed if component is child of accordion and we need to collapse
     - expand: function passed if component is child of accordion and we need to expand
+    - accordionRight: put accordion (+) button on the right instead of on the left
 */
 
 const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
@@ -75,6 +76,7 @@ export default class ProfilePageInterests extends React.Component {
       passedWidths,
       collapse,
       expand,
+      accordionRight,
     } = this.props;
     const { readyToShow, widths, interests } = this.state;
 
@@ -206,14 +208,35 @@ export default class ProfilePageInterests extends React.Component {
           views[0] = views[0].slice(1, views[0].length);
         }
       }
-    }
 
-    // Convert views from array of arrays to array of views
-    views = views.map((row, index) => (
-      <View key={index} style={styles.singleInterestRow}>
-        {row}
-      </View>
-    ));
+      // Convert views from array of arrays to array of views
+      views = views.map((row, index) => {
+        if (accordionRight && index == 0 && (needExpand || !!collapse)) {
+          accordion = row[0];
+          row[0] = row[row.length - 1];
+          row[row.length - 1] = accordion;
+          return (
+            <View
+              key={index}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+            >
+              <View style={styles.singleInterestRow}>
+                {row.slice(0, row.length - 1)}
+              </View>
+              <View style={styles.singleInterestRow}>
+                {row[row.length - 1]}
+              </View>
+            </View>
+          );
+        }
+        return (
+          <View key={index} style={styles.singleInterestRow}>
+            {row}
+          </View>
+        );
+      });
+    }
 
     if (!!split) {
       if (split > 0) {

@@ -137,7 +137,11 @@ export default class ProfileScreen extends React.Component {
           </View>
           <View style={styles.interestBar}>
             <Text style={styles.sectionTitle}>interests:</Text>
-            <ExpandableInterests duration={500} numRows={2} />
+            <ExpandableInterests
+              duration={500}
+              numRows={2}
+              accordionRight={true}
+            />
           </View>
           <View style={styles.comingUpBar}>
             <Text style={styles.sectionTitle}>coming up:</Text>

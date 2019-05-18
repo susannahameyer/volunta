@@ -14,7 +14,8 @@ to displaye the bubbles, and Accordion to create the expandable effect
 
 Props:
     - numRows: (optional) max number of rows of interests that we want to display.
-    - duration: duration of animation in ms. 
+    - duration: duration of animation in ms.
+    - accordionRight: prop for ProfilePageInterests, put button on the right 
 */
 
 export default class ExpandableInterest extends Component {
@@ -37,6 +38,7 @@ export default class ExpandableInterest extends Component {
         sideMargin={SIDE_MARGIN}
         passWidths={passWidths}
         passedWidths={widths}
+        accordionRight={this.props.accordionRight}
         interests={[
           'public health',
           'public',
@@ -69,8 +71,6 @@ export default class ExpandableInterest extends Component {
     this.setState({ activeSections });
   };
 
-  // TODO: make content clickable to collapse?
-
   passWidths = newWidths => {
     this.widths = newWidths;
   };
@@ -102,8 +102,6 @@ export default class ExpandableInterest extends Component {
   };
 
   render() {
-    // TODO: only make it an accordion if there are extra items to show...
-    // Use 'disabled' prop
     return (
       <Accordion
         sections={SECTIONS}
