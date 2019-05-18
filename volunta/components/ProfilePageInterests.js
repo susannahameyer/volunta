@@ -13,15 +13,15 @@ Props:
     - interests: list of strings (interests).
     - passWidths: (optional) functioned passed if parent wants the widths of all bubbles
     - passedWidths: (optional) pass if widths of bubbles are precalculated
-    - collapse: function passed if child of accordion, call to collapse 
-    - expand: function passed if child of accordion, call to expand
+    - collapse: function passed if component is child of accordion and we need to collapse
+    - expand: function passed if component is child of accordion and we need to expand
 */
 
 const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
 const SIDE_EXTRA_MARGIN = 12;
 const MAX_WORD_LENGTH = 20;
 const TRUNCATED_STR_ENDING = '...';
-const ACCORDION = '+'; // first element to expand/collapse...
+const ACCORDION = '+';
 const SHORTENED_LIST_LAST_ITEM = '. . .'; // Add bubble with this string at the end of the list if we shorten it
 
 export default class ProfilePageInterests extends React.Component {
@@ -119,9 +119,7 @@ export default class ProfilePageInterests extends React.Component {
       pushBubble = (i, isExtra) => {
         // Logic to decide if we want to make button pressable
         let onPress = null;
-        if (isExtra) {
-          onPress = expand;
-        } else if (i == 0) {
+        if (i == 0) {
           if (!!expand) {
             onPress = expand;
           } else if (!!collapse) {
@@ -134,11 +132,11 @@ export default class ProfilePageInterests extends React.Component {
             onPress={onPress}
             key={i}
             id={i}
-            expand={i == 0 ? expand : null}
-            collapse={i == 0 ? collapse : null}
-            interestName={interests[i]}
+            interestName={i == 0 ? (!!collapse ? '-' : '+') : interests[i]}
             onLayout={this.onLayoutGetWidth}
             marginRight={MIN_BUBBLE_SPACING}
+            extraTextStyles={i == 0 ? styles.accordionTextStyle : null}
+            extraBubbleStyles={i == 0 ? styles.accordionBubbleStyle : null}
           />
         );
         currWidth += w;
@@ -233,5 +231,16 @@ const styles = StyleSheet.create({
   singleInterestRow: {
     flexDirection: 'row',
     marginVertical: 3,
+  },
+  accordionBubbleStyle: {
+    width: 32,
+    height: 32,
+    backgroundColor: 'white',
+    borderColor: '#0081AF',
+  },
+  accordionTextStyle: {
+    color: '#0081AF',
+    fontSize: 20,
+    marginHorizontal: 0,
   },
 });

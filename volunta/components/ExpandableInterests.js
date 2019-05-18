@@ -10,6 +10,17 @@ const SECTIONS = [{}];
 // TODO: fetch from db
 // TODO: only expand when (...) is clicked?
 // props: numRows, duration
+
+/*
+This component recieves a list of interests and displays them as an expandable/collapsable list 
+if numRows is specified and all interests can not fit in that amount of rows. We use ProfilePageInterests
+to displaye the bubbles, and Accordion to create the expandable effect
+
+Props:
+    - numRows: (optional) max number of rows of interests that we want to display.
+    - duration: duration of animation in ms. 
+*/
+
 export default class ExpandableInterest extends Component {
   constructor(props) {
     super(props);
@@ -33,12 +44,12 @@ export default class ExpandableInterest extends Component {
         interests={[
           'public health',
           'public',
-          'social good',
-          'really long interest that I love',
           'kids',
+          'social good',
           'civics',
-          'environmental',
           'beach',
+          'really long interest that I love',
+          'environmental',
           'kids',
           'health things',
           'words',
