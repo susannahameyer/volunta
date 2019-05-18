@@ -86,7 +86,7 @@ export const getEventsForProfile = async userDocId => {
   const eventIds = await getAllUserEventsRef(userDocId);
   const profileEvents = await getEventsFromArrOfRefs(eventIds);
   return profileEvents;
-}
+};
 
 // Given a user doc id, returns a set with the doc ids of events user is going to or interested in
 // Returns none in case of error.
@@ -107,6 +107,23 @@ export const getAllUserEventsRef = async userDocId => {
       return null;
     });
   return eventRefs;
+};
+
+// Retrieve profile photo for a given user id
+export const getProfileName = async userRef => {
+  let name = '';
+  await firestore
+    .collection('users')
+    .doc(userRef)
+    .get()
+    .then(snapshot => {
+      name = snapshot.get('name');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return name;
 };
 
 // Given a list of event references, returns a set with the event objects a user is going to or interested in
@@ -153,9 +170,48 @@ export const getEventsFromArrOfRefs = async eventRefsArr => {
       console.log(error);
       return null;
     });
-
   return [returnArrUpcoming, returnArrPast, returnArrOngoing];
+};
 
+// Retrieve profile photo for a given user id
+export const getProfilePhoto = async userRef => {
+  let url = '';
+  await firestore
+    .collection('users')
+    .doc(userRef)
+    .get()
+    .then(snapshot => {
+      url = snapshot.get('profile_pic_url');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return url;
+};
+
+// Retrieve the community reference for a profile
+export const getProfileCommunityRef = async userRef => {
+  let communityRef = '';
+  await firestore
+    .collection('users')
+    .doc(userRef)
+    .get()
+    .then(snapshot => {
+      communityRef = snapshot.get('community_ref');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return communityRef;
+};
+
+// Gets the org name as a string for a given user id
+export const getProfileCommunityName = async userRef => {
+  const communityRef = await getProfileCommunityRef(userRef);
+  const communityName = await getOrganizationName(communityRef);
+  return communityName;
 };
 
 // Logic to retrieve organization name from an organization reference
