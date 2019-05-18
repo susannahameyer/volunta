@@ -212,9 +212,7 @@ export default class ProfilePageInterests extends React.Component {
       // Convert views from array of arrays to array of views
       views = views.map((row, index) => {
         if (accordionRight && index == 0 && (needExpand || !!collapse)) {
-          accordion = row[0];
-          row[0] = row[row.length - 1];
-          row[row.length - 1] = accordion;
+          row.push(row.shift());
           return (
             <View
               key={index}
