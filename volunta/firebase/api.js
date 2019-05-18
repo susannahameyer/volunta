@@ -3,26 +3,6 @@ var Promise = require('bluebird');
 import * as c from './fb_constants';
 import { DefaultDict } from '../utils';
 
-// Fetches all events array from firestore. We add doc_id to each event object as well just in case its needed.
-export const getEvents = async () => {
-  var returnArr = [];
-  var eventsRef = firestore.collection('events');
-  await eventsRef
-    .get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        data = doc.data();
-        data.doc_id = doc.id;
-        returnArr.push(data);
-      });
-    })
-    .catch(error => {
-      console.log(error);
-      return null;
-    });
-  return returnArr;
-};
-
 // Fetches events that are either ongoing or upcoming  from firestore. We add doc_id to each event object as well just in case its needed.
 export const getFeedEvents = async () => {
   var returnArr = [];
