@@ -17,6 +17,7 @@ import {
   getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
+  getEventsForProfile,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -44,7 +45,7 @@ export default class ProfileScreen extends React.Component {
       upcomingEvents,
       pastEvents,
       ongoingEvents,
-    ] = await getEventsForCommunity();
+    ] = await getEventsForProfile(c.TEST_USER_ID);
 
     //If we are navigating to another user's profile
     const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
