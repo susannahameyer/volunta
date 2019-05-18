@@ -134,28 +134,28 @@ export const getProfilePhoto = async userRef => {
   return url;
 };
 
-// Retrieve profile photo for a given user id
-export const getProfileOrgRef = async userRef => {
-  let orgRef = '';
+// Retrieve the community reference for a profile
+export const getProfileCommunityRef = async userRef => {
+  let communityRef = '';
   await firestore
     .collection('users')
     .doc(userRef)
     .get()
     .then(snapshot => {
-      orgRef = snapshot.get('community_ref');
+      communityRef = snapshot.get('community_ref');
     })
     .catch(error => {
       console.log(error);
       return null;
     });
-  return orgRef;
+  return communityRef;
 };
 
 // Gets the org name as a string for a given user id
 export const getProfileCommunityName = async userRef => {
-  const orgRef = await getProfileOrgRef(userRef);
-  const orgName = await getOrganizationName(orgRef);
-  return orgName;
+  const communityRef = await getProfileCommunityRef(userRef);
+  const communityName = await getOrganizationName(communityRef);
+  return communityName;
 };
 
 // Logic to retrieve organization name from an organization reference
