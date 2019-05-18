@@ -5,16 +5,12 @@ import ProfilePageInterests from './ProfilePageInterests';
 const SIDE_MARGIN = 20;
 const SECTIONS = [{}];
 
-// TODO: comment this component
-// Used https://github.com/oblador/react-native-collapsible
-// TODO: fetch from db
-// TODO: only expand when (...) is clicked?
-// props: numRows, duration
-
 /*
 This component recieves a list of interests and displays them as an expandable/collapsable list 
 if numRows is specified and all interests can not fit in that amount of rows. We use ProfilePageInterests
 to displaye the bubbles, and Accordion to create the expandable effect
+
+// Used https://github.com/oblador/react-native-collapsible
 
 Props:
     - numRows: (optional) max number of rows of interests that we want to display.
