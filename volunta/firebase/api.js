@@ -8,6 +8,7 @@ export const getFeedEvents = async () => {
   var returnArr = [];
   var eventsRef = firestore.collection('events');
   await eventsRef
+    .orderBy('from_date')
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
