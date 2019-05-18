@@ -17,6 +17,7 @@ import {
   getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
+  getEventsForProfile,
   getProfilePhoto,
   getProfileName,
   getProfileCommunityName,
@@ -47,13 +48,13 @@ export default class ProfileScreen extends React.Component {
       upcomingEvents,
       pastEvents,
       ongoingEvents,
-    ] = await getEventsForCommunity();
+    ] = await getEventsForProfile(c.TEST_USER_ID);
 
     //If we are navigating to another user's profile
     const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
 
     // get name of user
-    const profileName = await getProfileName(userId)
+    const profileName = await getProfileName(userId);
 
     // get url for profile picture
     const profilePhoto = await getProfilePhoto(userId);
@@ -98,17 +99,19 @@ export default class ProfileScreen extends React.Component {
   };
 
   _onPressSettings = () => {
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: ['Cancel', 'Logout', 'Edit Profile'],
-      destructiveButtonIndex: 1,
-      cancelButtonIndex: 0,
-    },
-    (buttonIndex) => {
-      if (buttonIndex === 1) {
-        firebase.auth().signOut();
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ['Cancel', 'Logout', 'Edit Profile'],
+        destructiveButtonIndex: 1,
+        cancelButtonIndex: 0,
+      },
+      buttonIndex => {
+        if (buttonIndex === 1) {
+          firebase.auth().signOut();
+        }
       }
-    },);
-  }
+    );
+  };
 
   render() {
     const {
@@ -136,9 +139,14 @@ export default class ProfileScreen extends React.Component {
             />
             <View style={styles.upperText}>
               <Text style={styles.personName}>{this.state.profileName}</Text>
-              <Text style={styles.communityName}>{this.state.communityName}</Text>
+              <Text style={styles.communityName}>
+                {this.state.communityName}
+              </Text>
             </View>
-            <TouchableOpacity onPress={this._onPressSettings} style={styles.editIcon}>
+            <TouchableOpacity
+              onPress={this._onPressSettings}
+              style={styles.editIcon}
+            >
               <Ionicons name="ios-settings" size={30} color="#0081AF" />
             </TouchableOpacity>
           </View>
