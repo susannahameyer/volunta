@@ -137,23 +137,6 @@ export default class ProfileScreen extends React.Component {
           </View>
           <View style={styles.interestBar}>
             <Text style={styles.sectionTitle}>interests:</Text>
-            {/* <ProfilePageInterests
-              numRows={2}
-              sideMargin={SIDE_MARGIN}
-              interests={[
-                'public health',
-                'public',
-                'social good',
-                'really long interest that I love',
-                'kids',
-                'civics',
-                'environmental',
-                'beach',
-                'kids',
-                'health things',
-                'words',
-              ]}
-            /> */}
             <ExpandableInterests duration={1000} numRows={2} />
           </View>
           <View style={styles.comingUpBar}>
