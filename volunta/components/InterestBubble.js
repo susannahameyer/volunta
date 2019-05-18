@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 /*
 Interest Bubble Component
@@ -13,14 +13,17 @@ Props:
 */
 export default class InterestBubble extends React.Component {
   render() {
-    const { interestName, marginRight, onLayout, id } = this.props;
+    const { interestName, marginRight, onLayout, id, onPress } = this.props;
+    console.log(!onPress);
     return (
-      <View
-        style={[styles.bubble, { marginRight: marginRight }]}
-        onLayout={!!onLayout ? e => onLayout(e, id) : null}
-      >
-        <Text style={styles.bubbleText}>{interestName}</Text>
-      </View>
+      <TouchableOpacity onPress={onPress} disabled={!onPress}>
+        <View
+          style={[styles.bubble, { marginRight: marginRight }]}
+          onLayout={!!onLayout ? e => onLayout(e, id) : null}
+        >
+          <Text style={styles.bubbleText}>{interestName}</Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 }

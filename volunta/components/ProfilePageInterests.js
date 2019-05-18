@@ -13,6 +13,8 @@ Props:
     - interests: list of strings (interests).
     - passWidths: (optional) functioned passed if parent wants the widths of all bubbles
     - passedWidths: (optional) pass if widths of bubbles are precalculated
+    - collapse: function passed if child of accordion, call to collapse 
+    - expand: function passed if child of accordion, call to expand
 */
 
 const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
@@ -64,7 +66,15 @@ export default class ProfilePageInterests extends React.Component {
   };
 
   render() {
-    const { numRows, sideMargin, split, passWidths, passedWidths } = this.props;
+    const {
+      numRows,
+      sideMargin,
+      split,
+      passWidths,
+      passedWidths,
+      collapse,
+      expand,
+    } = this.props;
     const { readyToShow, widths, interests } = this.state;
 
     // Set widths to passedWidths if they are set, otherwise use from state
@@ -105,9 +115,12 @@ export default class ProfilePageInterests extends React.Component {
       let maxWidth = Dimensions.get('window').width - 2 * sideMargin;
 
       // Push bubble into current row
-      pushBubble = i => {
+      pushBubble = (i, isExtra) => {
         currRow.push(
           <InterestBubble
+            onPress={
+              isExtra ? expand : i == interests.length - 1 ? collapse : null // if its the extra element, we can collapse. If its the last element, it means that we are in full expansion mode, so its made for collapsing.
+            }
             key={i}
             id={i}
             interestName={interests[i]}
@@ -129,7 +142,8 @@ export default class ProfilePageInterests extends React.Component {
         currWidth = 0;
       };
 
-      for (let i = 0; i < interests.length - 1; i++) {
+      num_iters = !!collapse ? interests.length : interests.length - 1; // -1 to ignore the extra element, but add it if collapse option is passed in
+      for (let i = 0; i < num_iters; i++) {
         // We do interests.length-1 since the last object in the array is the '...' (we forced it in)
         w = usedWidths[i];
 
@@ -146,13 +160,13 @@ export default class ProfilePageInterests extends React.Component {
               SIDE_EXTRA_MARGIN >
               maxWidth
           ) {
-            pushBubble(interests.length - 1);
+            pushBubble(interests.length - 1, true);
             pushRow(currRow);
             break;
 
             // Otherwise just push the element
           } else {
-            pushBubble(i);
+            pushBubble(i, false);
           }
         } else {
           // Not on the last row, check if element fits.
@@ -166,7 +180,7 @@ export default class ProfilePageInterests extends React.Component {
           }
 
           // Add to current row
-          pushBubble(i);
+          pushBubble(i, false);
         }
       }
 

@@ -154,7 +154,7 @@ export default class ProfileScreen extends React.Component {
                 'words',
               ]}
             /> */}
-            <ExpandableInterests />
+            <ExpandableInterests duration={1000} numRows={2} />
           </View>
           <View style={styles.comingUpBar}>
             <Text style={styles.sectionTitle}>coming up:</Text>

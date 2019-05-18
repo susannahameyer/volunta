@@ -9,6 +9,7 @@ const SECTIONS = [{}];
 // Used https://github.com/oblador/react-native-collapsible
 // TODO: fetch from db
 // TODO: only expand when (...) is clicked?
+// props: numRows, duration
 export default class ExpandableInterest extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +23,8 @@ export default class ExpandableInterest extends Component {
     return (
       <ProfilePageInterests
         numRows={numRows}
+        collapse={this.collapse}
+        expand={this.expand}
         split={split}
         sideMargin={SIDE_MARGIN}
         passWidths={passWidths}
@@ -43,7 +46,21 @@ export default class ExpandableInterest extends Component {
     );
   };
 
-  // TODO: change 2 to NUM_ROWS
+  collapse = () => {
+    this._updateSections([]);
+  };
+
+  expand = () => {
+    this._updateSections([0]);
+  };
+
+  _updateSections = activeSections => {
+    if (!this.state.loaded) {
+      this.setState({ loaded: !this.state.loaded });
+    }
+    this.setState({ activeSections });
+  };
+
   // TODO: make content clickable to collapse?
 
   passWidths = newWidths => {
@@ -52,9 +69,14 @@ export default class ExpandableInterest extends Component {
 
   _renderHeader = section => {
     if (this.state.activeSections.length == 0) {
-      return this._renderInterests(2, null, this.passWidths, null);
+      return this._renderInterests(
+        this.props.numRows,
+        null,
+        this.passWidths,
+        null
+      );
     } else {
-      return this._renderInterests(null, 2, null, null);
+      return this._renderInterests(null, this.props.numRows, null, null);
     }
   };
 
@@ -62,15 +84,13 @@ export default class ExpandableInterest extends Component {
     if (this.state.activeSections.length == 0 && !this.state.loaded) {
       return this._renderInterests(0, null, null, this.widths);
     } else {
-      return this._renderInterests(null, -2, null, this.widths);
+      return this._renderInterests(
+        null,
+        -this.props.numRows,
+        null,
+        this.widths
+      );
     }
-  };
-
-  _updateSections = activeSections => {
-    if (!this.state.loaded) {
-      this.setState({ loaded: !this.state.loaded });
-    }
-    this.setState({ activeSections });
   };
 
   render() {
@@ -82,9 +102,9 @@ export default class ExpandableInterest extends Component {
         activeSections={this.state.activeSections}
         renderHeader={this._renderHeader}
         renderContent={this._renderContent}
-        onChange={this._updateSections}
+        onChange={activeSections => {}}
         underlayColor={'white'}
-        duration={1000}
+        duration={this.props.duration}
       />
     );
   }
