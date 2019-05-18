@@ -20,11 +20,12 @@ export default class ExpandableInterest extends Component {
   }
 
   _renderInterests = (numRows, split, passWidths, widths) => {
+    const { activeSections } = this.state;
     return (
       <ProfilePageInterests
         numRows={numRows}
-        collapse={this.collapse}
-        expand={this.expand}
+        collapse={activeSections.length == 1 ? this.collapse : null}
+        expand={activeSections.length == 0 ? this.expand : null}
         split={split}
         sideMargin={SIDE_MARGIN}
         passWidths={passWidths}

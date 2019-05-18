@@ -14,7 +14,6 @@ Props:
 export default class InterestBubble extends React.Component {
   render() {
     const { interestName, marginRight, onLayout, id, onPress } = this.props;
-    console.log(!onPress);
     return (
       <TouchableOpacity onPress={onPress} disabled={!onPress}>
         <View

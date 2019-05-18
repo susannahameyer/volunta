@@ -21,6 +21,7 @@ const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
 const SIDE_EXTRA_MARGIN = 12;
 const MAX_WORD_LENGTH = 20;
 const TRUNCATED_STR_ENDING = '...';
+const ACCORDION = '+'; // first element to expand/collapse...
 const SHORTENED_LIST_LAST_ITEM = '. . .'; // Add bubble with this string at the end of the list if we shorten it
 
 export default class ProfilePageInterests extends React.Component {
@@ -47,7 +48,7 @@ export default class ProfilePageInterests extends React.Component {
           : interest;
       return interest;
     });
-    return [...cleanInterests, SHORTENED_LIST_LAST_ITEM];
+    return [ACCORDION, ...cleanInterests, SHORTENED_LIST_LAST_ITEM];
   };
 
   // Called by bubble once rendered
@@ -116,13 +117,25 @@ export default class ProfilePageInterests extends React.Component {
 
       // Push bubble into current row
       pushBubble = (i, isExtra) => {
+        // Logic to decide if we want to make button pressable
+        let onPress = null;
+        if (isExtra) {
+          onPress = expand;
+        } else if (i == 0) {
+          if (!!expand) {
+            onPress = expand;
+          } else if (!!collapse) {
+            onPress = collapse;
+          }
+        }
+
         currRow.push(
           <InterestBubble
-            onPress={
-              isExtra ? expand : i == interests.length - 1 ? collapse : null // if its the extra element, we can collapse. If its the last element, it means that we are in full expansion mode, so its made for collapsing.
-            }
+            onPress={onPress}
             key={i}
             id={i}
+            expand={i == 0 ? expand : null}
+            collapse={i == 0 ? collapse : null}
             interestName={interests[i]}
             onLayout={this.onLayoutGetWidth}
             marginRight={MIN_BUBBLE_SPACING}
@@ -133,17 +146,13 @@ export default class ProfilePageInterests extends React.Component {
 
       // Push row of bubbles
       pushRow = row => {
-        views.push(
-          <View key={views.length} style={styles.singleInterestRow}>
-            {row}
-          </View>
-        );
+        views.push(row);
         currRow = [];
         currWidth = 0;
       };
 
-      num_iters = !!collapse ? interests.length : interests.length - 1; // -1 to ignore the extra element, but add it if collapse option is passed in
-      for (let i = 0; i < num_iters; i++) {
+      let needExpand = false;
+      for (let i = 0; i < interests.length - 1; i++) {
         // We do interests.length-1 since the last object in the array is the '...' (we forced it in)
         w = usedWidths[i];
 
@@ -160,8 +169,10 @@ export default class ProfilePageInterests extends React.Component {
               SIDE_EXTRA_MARGIN >
               maxWidth
           ) {
+            // Add extra and break
             pushBubble(interests.length - 1, true);
             pushRow(currRow);
+            needExpand = true;
             break;
 
             // Otherwise just push the element
@@ -188,7 +199,23 @@ export default class ProfilePageInterests extends React.Component {
       if (currRow.length > 0) {
         pushRow(currRow);
       }
+
+      if (!needExpand && !collapse) {
+        // This implies nothing was added in other than ACCORDION
+        if (views.length == 1 && views[0].length == 1) {
+          views = [];
+        } else {
+          views[0] = views[0].slice(1, views[0].length);
+        }
+      }
     }
+
+    // Convert views from array of arrays to array of views
+    views = views.map((row, index) => (
+      <View key={index} style={styles.singleInterestRow}>
+        {row}
+      </View>
+    ));
 
     if (!!split) {
       if (split > 0) {
