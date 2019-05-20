@@ -17,6 +17,7 @@ import {
   getUserCommunity,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
+  getAllUserGoingEventsDocIds,
 } from '../firebase/api';
 
 import { firestore } from '../firebase/firebase';
@@ -31,6 +32,7 @@ export default class CommunityScreen extends React.Component {
       communityPhoto: '../assets/images/logo.png', //This never actually renders, but avoids empty string warnings.
       communityName: '',
       interestedEventDocIds: new Set(),
+      goingEventDocIds: new Set(),
       refreshing: true,
       communityMembers: [],
     };
@@ -41,40 +43,47 @@ export default class CommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
-    // Get event data
-    const [
-      upcomingEvents,
-      pastEvents,
-      ongoingEvents,
-    ] = await getEventsForCommunity();
-
     // Get current user's community data
     const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
-    const communityName = await getCommunityName(currentUserCommunityRef);
-    const communityPhoto = await getCommunityCoverPhoto(
-      currentUserCommunityRef
-    );
 
-    // Get doc IDs the current user has bookmarked
-    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
-      c.TEST_USER_ID
-    );
+    const [
+      communityName,
+      communityPhoto,
+      interestedEventDocIds,
+      goingEventDocIds,
+      communityMembers,
+      [upcomingEvents, pastEvents, ongoingEvents],
+    ] = await Promise.all([
+      //TODO: Change all occurrences of TEST_USER_ID to current user
 
-    //TODO change this to be the actual community members
-    const communityMembers = await firestore
-      .collection('users')
-      .where('community_ref', '==', currentUserCommunityRef)
-      .get()
-      .then(
-        async snapshot =>
-          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
-      );
+      getCommunityName(currentUserCommunityRef),
+
+      getCommunityCoverPhoto(currentUserCommunityRef),
+
+      // Get doc IDs the current user has bookmarked and is going to
+      getAllUserInterestedEventsDocIds(c.TEST_USER_ID),
+      getAllUserGoingEventsDocIds(c.TEST_USER_ID),
+
+      // Get community members for Facepile
+      firestore
+        .collection('users')
+        .where('community_ref', '==', currentUserCommunityRef)
+        .get()
+        .then(
+          async snapshot =>
+            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+        ),
+
+      getEventsForCommunity(),
+    ]);
+
     this.setState({
       upcomingEvents,
       pastEvents,
       communityPhoto,
       communityName,
       interestedEventDocIds,
+      goingEventDocIds,
       refreshing: false,
       communityMembers,
     });
@@ -96,9 +105,10 @@ export default class CommunityScreen extends React.Component {
       communityPhoto,
       communityName,
       interestedEventDocIds,
+      goingEventDocIds,
       refreshing,
+      communityMembers,
     } = this.state;
-
     if (!refreshing) {
       return (
         // Invisible ScrollView component to add pull-down refresh functionality
@@ -124,7 +134,7 @@ export default class CommunityScreen extends React.Component {
                   totalWidth={335}
                   maxNumImages={10}
                   imageDiameter={50}
-                  members={this.state.communityMembers}
+                  members={communityMembers}
                   pileTitle="Community Members"
                   navigation={this.props.navigation}
                 />
@@ -139,6 +149,7 @@ export default class CommunityScreen extends React.Component {
                 events={upcomingEvents}
                 onPress={this._onPressOpenEventPage}
                 interestedIDs={interestedEventDocIds}
+                goingIDs={goingEventDocIds}
               />
             </View>
             <View style={styles.bottomText}>
@@ -146,8 +157,9 @@ export default class CommunityScreen extends React.Component {
               <View style={styles.pastScroll}>
                 <CommunityProfileEventCardHorizontalScroll
                   events={pastEvents}
-                  interestedIDs={interestedEventDocIds}
                   onPress={this._onPressOpenEventPage}
+                  interestedIDs={interestedEventDocIds}
+                  goingIDs={goingEventDocIds}
                 />
               </View>
             </View>

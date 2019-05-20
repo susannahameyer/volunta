@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { timestampToDate } from '../utils';
 import { getOrganizationName } from '../firebase/api';
+import Colors from '../constants/Colors';
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -22,7 +23,7 @@ export default class CommunityProfileEventCard extends React.Component {
   }
 
   render() {
-    const { event, interested, onPress } = this.props;
+    const { event, interested, going, onPress } = this.props;
     const { date, org_name } = this.state;
     const upcoming = event.status == 'upcoming';
     return (
@@ -55,10 +56,15 @@ export default class CommunityProfileEventCard extends React.Component {
               >
                 <Text style={styles.dateText}>{date}</Text>
                 <Icon
+                  name={'check-circle-outline'}
+                  size={23}
+                  color={going ? Colors.iconBlue : 'grey'}
+                />
+                <Icon
                   name={'star-circle-outline'}
                   size={23}
                   style={styles.bookmarkIcon}
-                  color={interested ? '#0081AF' : 'grey'}
+                  color={interested ? Colors.iconBlue : 'grey'}
                 />
               </View>
             </View>
@@ -109,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'normal',
     color: '#838383',
+    flex: 1,
   },
   textContainer: {
     flex: 1,
@@ -121,7 +128,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   bookmarkIcon: {
-    paddingLeft: 95,
+    paddingRight: 3,
   },
   detailTextContainer: {
     marginLeft: 10,

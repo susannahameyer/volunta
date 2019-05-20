@@ -256,7 +256,7 @@ export const getOrganizationLogo = async orgRef => {
 // Given a user doc id, returns a set with the doc ids of all events the user is interested in
 // Returns none in case of error.
 export const getAllUserInterestedEventsDocIds = async userDocId => {
-  interested = new Set();
+  let interested = new Set();
   await firestore
     .collection('users')
     .doc(userDocId)
@@ -270,6 +270,25 @@ export const getAllUserInterestedEventsDocIds = async userDocId => {
       return null;
     });
   return interested;
+};
+
+// Given a user doc id, returns a set with the doc ids of all events the user is going to
+// Returns none in case of error.
+export const getAllUserGoingEventsDocIds = async userDocId => {
+  let going = new Set();
+  await firestore
+    .collection('users')
+    .doc(userDocId)
+    .get()
+    .then(snapshot => {
+      let going_refs = snapshot.get('event_refs.going');
+      going_refs.forEach(ref => going.add(ref.id));
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return going;
 };
 
 // Retrieve the community reference object for the current user
