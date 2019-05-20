@@ -133,14 +133,14 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     padding: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: '#F2F2F2',
     borderColor: '#bbb',
     borderWidth: 0.2,
   },
   textInput: {
     padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderWidth: 0.4,
+    borderColor: '#bbb',
     fontFamily: 'montserrat',
     fontSize: 14,
   },
