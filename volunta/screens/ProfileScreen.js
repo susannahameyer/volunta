@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
   },
   upperText: {
     justifyContent: 'center',
+    width: 175,
   },
   interestBar: {
     flex: 1,
