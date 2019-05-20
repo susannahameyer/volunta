@@ -55,23 +55,17 @@ export default class ProfileScreen extends React.Component {
     const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
-      volunteerNetwork,
       interests,
     ] = await Promise.all([
       getEventsForProfile(userId),
-      //TODO change this to actual volunteer network
-      firestore
-        .collection('users')
-        .get()
-        .then(
-          async snapshot =>
-            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
-        ),
       getUserInterestNames(userId),
     ]);
 
     // get name of user
     const profileName = await getProfileName(userId);
+
+    // get the volunteer network from the past events
+    const volunteerNetwork = await this._getVolunteerNetwork(pastEvents);
 
     // Get doc IDs the current user has bookmarked and is going to
     const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
@@ -97,6 +91,30 @@ export default class ProfileScreen extends React.Component {
       refreshing: false,
       interests,
     });
+  };
+
+  //Gets the volunteer network of this user based on their past service events
+  _getVolunteerNetwork = async pastEvents => {
+    volunteerNetwork = [];
+
+    pastEvents.forEach(event => {
+      const eventRef = firestore.collection('events').doc(event.doc_id);
+      firestore
+        .collection('users')
+        .where('event_refs.going', 'array-contains', eventRef)
+        .get()
+        .then(async snapshot => {
+          const attendees = await getUsersAttributes(snapshot.docs, [
+            'name',
+            'profile_pic_url',
+          ]);
+          volunteerNetwork.push(attendees);
+          console.log(volunteerNetwork);
+        });
+    });
+    console.log('final network');
+    console.log(volunteerNetwork);
+    return volunteerNetwork;
   };
 
   // onPress function to pass to CommunityProfileEventCards using screen navigation
