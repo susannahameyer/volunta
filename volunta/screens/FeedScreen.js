@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
+import { StyleSheet, FlatList, View, Dimensions, TouchableOpacity } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
@@ -11,6 +11,7 @@ import {
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
 } from '../firebase/api';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default class FeedScreen extends React.Component {
   _isMounted = false;
@@ -100,6 +101,14 @@ export default class FeedScreen extends React.Component {
   // Function we pass to EventCard, pushes screen onto current stack with the corresponding event page
   _onPressEventCard = (event, org_name, interested) => {
     this.props.navigation.push('Event', {
+      event,
+      org_name,
+      interested,
+    });
+  };
+
+  _onPressFilterButton = (event, org_name, interested) => {
+    this.props.navigation.push('SearchFilter', {
       event,
       org_name,
       interested,
@@ -200,6 +209,7 @@ export default class FeedScreen extends React.Component {
     const { search, displayedEvents, isRefreshing } = this.state;
     return (
       <View style={styles.pageContainer}>
+        <View>
         <SearchBar
           placeholder="Search for service events"
           onChangeText={this._updateSearchAndFilter}
@@ -210,6 +220,13 @@ export default class FeedScreen extends React.Component {
           inputContainerStyle={styles.searchInputContainerStyle}
           ref={searchBar => (this.searchBar = searchBar)}
         />
+        <TouchableOpacity 
+          style={styles.filterIcon}
+          onPress={this._onPressFilterButton}
+        >
+          <FontAwesome name="bars" size={24} style={{ color: 'gray' }} />
+        </TouchableOpacity>
+        </View>
         {displayedEvents !== [] && (
           <FlatList
             style={styles.flatListStyle}
@@ -246,4 +263,9 @@ const styles = StyleSheet.create({
   flatListStyle: {
     height: '100%',
   },
+  filterIcon: {
+    position: 'absolute',
+    left: '87%',
+    top: 16
+  }
 });
