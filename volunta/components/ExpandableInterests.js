@@ -16,6 +16,7 @@ Props:
     - numRows: (optional) max number of rows of interests that we want to display.
     - duration: duration of animation in ms.
     - accordionRight: prop for ProfilePageInterests, put button on the right 
+    - interests: list of strings of interests
 */
 
 export default class ExpandableInterest extends Component {
@@ -39,19 +40,7 @@ export default class ExpandableInterest extends Component {
         passWidths={passWidths}
         passedWidths={widths}
         accordionRight={this.props.accordionRight}
-        interests={[
-          'public health',
-          'public',
-          'kids',
-          'social good',
-          'civics',
-          'beach',
-          'really long interest that I love',
-          'environmental',
-          'kids',
-          'health things',
-          'words',
-        ]}
+        interests={this.props.interests}
       />
     );
   };

@@ -30,9 +30,10 @@ export default class ProfilePageInterests extends React.Component {
     super(props);
     this.state = {
       readyToShow: false,
-      widths: new Array(this.props.interests.length),
+      widths: new Array(props.interests.length),
       numWidthsSet: 0,
-      interests: this._cleanUpInterests(this.props.interests),
+      interests: props.interests,
+      updatedInterests: false,
     };
   }
 
@@ -56,16 +57,39 @@ export default class ProfilePageInterests extends React.Component {
   // Used the first time it renders to get the width of the bubble
   // Note: They are not called in order, that is why we use the bubble id.
   onLayoutGetWidth = (event, bubbleId) => {
-    let { widths, numWidthsSet, interests, readyToShow } = this.state;
-    if (readyToShow) return;
+    let {
+      widths,
+      numWidthsSet,
+      interests,
+      readyToShow,
+      updatedInterests,
+    } = this.state;
+    _interests = this._cleanUpInterests(interests);
+    if (readyToShow && !updatedInterests) return;
     var { x, y, width, height } = event.nativeEvent.layout;
     widths[bubbleId] = width;
     numWidthsSet += 1;
     this.setState({ widths, numWidthsSet });
-    if (numWidthsSet == interests.length) {
-      this.setState({ readyToShow: true });
+    if (numWidthsSet == _interests.length) {
+      this.setState({ readyToShow: true, updatedInterests: false });
     }
   };
+
+  // Update interests in state if interests from props change.
+  // Note that for the way the component is implemented interests must be part of the state.
+  // Return object that we want to update state with.
+  // We check if the interests are different.
+  static getDerivedStateFromProps(props, state) {
+    if (
+      props.interests.length != state.interests.length &&
+      props.interests.length > 0
+    ) {
+      return {
+        interests: props.interests,
+        updatedInterests: true,
+      };
+    } else return null;
+  }
 
   render() {
     const {
@@ -79,6 +103,7 @@ export default class ProfilePageInterests extends React.Component {
       accordionRight,
     } = this.props;
     const { readyToShow, widths, interests } = this.state;
+    _interests = this._cleanUpInterests(interests);
 
     // Set widths to passedWidths if they are set, otherwise use from state
     usedWidths = widths;
@@ -87,16 +112,15 @@ export default class ProfilePageInterests extends React.Component {
     }
 
     let views = []; // Rows we will show
-
     if (!readyToShow) {
       // This part is used to render all the components so we can get their widths
       let currRow = [];
-      for (let i = 0; i < interests.length; i++) {
+      for (let i = 0; i < _interests.length; i++) {
         currRow.push(
           <InterestBubble
             key={i}
             id={i}
-            interestName={interests[i]}
+            interestName={_interests[i]}
             onLayout={this.onLayoutGetWidth}
           />
         );
@@ -134,7 +158,7 @@ export default class ProfilePageInterests extends React.Component {
             onPress={onPress}
             key={i}
             id={i}
-            interestName={i == 0 ? (!!collapse ? '-' : '+') : interests[i]}
+            interestName={i == 0 ? (!!collapse ? '-' : '+') : _interests[i]}
             onLayout={this.onLayoutGetWidth}
             marginRight={MIN_BUBBLE_SPACING}
             extraTextStyles={i == 0 ? styles.accordionTextStyle : null}
@@ -152,7 +176,7 @@ export default class ProfilePageInterests extends React.Component {
       };
 
       let needExpand = false;
-      for (let i = 0; i < interests.length - 1; i++) {
+      for (let i = 0; i < _interests.length - 1; i++) {
         // We do interests.length-1 since the last object in the array is the '...' (we forced it in)
         w = usedWidths[i];
 
@@ -161,7 +185,7 @@ export default class ProfilePageInterests extends React.Component {
           // If there are elements left but the element plus the extra would not fit , add the extra
           // push the row, and break
           if (
-            i + 1 < interests.length - 1 &&
+            i + 1 < _interests.length - 1 &&
             currWidth +
             3 * MIN_BUBBLE_SPACING + // before interest, before and after extra
               w +
@@ -170,7 +194,7 @@ export default class ProfilePageInterests extends React.Component {
               maxWidth
           ) {
             // Add extra and break
-            pushBubble(interests.length - 1, true);
+            pushBubble(_interests.length - 1, true);
             pushRow(currRow);
             needExpand = true;
             break;
