@@ -10,7 +10,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import Facepile from '../components/Facepile';
-import InterestBubble from '../components/InterestBubble';
+import ProfilePageInterests from '../components/ProfilePageInterests';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
@@ -25,6 +25,8 @@ import {
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
 import * as firebase from 'firebase';
+
+const SIDE_MARGIN = 20;
 
 export default class ProfileScreen extends React.Component {
   constructor(props) {
@@ -152,17 +154,23 @@ export default class ProfileScreen extends React.Component {
           </View>
           <View style={styles.interestBar}>
             <Text style={styles.sectionTitle}>interests:</Text>
-            <View style={styles.singleInterestRow}>
-              <InterestBubble interestName={'public health'} />
-              <InterestBubble interestName={'kitties'} />
-              <InterestBubble interestName={'social good'} />
-            </View>
-            <View style={styles.singleInterestRow}>
-              <InterestBubble interestName={'kids'} />
-              <InterestBubble interestName={'environmental'} />
-              <InterestBubble interestName={'civics'} />
-              <InterestBubble interestName={'...'} />
-            </View>
+            <ProfilePageInterests
+              numRows={2}
+              sideMargin={SIDE_MARGIN}
+              interests={[
+                'public health',
+                'public',
+                'social good',
+                'really long interest that I love',
+                'kids',
+                'civics',
+                'environmental',
+                'beach',
+                'kids',
+                'health things',
+                'words',
+              ]}
+            />
           </View>
           <View style={styles.comingUpBar}>
             <Text style={styles.sectionTitle}>coming up:</Text>
@@ -205,7 +213,7 @@ export default class ProfileScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
+    marginHorizontal: SIDE_MARGIN,
   },
   profileBar: {
     flexDirection: 'row',
@@ -234,6 +242,9 @@ const styles = StyleSheet.create({
   upperText: {
     justifyContent: 'center',
   },
+  interestBar: {
+    flex: 1,
+  },
   personName: {
     fontSize: 28,
     fontFamily: 'montserrat',
@@ -242,14 +253,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#838383',
     fontFamily: 'montserrat',
-  },
-  interestBar: {
-    height: 100,
-  },
-  singleInterestRow: {
-    justifyContent: 'space-evenly',
-    flexDirection: 'row',
-    marginVertical: 3,
   },
   comingUpBar: {
     height: 200,
