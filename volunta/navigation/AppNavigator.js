@@ -11,7 +11,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import LogInScreen from '../screens/LoginScreen';
 import NUXCommunityScreen from '../screens/NUXCommunityScreen';
-import InterestsScreen from '../screens/InterestsScreen';
+import NUXInterestsScreen from '../screens/NUXInterestsScreen';
 
 export const AuthStack = createStackNavigator({
   Welcome: {
@@ -29,8 +29,8 @@ export const AuthStack = createStackNavigator({
       title: "Community"
     }
   },
-  Interests: {
-    screen: InterestsScreen,
+  NUXInterests: {
+    screen: NUXInterestsScreen,
     navigationOptions: {
       title: "Interests"
     }
@@ -48,8 +48,5 @@ export default AppContainer = createAppContainer(createSwitchNavigator(
     AuthLoading: AuthLoadingScreen,
     Main: MainTabNavigator,
     Auth: AuthStack,
-  },
-  {
-    initialRouteName: 'AuthLoading',
   }
 ));

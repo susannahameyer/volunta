@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 
-export default class InterestsScreen extends React.Component {
+export default class NUXInterestsScreen extends React.Component {
 
   constructor(props) {
     super(props);
