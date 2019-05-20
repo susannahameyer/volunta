@@ -84,30 +84,34 @@ export const getEventsForCommunity = async () => {
 
 // Given a user doc id, returns a set with the event objects the user is going to or interested in
 export const getEventsForProfile = async userDocId => {
-  const eventIds = await getAllUserEventsRef(userDocId);
-  const profileEvents = await getEventsFromArrOfRefs(eventIds);
+  const [interestedEventIds, goingEventIds] = await getAllUserEvents(userDocId);
+  const profileEvents = await getEventsFromArrsOfIds(
+    interestedEventIds,
+    goingEventIds
+  );
   return profileEvents;
 };
 
 // Given a user doc id, returns a set with the doc ids of events user is going to or interested in
 // Returns none in case of error.
-export const getAllUserEventsRef = async userDocId => {
-  eventRefs = new Set();
+export const getAllUserEvents = async userDocId => {
+  interestedEventIds = new Set();
+  goingEventIds = new Set();
   await firestore
     .collection('users')
     .doc(userDocId)
     .get()
     .then(snapshot => {
       let interestedRefs = snapshot.get('event_refs.interested');
-      interestedRefs.forEach(ref => eventRefs.add(ref.id));
+      interestedRefs.forEach(ref => interestedEventIds.add(ref.id));
       let goingRefs = snapshot.get('event_refs.going');
-      goingRefs.forEach(ref => eventRefs.add(ref.id));
+      goingRefs.forEach(ref => goingEventIds.add(ref.id));
     })
     .catch(error => {
       console.log(error);
       return null;
     });
-  return eventRefs;
+  return [interestedEventIds, goingEventIds];
 };
 
 // Retrieve profile photo for a given user id
@@ -129,7 +133,10 @@ export const getProfileName = async userRef => {
 
 // Given a list of event references, returns a set with the event objects a user is going to or interested in
 // Returns none in case of error.
-export const getEventsFromArrOfRefs = async eventRefsArr => {
+export const getEventsFromArrsOfIds = async (
+  interestedEventIds,
+  goingEventIds
+) => {
   let returnArrUpcoming = [];
   let returnArrPast = [];
   let returnArrOngoing = [];
@@ -140,7 +147,7 @@ export const getEventsFromArrOfRefs = async eventRefsArr => {
     .get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        if (eventRefsArr.has(doc.id)) {
+        if (interestedEventIds.has(doc.id) || goingEventIds.has(doc.id)) {
           data = doc.data();
           data.doc_id = doc.id;
 
@@ -156,7 +163,7 @@ export const getEventsFromArrOfRefs = async eventRefsArr => {
             data.status = 'upcoming';
             returnArrUpcoming.push(data);
             // An event is in the past if event to_date is less than current date
-          } else if (eventEndDate < currentDate) {
+          } else if (eventEndDate < currentDate && goingEventIds.has(doc.id)) {
             data.status = 'past';
             returnArrPast.push(data);
             // This means that from_date <= current date and to_date >= current date,
