@@ -56,7 +56,7 @@ export default class ProfileScreen extends React.Component {
       volunteerNetwork,
       interests,
     ] = await Promise.all([
-      getEventsForCommunity(), // TODO: get events for profile not community!
+      getEventsForProfile(userId),
       // Get doc IDs the current user has bookmarked
       getAllUserInterestedEventsDocIds(userId),
       //TODO change this to actual volunteer network
@@ -67,16 +67,8 @@ export default class ProfileScreen extends React.Component {
           async snapshot =>
             await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
         ),
-      getUserInterestNames(c.TEST_USER_ID),
+      getUserInterestNames(userId),
     ]);
-    const [
-      upcomingEvents,
-      pastEvents,
-      ongoingEvents,
-    ] = await getEventsForProfile(c.TEST_USER_ID);
-
-    //If we are navigating to another user's profile
-    const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
 
     // get name of user
     const profileName = await getProfileName(userId);
@@ -86,20 +78,6 @@ export default class ProfileScreen extends React.Component {
 
     // get community name for a profile
     const communityName = await getProfileCommunityName(userId);
-
-    // Get doc IDs the current user has bookmarked
-    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
-      userId
-    );
-
-    //TODO change this to actual volunteer network
-    const volunteerNetwork = await firestore
-      .collection('users')
-      .get()
-      .then(
-        async snapshot =>
-          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
-      );
 
     this.setState({
       upcomingEvents,
