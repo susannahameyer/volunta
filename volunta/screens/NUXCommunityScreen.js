@@ -2,15 +2,16 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ModalFilterPicker from 'react-native-modal-filter-picker';
 import { getAllCommunityNames } from '../firebase/api';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 
 export default class NUXCommunityScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      visible: false,
-      picked: null,
+      selectedCommunity: '',
       communities: [],
+      continueDisabled: true,
     };
   }
 
@@ -22,8 +23,8 @@ export default class NUXCommunityScreen extends React.Component {
     const communityNames = await getAllCommunityNames();
     const communities = communityNames.map(name => {
       return {
-        key: name,
-        label: name,
+        id: name,
+        name: name,
       };
     });
     this.setState({
@@ -31,55 +32,54 @@ export default class NUXCommunityScreen extends React.Component {
     });
   };
 
-  // Function we pass to Log In button, pushes login screen onto stack
-  _onPressContinue = event => {
-    this.props.navigation.navigate('Interests');
+  // TODO: Add chosen community to current user's community in db
+  _onPressContinue = community => {
+    this.props.navigation.navigate('NUXInterests');
   };
 
-  _onShow = () => {
-    this.setState({ visible: true });
-  };
-
-  _onSelect = picked => {
+  _onSelect = selected => {
     this.setState({
-      picked: picked,
-      visible: false,
-    });
-  };
-
-  _onCancel = () => {
-    this.setState({
-      visible: false,
+      selectedCommunity: selected.name,
+      continueDisabled: false,
     });
   };
 
   render() {
-    const { visible, picked, communities } = this.state;
+    const { selectedCommunity, communities, continueDisabled } = this.state;
 
     return (
       <View style={styles.container}>
         <Text style={styles.welcomeText}>Welcome to volunta!</Text>
         <Text style={styles.detailText}>
-          Please choose the community you want to register your account with.
+          {'Communities, the schools or organizations that our users belong to, are at the core of volunta.\n\n' +
+            'Register with a community to join a larger network of volunteers, ' +
+            'browse service events sponsored by your community, and connect with fellow community members.'}
         </Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={this._onShow}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>select a community</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.selectedLabel}>Selected:</Text>
-        <Text style={styles.selectedCommunity}>{picked}</Text>
-        <ModalFilterPicker
-          visible={visible}
-          onSelect={this._onSelect}
-          onCancel={this._onCancel}
-          options={communities}
+        <SearchableDropdown
+          onItemSelect={item => this._onSelect(item)}
+          containerStyle={styles.dropdown}
+          textInputStyle={styles.textInput}
+          itemStyle={styles.dropdownItem}
+          itemTextStyle={{ fontFamily: 'montserrat', fontSize: 14 }}
+          itemsContainerStyle={{ maxHeight: 185 }}
+          items={communities}
+          placeholder={'search for a community...'}
+          placeholderTextColor={'grey'}
+          resetValue={false}
         />
         <View style={styles.continueButtonContainer}>
-          <TouchableOpacity onPress={this._onPressContinue}>
-            <View style={styles.button}>
+          <TouchableOpacity
+            onPress={this._onPressContinue}
+            disabled={continueDisabled}
+          >
+            <View
+              style={[
+                styles.button,
+                {
+                  backgroundColor: continueDisabled ? 'grey' : '#0081AF',
+                },
+              ]}
+            >
               <Text style={styles.buttonText}>continue</Text>
             </View>
           </TouchableOpacity>
@@ -108,33 +108,41 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flex: 1,
-    marginHorizontal: 25,
+    marginHorizontal: 27,
   },
   welcomeText: {
-    fontFamily: 'montserrat',
-    fontSize: 24,
-    marginTop: 60,
+    fontFamily: 'montserrat-medium',
+    fontSize: 22,
+    marginTop: 40,
   },
   detailText: {
     textAlign: 'center',
     fontFamily: 'montserrat',
-    fontSize: 24,
-    marginTop: 35,
+    fontSize: 18,
+    marginTop: 30,
   },
   buttonContainer: {
-    // flex: 1,
+    marginTop: 20,
   },
   continueButtonContainer: {
-    marginTop: 100,
+    marginTop: 10,
   },
-  selectedLabel: {
+  dropdown: {
+    marginTop: 25,
+    width: 250,
+    height: 230,
+  },
+  dropdownItem: {
+    padding: 10,
+    backgroundColor: '#ddd',
+    borderColor: '#bbb',
+    borderWidth: 0.2,
+  },
+  textInput: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
     fontFamily: 'montserrat',
-    fontSize: 16,
-    marginTop: 10,
-  },
-  selectedCommunity: {
-    fontFamily: 'montserrat-bold',
-    fontSize: 16,
-    marginTop: 10,
+    fontSize: 14,
   },
 });
