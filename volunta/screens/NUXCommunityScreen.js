@@ -1,6 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import ModalFilterPicker from 'react-native-modal-filter-picker';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getAllCommunityNames } from '../firebase/api';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
