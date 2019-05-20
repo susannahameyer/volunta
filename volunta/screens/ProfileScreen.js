@@ -8,6 +8,7 @@ import {
   View,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import Facepile from '../components/Facepile';
 import ExpandableInterests from '../components/ExpandableInterests';
@@ -131,85 +132,92 @@ export default class ProfileScreen extends React.Component {
       refreshing,
       interests,
     } = this.state;
-
-    return (
-      // Invisible ScrollView component to add pull-down refresh functionality
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => this._loadData()}
-          />
-        }
-      >
-        <View style={styles.container}>
-          <View style={styles.profileBar}>
-            <Image
-              style={styles.profilePic}
-              source={{ uri: this.state.profilePhoto }}
+    if (!refreshing) {
+      return (
+        // Invisible ScrollView component to add pull-down refresh functionality
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => this._loadData()}
             />
-            <View style={styles.upperText}>
-              <Text style={styles.personName}>{this.state.profileName}</Text>
-              <Text style={styles.communityName}>
-                {this.state.communityName}
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={this._onPressSettings}
-              style={styles.editIcon}
-            >
-              <Ionicons name="ios-settings" size={30} color="#0081AF" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.interestBar}>
-            <Text style={styles.sectionTitle}>interests:</Text>
-            {interests.length > 0 && (
-              <ExpandableInterests
-                interests={interests} // TODO: component seems to be rendering only on first attempt!
-                duration={500}
-                numRows={2}
-                accordionRight={true}
+          }
+        >
+          <View style={styles.container}>
+            <View style={styles.profileBar}>
+              <Image
+                style={styles.profilePic}
+                source={{ uri: this.state.profilePhoto }}
               />
-            )}
-          </View>
-          <View style={styles.comingUpBar}>
-            <Text style={styles.sectionTitle}>coming up:</Text>
-            <View style={styles.upcomingScroll}>
+              <View style={styles.upperText}>
+                <Text style={styles.personName}>{this.state.profileName}</Text>
+                <Text style={styles.communityName}>
+                  {this.state.communityName}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={this._onPressSettings}
+                style={styles.editIcon}
+              >
+                <Ionicons name="ios-settings" size={30} color="#0081AF" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.interestBar}>
+              <Text style={styles.sectionTitle}>interests:</Text>
+              {interests.length > 0 && (
+                <ExpandableInterests
+                  interests={interests} // TODO: component seems to be rendering only on first attempt!
+                  duration={500}
+                  numRows={2}
+                  accordionRight={true}
+                />
+              )}
+            </View>
+            <View style={styles.comingUpBar}>
+              <Text style={styles.sectionTitle}>coming up:</Text>
+              <View style={styles.upcomingScroll}>
+                <CommunityProfileEventCardHorizontalScroll
+                  events={upcomingEvents}
+                  interestedIDs={interestedEventDocIds}
+                  onPress={this._onPressOpenEventPage}
+                  goingIDs={goingEventDocIds}
+                />
+              </View>
+            </View>
+            <View style={styles.helpedBar}>
+              <Text style={styles.helpedTitle}>how I've helped:</Text>
               <CommunityProfileEventCardHorizontalScroll
-                events={upcomingEvents}
+                events={pastEvents}
                 interestedIDs={interestedEventDocIds}
                 onPress={this._onPressOpenEventPage}
                 goingIDs={goingEventDocIds}
               />
             </View>
+            <View>
+              <Text style={styles.sectionTitle}>volunteer network:</Text>
+            </View>
+            <View style={styles.facepileContainer}>
+              {this.state.volunteerNetwork !== [] && (
+                <Facepile
+                  totalWidth={335}
+                  maxNumImages={10}
+                  imageDiameter={50}
+                  navigation={this.props.navigation}
+                  members={this.state.volunteerNetwork}
+                  pileTitle="Volunteer Network"
+                />
+              )}
+            </View>
           </View>
-          <View style={styles.helpedBar}>
-            <Text style={styles.helpedTitle}>how I've helped:</Text>
-            <CommunityProfileEventCardHorizontalScroll
-              events={pastEvents}
-              interestedIDs={interestedEventDocIds}
-              onPress={this._onPressOpenEventPage}
-              goingIDs={goingEventDocIds}
-            />
-          </View>
-          <View>
-            <Text style={styles.sectionTitle}>volunteer network:</Text>
-          </View>
-          <View style={styles.facepileContainer}>
-            {this.state.volunteerNetwork !== [] && (
-              <Facepile
-                totalWidth={335}
-                maxNumImages={10}
-                imageDiameter={50}
-                navigation={this.props.navigation}
-                members={this.state.volunteerNetwork}
-                pileTitle="Volunteer Network"
-              />
-            )}
-          </View>
+        </ScrollView>
+      );
+    } else {
+      return (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size={0} />
         </View>
-      </ScrollView>
-    );
+      );
+    }
   }
 }
 
@@ -271,5 +279,8 @@ const styles = StyleSheet.create({
     height: 50,
     marginTop: 4,
     backgroundColor: 'grey',
+  },
+  activityIndicator: {
+    marginTop: 300,
   },
 });
