@@ -18,6 +18,10 @@ import {
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
   getUserInterestNames,
+  getEventsForProfile,
+  getProfilePhoto,
+  getProfileName,
+  getProfileCommunityName,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -65,10 +69,44 @@ export default class ProfileScreen extends React.Component {
         ),
       getUserInterestNames(c.TEST_USER_ID),
     ]);
+    const [
+      upcomingEvents,
+      pastEvents,
+      ongoingEvents,
+    ] = await getEventsForProfile(c.TEST_USER_ID);
+
+    //If we are navigating to another user's profile
+    const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
+
+    // get name of user
+    const profileName = await getProfileName(userId);
+
+    // get url for profile picture
+    const profilePhoto = await getProfilePhoto(userId);
+
+    // get community name for a profile
+    const communityName = await getProfileCommunityName(userId);
+
+    // Get doc IDs the current user has bookmarked
+    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
+      userId
+    );
+
+    //TODO change this to actual volunteer network
+    const volunteerNetwork = await firestore
+      .collection('users')
+      .get()
+      .then(
+        async snapshot =>
+          await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+      );
 
     this.setState({
       upcomingEvents,
       pastEvents,
+      profileName,
+      profilePhoto,
+      communityName,
       interestedEventDocIds,
       refreshing: false,
       volunteerNetwork,
@@ -124,11 +162,13 @@ export default class ProfileScreen extends React.Component {
           <View style={styles.profileBar}>
             <Image
               style={styles.profilePic}
-              source={require('../assets/images/kanye.png')}
+              source={{ uri: this.state.profilePhoto }}
             />
             <View style={styles.upperText}>
-              <Text style={styles.personName}>Kanye West</Text>
-              <Text style={styles.communityName}>Stanford University</Text>
+              <Text style={styles.personName}>{this.state.profileName}</Text>
+              <Text style={styles.communityName}>
+                {this.state.communityName}
+              </Text>
             </View>
             <TouchableOpacity
               onPress={this._onPressSettings}
@@ -217,6 +257,7 @@ const styles = StyleSheet.create({
   },
   upperText: {
     justifyContent: 'center',
+    width: 175,
   },
   interestBar: {
     flex: 1,

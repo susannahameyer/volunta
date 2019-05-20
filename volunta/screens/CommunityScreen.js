@@ -5,6 +5,7 @@ import {
   Text,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import Facepile from '../components/Facepile';
 import CommunityCoverPhoto from '../components/CommunityCoverPhoto';
@@ -98,60 +99,68 @@ export default class CommunityScreen extends React.Component {
       refreshing,
     } = this.state;
 
-    return (
-      // Invisible ScrollView component to add pull-down refresh functionality
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => this._loadData()}
-          />
-        }
-      >
-        <View>
-          <CommunityCoverPhoto
-            communityPhoto={communityPhoto}
-            communityName={communityName}
-          />
-          <View style={styles.topText}>
-            <Text style={styles.titleText}>{'in my community'}</Text>
-          </View>
-          <View style={styles.facepileContainer}>
-            {this.state.communityMembers !== [] && (
-              <Facepile
-                totalWidth={335}
-                maxNumImages={10}
-                imageDiameter={50}
-                members={this.state.communityMembers}
-                pileTitle="Community Members"
-                navigation={this.props.navigation}
-              />
-            )}
-          </View>
-
-          <View style={styles.middleText}>
-            <Text style={styles.titleText}>{'coming up'}</Text>
-          </View>
-          <View style={styles.upcomingScroll}>
-            <CommunityProfileEventCardHorizontalScroll
-              events={upcomingEvents}
-              onPress={this._onPressOpenEventPage}
-              interestedIDs={interestedEventDocIds}
+    if (!refreshing) {
+      return (
+        // Invisible ScrollView component to add pull-down refresh functionality
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => this._loadData()}
             />
-          </View>
-          <View style={styles.bottomText}>
-            <Text style={styles.titleText}>{"how we've helped"}</Text>
-            <View style={styles.pastScroll}>
+          }
+        >
+          <View>
+            <CommunityCoverPhoto
+              communityPhoto={communityPhoto}
+              communityName={communityName}
+            />
+            <View style={styles.topText}>
+              <Text style={styles.titleText}>{'in my community'}</Text>
+            </View>
+            <View style={styles.facepileContainer}>
+              {this.state.communityMembers !== [] && (
+                <Facepile
+                  totalWidth={335}
+                  maxNumImages={10}
+                  imageDiameter={50}
+                  members={this.state.communityMembers}
+                  pileTitle="Community Members"
+                  navigation={this.props.navigation}
+                />
+              )}
+            </View>
+
+            <View style={styles.middleText}>
+              <Text style={styles.titleText}>{'coming up'}</Text>
+            </View>
+            <View style={styles.upcomingScroll}>
               <CommunityProfileEventCardHorizontalScroll
-                events={pastEvents}
-                interestedIDs={interestedEventDocIds}
+                events={upcomingEvents}
                 onPress={this._onPressOpenEventPage}
+                interestedIDs={interestedEventDocIds}
               />
             </View>
+            <View style={styles.bottomText}>
+              <Text style={styles.titleText}>{"how we've helped"}</Text>
+              <View style={styles.pastScroll}>
+                <CommunityProfileEventCardHorizontalScroll
+                  events={pastEvents}
+                  interestedIDs={interestedEventDocIds}
+                  onPress={this._onPressOpenEventPage}
+                />
+              </View>
+            </View>
           </View>
+        </ScrollView>
+      );
+    } else {
+      return (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size={0} />
         </View>
-      </ScrollView>
-    );
+      );
+    }
   }
 }
 
@@ -190,5 +199,8 @@ const styles = StyleSheet.create({
     left: 15,
     top: 7,
     height: 0, //removes extra blank space at bottom of scroll
+  },
+  activityIndicator: {
+    marginTop: 300,
   },
 });
