@@ -504,3 +504,22 @@ export const getEvent = async eventRef => {
   });
   return event;
 };
+
+// Takes in a reference to an event object
+// Returns a list of the event's interest names
+export const getUserInterestNames = async userDocId => {
+  var interestRefs = [];
+  await firestore
+    .collection('users')
+    .doc(userDocId)
+    .get()
+    .then(snapshot => {
+      interestRefs = snapshot.get('interest_refs');
+    });
+  return await Promise.all(
+    interestRefs.map(async interestRef => {
+      var interestSnapshot = await interestRef.get();
+      return interestSnapshot.get('name');
+    })
+  );
+};

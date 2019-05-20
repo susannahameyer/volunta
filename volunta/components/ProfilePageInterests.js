@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import InterestBubble from './InterestBubble';
 
 /*
@@ -11,12 +11,18 @@ Props:
     - numRows: (optional) max number of rows of interests that we want to display.
     - sideMargin: space between component and screen. 2*sideMargin plus the size of the container component should total the screen width
     - interests: list of strings (interests).
+    - passWidths: (optional) functioned passed if parent wants the widths of all bubbles
+    - passedWidths: (optional) pass if widths of bubbles are precalculated
+    - collapse: function passed if component is child of accordion and we need to collapse
+    - expand: function passed if component is child of accordion and we need to expand
+    - accordionRight: put accordion (+) button on the right instead of on the left
 */
 
 const MIN_BUBBLE_SPACING = 7; // Minimum space we want between interest bubbles
 const SIDE_EXTRA_MARGIN = 12;
 const MAX_WORD_LENGTH = 20;
 const TRUNCATED_STR_ENDING = '...';
+const ACCORDION = '+';
 const SHORTENED_LIST_LAST_ITEM = '. . .'; // Add bubble with this string at the end of the list if we shorten it
 
 export default class ProfilePageInterests extends React.Component {
@@ -24,9 +30,10 @@ export default class ProfilePageInterests extends React.Component {
     super(props);
     this.state = {
       readyToShow: false,
-      widths: new Array(this.props.interests.length),
+      widths: new Array(props.interests.length),
       numWidthsSet: 0,
-      interests: this._cleanUpInterests(this.props.interests),
+      interests: props.interests,
+      updatedInterests: false,
     };
   }
 
@@ -43,41 +50,77 @@ export default class ProfilePageInterests extends React.Component {
           : interest;
       return interest;
     });
-    return [...cleanInterests, SHORTENED_LIST_LAST_ITEM];
+    return [ACCORDION, ...cleanInterests, SHORTENED_LIST_LAST_ITEM];
   };
 
   // Called by bubble once rendered
   // Used the first time it renders to get the width of the bubble
   // Note: They are not called in order, that is why we use the bubble id.
   onLayoutGetWidth = (event, bubbleId) => {
-    let { widths, numWidthsSet, interests } = this.state;
-    if (this.state.readyToShow) return;
+    let {
+      widths,
+      numWidthsSet,
+      interests,
+      readyToShow,
+      updatedInterests,
+    } = this.state;
+    _interests = this._cleanUpInterests(interests);
+    if (readyToShow && !updatedInterests) return;
     var { x, y, width, height } = event.nativeEvent.layout;
     widths[bubbleId] = width;
     numWidthsSet += 1;
     this.setState({ widths, numWidthsSet });
-    if (numWidthsSet == interests.length) {
-      this.setState({ readyToShow: true });
+    if (numWidthsSet == _interests.length) {
+      this.setState({ readyToShow: true, updatedInterests: false });
     }
   };
 
+  // Update interests in state if interests from props change.
+  // Note that for the way the component is implemented interests must be part of the state.
+  // Return object that we want to update state with.
+  // We check if the interests are different.
+  static getDerivedStateFromProps(props, state) {
+    if (
+      props.interests.length != state.interests.length &&
+      props.interests.length > 0
+    ) {
+      return {
+        interests: props.interests,
+        updatedInterests: true,
+      };
+    } else return null;
+  }
+
   render() {
-    const { numRows, sideMargin } = this.props;
+    const {
+      numRows,
+      sideMargin,
+      split,
+      passWidths,
+      passedWidths,
+      collapse,
+      expand,
+      accordionRight,
+    } = this.props;
     const { readyToShow, widths, interests } = this.state;
+    _interests = this._cleanUpInterests(interests);
 
-    let views = [];
+    // Set widths to passedWidths if they are set, otherwise use from state
+    usedWidths = widths;
+    if (!!passedWidths) {
+      usedWidths = passedWidths;
+    }
 
-    // TODO: get rid of this logic, it can be integrated into the other logic path.
+    let views = []; // Rows we will show
     if (!readyToShow) {
       // This part is used to render all the components so we can get their widths
-      // TODO: make the number of rows be the same before and after the components show up so there is not a weird lag...
       let currRow = [];
-      for (let i = 0; i < interests.length; i++) {
+      for (let i = 0; i < _interests.length; i++) {
         currRow.push(
           <InterestBubble
             key={i}
             id={i}
-            interestName={interests[i]}
+            interestName={_interests[i]}
             onLayout={this.onLayoutGetWidth}
           />
         );
@@ -88,6 +131,10 @@ export default class ProfilePageInterests extends React.Component {
         </View>
       );
     } else {
+      if (!!passWidths) {
+        passWidths(usedWidths);
+      }
+
       // At this point we have the widths for all the components, so we can use this
       views = [];
       let currRow = [];
@@ -95,14 +142,27 @@ export default class ProfilePageInterests extends React.Component {
       let maxWidth = Dimensions.get('window').width - 2 * sideMargin;
 
       // Push bubble into current row
-      pushBubble = i => {
+      pushBubble = (i, isExtra) => {
+        // Logic to decide if we want to make button pressable
+        let onPress = null;
+        if (i == 0) {
+          if (!!expand) {
+            onPress = expand;
+          } else if (!!collapse) {
+            onPress = collapse;
+          }
+        }
+
         currRow.push(
           <InterestBubble
+            onPress={onPress}
             key={i}
             id={i}
-            interestName={interests[i]}
+            interestName={i == 0 ? (!!collapse ? '-' : '+') : _interests[i]}
             onLayout={this.onLayoutGetWidth}
             marginRight={MIN_BUBBLE_SPACING}
+            extraTextStyles={i == 0 ? styles.accordionTextStyle : null}
+            extraBubbleStyles={i == 0 ? styles.accordionBubbleStyle : null}
           />
         );
         currWidth += w;
@@ -110,40 +170,38 @@ export default class ProfilePageInterests extends React.Component {
 
       // Push row of bubbles
       pushRow = row => {
-        views.push(
-          <View key={views.length} style={styles.singleInterestRow}>
-            {row}
-          </View>
-        );
+        views.push(row);
         currRow = [];
         currWidth = 0;
       };
 
-      console.log('start');
-      for (let i = 0; i < interests.length - 1; i++) {
+      let needExpand = false;
+      for (let i = 0; i < _interests.length - 1; i++) {
         // We do interests.length-1 since the last object in the array is the '...' (we forced it in)
-        w = widths[i];
+        w = usedWidths[i];
 
         // If we are in the last row
         if (!!views.length && views.length == numRows - 1) {
           // If there are elements left but the element plus the extra would not fit , add the extra
           // push the row, and break
           if (
-            i + 1 < interests.length - 1 &&
+            i + 1 < _interests.length - 1 &&
             currWidth +
             3 * MIN_BUBBLE_SPACING + // before interest, before and after extra
               w +
-              widths[widths.length - 1] +
+              usedWidths[usedWidths.length - 1] +
               SIDE_EXTRA_MARGIN >
               maxWidth
           ) {
-            pushBubble(interests.length - 1);
+            // Add extra and break
+            pushBubble(_interests.length - 1, true);
             pushRow(currRow);
+            needExpand = true;
             break;
 
             // Otherwise just push the element
           } else {
-            pushBubble(i);
+            pushBubble(i, false);
           }
         } else {
           // Not on the last row, check if element fits.
@@ -157,7 +215,7 @@ export default class ProfilePageInterests extends React.Component {
           }
 
           // Add to current row
-          pushBubble(i);
+          pushBubble(i, false);
         }
       }
 
@@ -165,16 +223,69 @@ export default class ProfilePageInterests extends React.Component {
       if (currRow.length > 0) {
         pushRow(currRow);
       }
+
+      if (!needExpand && !collapse) {
+        // This implies nothing was added in other than ACCORDION
+        if (views.length == 1 && views[0].length == 1) {
+          views = [];
+        } else {
+          views[0] = views[0].slice(1, views[0].length);
+        }
+      }
+
+      // Convert views from array of arrays to array of views
+      views = views.map((row, index) => {
+        if (accordionRight && index == 0 && (needExpand || !!collapse)) {
+          row.push(row.shift());
+          return (
+            <View
+              key={index}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+            >
+              <View style={styles.singleInterestRow}>
+                {row.slice(0, row.length - 1)}
+              </View>
+              <View style={styles.singleInterestRow}>
+                {row[row.length - 1]}
+              </View>
+            </View>
+          );
+        }
+        return (
+          <View key={index} style={styles.singleInterestRow}>
+            {row}
+          </View>
+        );
+      });
     }
 
-    return <View>{views}</View>;
+    if (!!split) {
+      if (split > 0) {
+        return <View>{views.slice(0, split)}</View>;
+      } else {
+        return <View>{views.slice(-split, views.length)}</View>;
+      }
+    } else {
+      return <View>{views}</View>;
+    }
   }
 }
 
 const styles = StyleSheet.create({
   singleInterestRow: {
-    // justifyContent: 'space-evenly',
     flexDirection: 'row',
     marginVertical: 3,
+  },
+  accordionBubbleStyle: {
+    width: 32,
+    height: 32,
+    backgroundColor: 'white',
+    borderColor: '#0081AF',
+  },
+  accordionTextStyle: {
+    color: '#0081AF',
+    fontSize: 20,
+    marginHorizontal: 0,
   },
 });

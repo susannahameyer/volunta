@@ -10,13 +10,14 @@ import {
   RefreshControl,
 } from 'react-native';
 import Facepile from '../components/Facepile';
-import ProfilePageInterests from '../components/ProfilePageInterests';
+import ExpandableInterests from '../components/ExpandableInterests';
 import CommunityProfileEventCardHorizontalScroll from '../components/CommunityProfileEventCardHorizontalScroll';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   getEventsForCommunity,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
+  getUserInterestNames,
   getEventsForProfile,
   getProfilePhoto,
   getProfileName,
@@ -37,6 +38,7 @@ export default class ProfileScreen extends React.Component {
       volunteerNetwork: [],
       interestedEventDocIds: new Set(),
       refreshing: true,
+      interests: [],
     };
   }
 
@@ -46,6 +48,27 @@ export default class ProfileScreen extends React.Component {
 
   //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
   _loadData = async () => {
+    //If we are navigating to another user's profile
+    const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
+    const [
+      [upcomingEvents, pastEvents, ongoingEvents],
+      interestedEventDocIds,
+      volunteerNetwork,
+      interests,
+    ] = await Promise.all([
+      getEventsForCommunity(), // TODO: get events for profile not community!
+      // Get doc IDs the current user has bookmarked
+      getAllUserInterestedEventsDocIds(userId),
+      //TODO change this to actual volunteer network
+      firestore
+        .collection('users')
+        .get()
+        .then(
+          async snapshot =>
+            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+        ),
+      getUserInterestNames(c.TEST_USER_ID),
+    ]);
     const [
       upcomingEvents,
       pastEvents,
@@ -88,6 +111,7 @@ export default class ProfileScreen extends React.Component {
       refreshing: false,
       volunteerNetwork,
       userId,
+      interests,
     });
   };
 
@@ -121,6 +145,7 @@ export default class ProfileScreen extends React.Component {
       pastEvents,
       interestedEventDocIds,
       refreshing,
+      interests,
     } = this.state;
 
     return (
@@ -154,23 +179,14 @@ export default class ProfileScreen extends React.Component {
           </View>
           <View style={styles.interestBar}>
             <Text style={styles.sectionTitle}>interests:</Text>
-            <ProfilePageInterests
-              numRows={2}
-              sideMargin={SIDE_MARGIN}
-              interests={[
-                'public health',
-                'public',
-                'social good',
-                'really long interest that I love',
-                'kids',
-                'civics',
-                'environmental',
-                'beach',
-                'kids',
-                'health things',
-                'words',
-              ]}
-            />
+            {interests.length > 0 && (
+              <ExpandableInterests
+                interests={interests} // TODO: component seems to be rendering only on first attempt!
+                duration={500}
+                numRows={2}
+                accordionRight={true}
+              />
+            )}
           </View>
           <View style={styles.comingUpBar}>
             <Text style={styles.sectionTitle}>coming up:</Text>
