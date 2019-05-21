@@ -542,10 +542,27 @@ export const getUserInterestNames = async userDocId => {
     .then(snapshot => {
       interestRefs = snapshot.get('interest_refs');
     });
-  return await Promise.all(
+  interestRefs = await Promise.all(
     interestRefs.map(async interestRef => {
       var interestSnapshot = await interestRef.get();
       return interestSnapshot.get('name');
     })
   );
+  return interestRefs.sort();
+};
+
+// Returns a list of all interest names
+export const getAllInterestNames = async () => {
+  var interests = [];
+  await firestore
+    .collection('interests')
+    .orderBy('name')
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(interestRef => {
+        let name = interestRef.get('name');
+        interests.push(name);
+      });
+    });
+  return interests;
 };
