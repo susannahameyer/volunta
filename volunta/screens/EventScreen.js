@@ -24,7 +24,7 @@ import {
   updateUserInterestedEvents,
   updateUserGoingEvents,
 } from '../firebase/api';
-import * as firebase from 'firebase';
+import * as c from '../firebase/fb_constants';
 
 export default class EventScreen extends React.Component {
   constructor(props) {
