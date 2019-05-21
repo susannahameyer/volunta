@@ -22,7 +22,7 @@ export default class FeedScreen extends React.Component {
       displayedEvents: [],
       isRefreshing: true,
       search: '',
-      userId: null,
+      userId: c.TEST_USER_ID, // TODO: pass in as prop
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
@@ -31,8 +31,7 @@ export default class FeedScreen extends React.Component {
 
   // Fetch any data needed from api
   async componentDidMount() {
-    let userId = await firebase.auth().currentUser.uid;
-    this.setState({ userId });
+    this._isMounted = true;
     this._loadData();
   }
 
