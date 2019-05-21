@@ -95,9 +95,9 @@ export default class ProfileScreen extends React.Component {
 
   //Gets the volunteer network of this user based on their past service events
   _getVolunteerNetwork = async pastEvents => {
-    volunteerNetwork = Array(pastEvents.length);
+    volunteerNetwork = new Set();
     await Promise.all(
-      pastEvents.map(async (event, index) => {
+      pastEvents.map(async event => {
         const eventRef = firestore.collection('events').doc(event.doc_id);
         await firestore
           .collection('users')
@@ -108,14 +108,13 @@ export default class ProfileScreen extends React.Component {
               'name',
               'profile_pic_url',
             ]);
-            volunteerNetwork[index] = attendees;
+            attendees.forEach(attendee => {
+              volunteerNetwork.add(attendee);
+            });
           });
       })
     );
-
-    console.log('final network');
-    console.log(volunteerNetwork);
-    return volunteerNetwork;
+    return Array.from(volunteerNetwork);
   };
 
   // onPress function to pass to CommunityProfileEventCards using screen navigation
