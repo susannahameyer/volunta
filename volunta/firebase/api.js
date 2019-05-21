@@ -35,12 +35,12 @@ export const getFeedEvents = async () => {
 
 // Fetch event data for the community page
 // TODO: finalize logic for upcoming vs past vs ongoing events
-export const getEventsForCommunity = async () => {
+export const getEventsForCommunity = async userId => {
   let returnArrUpcoming = [];
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
-  const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+  const currentUserCommunityRef = await getUserCommunity(userId);
 
   await eventsRef
     .where('sponsors', 'array-contains', currentUserCommunityRef)

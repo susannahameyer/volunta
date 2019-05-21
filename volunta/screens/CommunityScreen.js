@@ -74,7 +74,7 @@ export default class CommunityScreen extends React.Component {
             await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
         ),
 
-      getEventsForCommunity(),
+      getEventsForCommunity(c.TEST_USER_ID),
     ]);
 
     this.setState({
