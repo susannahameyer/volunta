@@ -23,6 +23,7 @@ import {
   getProfileName,
   getProfileCommunityName,
   getAllUserGoingEventsDocIds,
+  getVolunteerNetwork,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -56,28 +57,29 @@ export default class ProfileScreen extends React.Component {
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
       interests,
+      // get name of user
+      profileName,
+
+      // Get doc IDs the current user has bookmarked and is going to
+      interestedEventDocIds,
+      goingEventDocIds,
+
+      // get url for profile picture
+      profilePhoto,
+      // get community name for a profile
+      communityName,
     ] = await Promise.all([
       getEventsForProfile(userId),
       getUserInterestNames(userId),
+      getProfileName(userId),
+      getAllUserInterestedEventsDocIds(userId),
+      getAllUserGoingEventsDocIds(userId),
+      getProfilePhoto(userId),
+      getProfileCommunityName(userId),
     ]);
 
-    // get name of user
-    const profileName = await getProfileName(userId);
-
     // get the volunteer network from the past events
-    const volunteerNetwork = await this._getVolunteerNetwork(pastEvents);
-
-    // Get doc IDs the current user has bookmarked and is going to
-    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
-      userId
-    );
-    const goingEventDocIds = await getAllUserGoingEventsDocIds(userId);
-
-    // get url for profile picture
-    const profilePhoto = await getProfilePhoto(userId);
-
-    // get community name for a profile
-    const communityName = await getProfileCommunityName(userId);
+    const volunteerNetwork = await getVolunteerNetwork(pastEvents);
 
     this.setState({
       upcomingEvents,
@@ -91,30 +93,6 @@ export default class ProfileScreen extends React.Component {
       refreshing: false,
       interests,
     });
-  };
-
-  //Gets the volunteer network of this user based on their past service events
-  _getVolunteerNetwork = async pastEvents => {
-    volunteerNetwork = new Set();
-    await Promise.all(
-      pastEvents.map(async event => {
-        const eventRef = firestore.collection('events').doc(event.doc_id);
-        await firestore
-          .collection('users')
-          .where('event_refs.going', 'array-contains', eventRef)
-          .get()
-          .then(async snapshot => {
-            const attendees = await getUsersAttributes(snapshot.docs, [
-              'name',
-              'profile_pic_url',
-            ]);
-            attendees.forEach(attendee => {
-              volunteerNetwork.add(attendee);
-            });
-          });
-      })
-    );
-    return Array.from(volunteerNetwork);
   };
 
   // onPress function to pass to CommunityProfileEventCards using screen navigation
