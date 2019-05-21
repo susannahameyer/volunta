@@ -13,6 +13,8 @@ import {
 } from '../firebase/api';
 
 export default class FeedScreen extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -29,12 +31,13 @@ export default class FeedScreen extends React.Component {
 
   // Fetch any data needed from api
   async componentDidMount() {
+    this._isMounted = true;
     this._loadData();
   }
 
-  componentWillUnmount() {
-    // TODO: Cancel async calls to prevent memory leakage (look into this later..)
-  }
+  componentWillUnmount = () => {
+    this._isMounted = false;
+  };
 
   // Load data needed for the screen and its components
   // 1) Fetch list of events using api call.
@@ -63,20 +66,22 @@ export default class FeedScreen extends React.Component {
 
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
-    this.setState({
-      isRefreshing: false,
-      events,
-      interestedMap,
-      goingCounts,
-    });
-
-    // Enable refresh while searching
-    if (!this.state.search) {
+    if (this._isMounted) {
       this.setState({
-        displayedEvents: events,
+        isRefreshing: false,
+        events,
+        interestedMap,
+        goingCounts,
       });
-    } else {
-      this._updateSearchAndFilter(this.state.search);
+
+      // Enable refresh while searching
+      if (!this.state.search) {
+        this.setState({
+          displayedEvents: events,
+        });
+      } else {
+        this._updateSearchAndFilter(this.state.search);
+      }
     }
   };
 
@@ -143,12 +148,14 @@ export default class FeedScreen extends React.Component {
   // Then we try updating in the database. If the update fails we toggle it back.
   // Otherwise we toggle
   _updateInterested = async eventId => {
-    // copy the map rather than modifying state
-    const interestedMap = new Map(this.state.interestedMap);
+    if (this._isMounted) {
+      // copy the map rather than modifying state
+      const interestedMap = new Map(this.state.interestedMap);
 
-    // Toggle button in FE
-    interestedMap.set(eventId, !interestedMap.get(eventId));
-    this.setState({ interestedMap });
+      // Toggle button in FE
+      interestedMap.set(eventId, !interestedMap.get(eventId));
+      this.setState({ interestedMap });
+    }
 
     // Try to update in database.
     interested = !this.state.interestedMap.get(eventId);
@@ -158,10 +165,12 @@ export default class FeedScreen extends React.Component {
       interested
     );
 
-    // Toggle back if database update failed.
-    if (!success) {
-      interestedMap.set(eventId, !interestedMap.get(eventId));
-      this.setState({ interestedMap });
+    if (this._isMounted) {
+      // Toggle back if database update failed.
+      if (!success) {
+        interestedMap.set(eventId, !interestedMap.get(eventId));
+        this.setState({ interestedMap });
+      }
     }
   };
 
@@ -180,7 +189,9 @@ export default class FeedScreen extends React.Component {
       const location = await Expo.Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
-      this.setState({ location });
+      if (this._isMounted) {
+        this.setState({ location });
+      }
     }
   };
 

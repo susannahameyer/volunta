@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  createAppContainer, 
-  createSwitchNavigator, 
-  createStackNavigator 
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  createStackNavigator,
 } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
@@ -20,33 +20,37 @@ export const AuthStack = createStackNavigator({
   SignUp: {
     screen: SignUpScreen,
     navigationOptions: {
-      title: "Sign Up"
-    }
-  },
-  NUXCommunity: {
-    screen: NUXCommunityScreen,
-    navigationOptions: {
-      title: "Community"
-    }
-  },
-  NUXInterests: {
-    screen: NUXInterestsScreen,
-    navigationOptions: {
-      title: "Interests"
-    }
+      title: 'Sign Up',
+    },
   },
   LogIn: {
     screen: LogInScreen,
     navigationOptions: {
-      title: "Log In"
-    }
-  }
+      title: 'Log In',
+    },
+  },
 });
 
-export default AppContainer = createAppContainer(createSwitchNavigator(
-  {
+export const NUXStack = createStackNavigator({
+  NUXCommunity: {
+    screen: NUXCommunityScreen,
+    navigationOptions: {
+      title: 'Community',
+    },
+  },
+  NUXInterests: {
+    screen: NUXInterestsScreen,
+    navigationOptions: {
+      title: 'Interests',
+    },
+  },
+});
+
+export default (AppContainer = createAppContainer(
+  createSwitchNavigator({
     AuthLoading: AuthLoadingScreen,
+    NUX: NUXStack,
     Main: MainTabNavigator,
     Auth: AuthStack,
-  }
+  })
 ));

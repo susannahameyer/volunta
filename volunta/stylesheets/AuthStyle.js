@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   buttonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontFamily: 'montserrat',
     fontSize: 18,
     fontWeight: 'normal',
@@ -65,5 +65,10 @@ export default StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     marginTop: 2,
+  },
+  error: {
+    color: 'red',
+    fontFamily: 'montserrat',
+    fontSize: 12,
   },
 });

@@ -32,6 +32,8 @@ import * as firebase from 'firebase';
 const SIDE_MARGIN = 20;
 
 export default class ProfileScreen extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -46,10 +48,15 @@ export default class ProfileScreen extends React.Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true;
     this._loadData();
   }
 
-  //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
+  componentWillUnmount = () => {
+    this._isMounted = false;
+  };
+
+  //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space.
   _loadData = async () => {
     // If we are navigating to another user's profile
     // TODO: Change default to current user
@@ -81,18 +88,20 @@ export default class ProfileScreen extends React.Component {
     // get the volunteer network from the past events
     const volunteerNetwork = await getVolunteerNetwork(pastEvents);
 
-    this.setState({
-      upcomingEvents,
-      pastEvents,
-      profileName,
-      profilePhoto,
-      communityName,
-      volunteerNetwork,
-      interestedEventDocIds,
-      goingEventDocIds,
-      refreshing: false,
-      interests,
-    });
+    if (this._isMounted) {
+      this.setState({
+        upcomingEvents,
+        pastEvents,
+        profileName,
+        profilePhoto,
+        communityName,
+        volunteerNetwork,
+        interestedEventDocIds,
+        goingEventDocIds,
+        refreshing: false,
+        interests,
+      });
+    }
   };
 
   // onPress function to pass to CommunityProfileEventCards using screen navigation
@@ -162,7 +171,7 @@ export default class ProfileScreen extends React.Component {
               <Text style={styles.sectionTitle}>interests:</Text>
               {interests.length > 0 && (
                 <ExpandableInterests
-                  interests={interests} // TODO: component seems to be rendering only on first attempt!
+                  interests={interests}
                   duration={500}
                   numRows={2}
                   accordionRight={true}
