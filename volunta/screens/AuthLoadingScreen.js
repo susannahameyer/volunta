@@ -10,8 +10,17 @@ export default class AuthLoadingScreen extends React.Component {
   }
 
   componentDidMount = async () => {
+    // For when user signs out.
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        this.props.navigation.navigate('Auth');
+      }
+    });
+
+    // For when app is opened.
     let user = await firebase.auth().currentUser;
     this.props.navigation.navigate(!!user ? 'Main' : 'Auth');
+    console.log(user);
   };
 
   // Render any loading content that you like here
