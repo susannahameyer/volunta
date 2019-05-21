@@ -55,7 +55,7 @@ export default class ProfileScreen extends React.Component {
     this._isMounted = false;
   };
 
-  //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
+  //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space.
   _loadData = async () => {
     // If we are navigating to another user's profile
     // TODO: Change default to current user
