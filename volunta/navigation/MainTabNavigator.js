@@ -16,7 +16,7 @@ import Facepile from '../components/Facepile';
 import NUXInterestsScreen from '../screens/NUXInterestsScreen';
 
 const FeedStack = createStackNavigator({
-  Feed: NUXInterestsScreen,
+  Feed: FeedScreen,
   Event: EventScreen,
   Facepile: FacepileDetailScreen,
   Profile: ProfileScreen,
