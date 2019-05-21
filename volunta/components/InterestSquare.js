@@ -6,13 +6,33 @@ Interest Square Component used in NUXInterestsScreen
 
 Props:
     - interestName: name for interest
-    - selected: whether or not the interest is selected
+    - updateParentInterestsMap: function to update NUXInterestsScreen state map
 */
 export default class InterestSquare extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selected: false,
+    };
+  }
+
+  _onPressInterest = () => {
+    const prevSelected = this.state.selected;
+    this.setState({
+      selected: !prevSelected,
+    });
+    this.props.updateParentInterestsMap(this.props.interestName, !prevSelected);
+  };
+
   render() {
-    const { interestName, selected } = this.props;
+    const { interestName } = this.props;
+    const { selected } = this.state;
     return (
-      <TouchableOpacity style={styles.separator}>
+      <TouchableOpacity
+        style={styles.separator}
+        onPress={this._onPressInterest}
+      >
         <View
           style={[
             styles.bubble,

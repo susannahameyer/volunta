@@ -27,7 +27,7 @@ export default class NUXInterestsScreen extends React.Component {
   _loadData = async () => {
     const interests = await getAllInterestNames();
     var interestsMap = new Map();
-    // Map all interests to false (not selected) at first
+    // Map all interests to false (i.e. not selected) at first
     interests.forEach(interest => {
       interestsMap.set(interest, false);
     });
@@ -38,20 +38,26 @@ export default class NUXInterestsScreen extends React.Component {
     });
   };
 
-  _onPressInterest = interestName => {
+  _updateInterestsMap = (interestName, selected) => {
     var interestsMap = this.state.interestsMap;
-    var currentState = interestsMap.get(interestName);
-    interestsMap.set(interestName, !currentState);
+    console.log(selected);
+    interestsMap = interestsMap.set(interestName, selected);
     this.setState({
       interestsMap,
     });
   };
 
   _renderInterestSquare = ({ item }) => {
-    return <InterestSquare interestName={item} />;
+    return (
+      <InterestSquare
+        interestName={item}
+        // Bind 'this' to update the state of the parent from the child
+        updateParentInterestsMap={this._updateInterestsMap.bind(this)}
+      />
+    );
   };
 
-  // Function we pass to Log In button, pushes login screen onto stack
+  // TODO: Save interests set to true in interestsMap to current user's interests in db
   _onPressDone = event => {
     this.props.navigation.navigate('Main');
   };
@@ -68,6 +74,7 @@ export default class NUXInterestsScreen extends React.Component {
 
   render() {
     const { interests, interestsMap } = this.state;
+    console.log(interestsMap);
     return (
       <View style={styles.container}>
         <Text style={styles.headerText}>what are your interests?</Text>
@@ -88,7 +95,7 @@ export default class NUXInterestsScreen extends React.Component {
             ItemSeparatorComponent={this._renderSeparator}
           />
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={this._onPressDone}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>done</Text>
           </View>
