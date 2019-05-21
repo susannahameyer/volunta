@@ -554,17 +554,11 @@ export const getUserInterestNames = async userDocId => {
 // Add new user to database, including all default fields...
 // Return false if there is an error, otherwise true.
 export const registerUser = async (userId, birthdateStr) => {
-  // TODO: error check birthdate
-  console.log('register');
-  console.log(userId);
-  console.log(birthdateStr);
-  let d = new Date(birthdateStr);
-  console.log(d);
   let success = await firestore
     .collection('users')
     .doc(userId)
     .set({
-      birthdate: firebase.firestore.Timestamp.fromDate(d),
+      birthdate: firebase.firestore.Timestamp.fromDate(new Date(birthdateStr)),
       community_ref: null,
       event_refs: {
         going: [],

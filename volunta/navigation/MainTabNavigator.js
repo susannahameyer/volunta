@@ -57,7 +57,6 @@ const ProfileStack = createStackNavigator({
   Profile: ProfileScreen,
   Event: EventScreen,
   Facepile: FacepileDetailScreen,
-  Profile: ProfileScreen,
 });
 
 ProfileStack.navigationOptions = {

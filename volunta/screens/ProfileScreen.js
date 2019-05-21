@@ -30,6 +30,8 @@ import * as firebase from 'firebase';
 const SIDE_MARGIN = 20;
 
 export default class ProfileScreen extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -44,8 +46,13 @@ export default class ProfileScreen extends React.Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true;
     this._loadData();
   }
+
+  componentWillUnmount = () => {
+    this._isMounted = false;
+  };
 
   //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space
   _loadData = async () => {
@@ -84,18 +91,20 @@ export default class ProfileScreen extends React.Component {
     // get community name for a profile
     const communityName = await getProfileCommunityName(userId);
 
-    this.setState({
-      upcomingEvents,
-      pastEvents,
-      profileName,
-      profilePhoto,
-      communityName,
-      volunteerNetwork,
-      interestedEventDocIds,
-      goingEventDocIds,
-      refreshing: false,
-      interests,
-    });
+    if (this._isMounted) {
+      this.setState({
+        upcomingEvents,
+        pastEvents,
+        profileName,
+        profilePhoto,
+        communityName,
+        volunteerNetwork,
+        interestedEventDocIds,
+        goingEventDocIds,
+        refreshing: false,
+        interests,
+      });
+    }
   };
 
   // onPress function to pass to CommunityProfileEventCards using screen navigation
@@ -116,6 +125,7 @@ export default class ProfileScreen extends React.Component {
       },
       buttonIndex => {
         if (buttonIndex === 1) {
+          // TODO: cancel all promises, since once we sign out we should not be able to setState
           firebase.auth().signOut();
         }
       }
@@ -130,6 +140,7 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds,
       refreshing,
       interests,
+      mounted,
     } = this.state;
 
     return (

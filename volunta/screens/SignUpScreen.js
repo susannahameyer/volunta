@@ -34,7 +34,6 @@ export default class SignUpScreen extends React.Component {
   _onPressSignUpWithGoogle = event => {};
 
   _signUp = async (email, password, birthdate) => {
-    console.log('SIGNUP');
     await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
