@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
-import * as c from '../firebase/fb_constants';
 import { DefaultDict, distance, formatDist } from '../utils';
 import { Location } from 'expo';
 import {
@@ -11,6 +10,7 @@ import {
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
 } from '../firebase/api';
+import * as firebase from 'firebase';
 
 export default class FeedScreen extends React.Component {
   _isMounted = false;
