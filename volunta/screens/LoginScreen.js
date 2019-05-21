@@ -12,36 +12,38 @@ import AuthStyle from '../stylesheets/AuthStyle';
 import * as firebase from 'firebase';
 
 export default class LoginScreen extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       email: '',
       password: '',
+      errorMessage: '',
     };
   }
 
   // TODO: implement FB Login
-  _onPressLogInWithFB = event => { };
+  _onPressLogInWithFB = event => {};
 
   // TODO: implement Google Login
-  _onPressLogInWithGoogle = event => { };
+  _onPressLogInWithGoogle = event => {};
 
-  LogIn = (email, password) => {
-    try {
-      firebase.auth().signInWithEmailAndPassword(email, password);
-    } catch (error) {
-      console.log(error.toString(error));
-    }
+  _logIn = (email, password) => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        this.setState({ errorMessage });
+        return;
+      });
   };
 
   render() {
+    const { errorMessage, email, password } = this.state;
     return (
       <View style={AuthStyle.container}>
-        <Image
-          source={AssetFilePaths.logo}
-          style={AuthStyle.logo}
-        />
+        <Image source={AssetFilePaths.logo} style={AuthStyle.logo} />
         <View>
           <TouchableOpacity onPress={this._onPressLogInWithFB}>
             <View style={AuthStyle.socialButton}>
@@ -55,13 +57,14 @@ export default class LoginScreen extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={AuthStyle.divider} />
+        {!!errorMessage && <Text style={AuthStyle.error}>{errorMessage}</Text>}
         <View style={AuthStyle.inputView}>
           <Text style={AuthStyle.inputPromptText}>email:</Text>
           <TextInput
             autoCapitalize="none"
             style={AuthStyle.textInput}
             onChangeText={email => this.setState({ email })}
-            value={this.state.email}
+            value={email}
           />
         </View>
         <View style={AuthStyle.inputView}>
@@ -71,10 +74,10 @@ export default class LoginScreen extends React.Component {
             autoCapitalize="none"
             style={AuthStyle.textInput}
             onChangeText={password => this.setState({ password })}
-            value={this.state.password}
+            value={password}
           />
         </View>
-        <TouchableOpacity onPress={() => this.LogIn(this.state.email, this.state.password)}>
+        <TouchableOpacity onPress={() => this._logIn(email, password)}>
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>log in</Text>
           </View>
