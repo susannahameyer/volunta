@@ -41,12 +41,11 @@ export default class SignUpScreen extends React.Component {
       .then(async () => {
         let userId = await firebase.auth().currentUser.uid;
         let success = await registerUser(userId, birthdate);
-        if (success) this.props.navigation.navigate('NUXCommunity');
+        if (success) this.props.navigation.navigate('NUX');
         else
           this.setState({ errorMessage: 'Error communicating with database' });
       })
       .catch(error => {
-        console.log('error in signup');
         var errorCode = error.code;
         var errorMessage = error.message;
         this.setState({ errorMessage });
