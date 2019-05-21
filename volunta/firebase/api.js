@@ -549,3 +549,18 @@ export const getUserInterestNames = async userDocId => {
     })
   );
 };
+
+// Returns a list of all interest names
+export const getAllInterestNames = async () => {
+  var communities = [];
+  await firestore
+    .collection('interests')
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(communityRef => {
+        let name = communityRef.get('name');
+        communities.push(name);
+      });
+    });
+  return communities;
+};
