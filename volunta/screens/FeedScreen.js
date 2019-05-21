@@ -27,6 +27,8 @@ export default class FeedScreen extends React.Component {
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
+      currDistance: this.props.navigation.getParam('currDistance', 10), // maximum distance for events
+      currInterests: this.props.navigation.getParam('currInterests', []) // list of interests to filter on
     };
   }
 
@@ -107,19 +109,23 @@ export default class FeedScreen extends React.Component {
     });
   };
 
-  _onPressFilterButton = (event, org_name, interested) => {
+  // opens advanced search and passes current distance and interests
+  _onPressAdvancedSearch = (currDistance, currInterests) => {
     this.props.navigation.push('SearchFilter', {
-      event,
-      org_name,
-      interested,
-      onGoBack: this._refreshResults,
+      currDistance, 
+      currInterests,
+      onAdvancedSearchPressed: this._refreshResults,
     });
   };
 
-  _refreshResults=(data)=> {
-    console.log('the data from child screen is: ');
-    console.log(data);
-    console.log(typeof(data));
+  // gets back the distance and the interests from advanced search screen
+  // updating both local state and navigation state so the advanced search
+  // screen data can persist
+  _refreshResults = data => {
+    this.state.currDistance = data[0];
+    this.props.navigation.setParams({currDistance: data[0]});
+    this.state.currInterests = data[1];
+    this.props.navigation.setParams({currInterests: data[1]});
   }
 
   // Not explicit used now but will potentially be.
@@ -213,7 +219,7 @@ export default class FeedScreen extends React.Component {
   };
 
   render() {
-    const { search, displayedEvents, isRefreshing } = this.state;
+    const { search, displayedEvents, isRefreshing, currDistance, currInterests } = this.state;
     return (
       <View style={styles.pageContainer}>
         <View>
@@ -229,7 +235,7 @@ export default class FeedScreen extends React.Component {
         />
         <TouchableOpacity 
           style={styles.filterIcon}
-          onPress={this._onPressFilterButton}
+          onPress={() => this._onPressAdvancedSearch(currDistance, currInterests)}
         >
           <FontAwesome name="bars" size={20} style={{ color: 'gray' }} />
         </TouchableOpacity>

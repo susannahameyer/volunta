@@ -10,31 +10,40 @@ import {
   Button
 } from 'react-native';
 
-export default class WelcomeScreen extends React.Component {
+export default class FeedSearchFilterScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
         minDistance: 1,
         maxDistance: 50,
-        currDistance: 10,
+        currDistance: this.props.navigation.getParam('currDistance'),
         interests: ['puppies', 'homies', 'doggos'],
-        selectedInterests: []
+        selectedInterests: ['your mom']
     }
-    this.props.navigation.state.params.onGoBack('testing');
   }
 
-  static navigationOptions = ({ navigation, screenProps }) => ({
+  componentDidMount() {
+    this.props.navigation.setParams({
+      currDistance: this.state.currDistance,
+      selectedInterests: this.state.selectedInterests,
+    });
+  }
+
+  // creates the search button in the header
+  static navigationOptions = ({ navigation }) => ({
     headerRight: 
-    <Button 
-      title="Search" 
-      onPress={(navigation)=>{ 
-        this.props.navigation.goBack();
-      }} 
-    />,
+    <Button title="Search" onPress={() => {
+      currDistance = navigation.getParam('currDistance');
+      selectedInterests = navigation.getParam('selectedInterests')
+      // onAdvancedSearchPressed is the callback from the parent function
+      navigation.state.params.onAdvancedSearchPressed([currDistance, selectedInterests]);
+      navigation.goBack();
+    }} />,
   });
 
   _keyExtractor = (item, index) => item;
 
+  // displays single line of interests
   _renderInterest = ({ item }) => {
     return (
         <View style={styles.interestLine}> 
@@ -43,14 +52,28 @@ export default class WelcomeScreen extends React.Component {
     );
   };
 
+  // displays the line separating interests
   _renderSeparator = () => {
     return (
       <View style={styles.listSeparator}/>
     );
   };
 
-  // Function we pass to Sign Up button, pushes sign up screen onto stack
+  // updates the state to reflect the value of the slider
+  _onSliderValueChange = val => {
+    this.setState({ currDistance: val })
+  }
 
+  // updates the navigation parameters so the parent screen can see the value
+  // of the slider. This is only updated on release as opposed to slide because
+  // changing the navigation params is slow and expensive
+  _onSliderReleased = val => {
+    this.props.navigation.setParams({
+      currDistance: val,
+    });
+  }
+
+  // Function we pass to Sign Up button, pushes sign up screen onto stack
   render() {
     return (
       <View style={styles.container}>
@@ -63,7 +86,8 @@ export default class WelcomeScreen extends React.Component {
                 minimumValue={this.state.minDistance}
                 maximumValue={this.state.maxDistance}
                 value={this.state.currDistance}
-                onValueChange={val => this.setState({ currDistance: val })}
+                onValueChange={val => this._onSliderValueChange(val)}
+                onSlidingComplete={val => this._onSliderReleased(val)}
                 thumbTintColor='rgb(252, 228, 149)'
                 maximumTrackTintColor='#d3d3d3' 
                 minimumTrackTintColor='#0081AF'
