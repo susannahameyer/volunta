@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import AuthStyle from '../stylesheets/AuthStyle';
 import AssetFilePaths from '../constants/AssetFilePaths';
-import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker';
 import * as firebase from 'firebase';
+import { registerUser } from '../firebase/api';
 
 const today = new Date();
 
 export default class SignUpScreen extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -23,6 +23,7 @@ export default class SignUpScreen extends React.Component {
       community: '',
       email: '',
       password: '',
+      errorMessage: null,
     };
     this.setDate = this.setDate.bind(this);
   }
@@ -32,27 +33,37 @@ export default class SignUpScreen extends React.Component {
   }
 
   // TODO: implement FB Sign in
-  _onPressSignUpWithFB = event => { };
+  _onPressSignUpWithFB = event => {};
 
   // TODO: implement Google Sign in
-  _onPressSignUpWithGoogle = event => { };
+  _onPressSignUpWithGoogle = event => {};
 
-  SignUp = (email, password) => {
-    try {
-      firebase.auth().createUserWithEmailAndPassword(email, password);
-      this.props.navigation.navigate("NUXCommunity");
-    } catch (error) {
-      console.log(error.toString(error));
-    }
+  _signUp = async (email, password, birthdate) => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(async () => {
+        success = await registerUser(
+          firebase.auth().currentUser.uid,
+          birthdate
+        );
+        if (success) this.props.navigation.navigate('NUXCommunity');
+        else
+          this.setState({ errorMessage: 'Error communicating with database' });
+      })
+      .catch(error => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        this.setState({ errorMessage });
+        return;
+      });
   };
 
   render() {
+    const { errorMessage, email, password, birthdate } = this.state;
     return (
       <View style={AuthStyle.container}>
-        <Image
-          source={AssetFilePaths.logo}
-          style={AuthStyle.logo}
-        />
+        <Image source={AssetFilePaths.logo} style={AuthStyle.logo} />
         <View>
           <TouchableOpacity onPress={this._onPressSignUpWithFB}>
             <View style={AuthStyle.socialButton}>
@@ -66,6 +77,7 @@ export default class SignUpScreen extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={AuthStyle.divider} />
+        {!!errorMessage && <Text style={AuthStyle.error}>{errorMessage}</Text>}
         <View style={AuthStyle.inputView}>
           <Text style={AuthStyle.inputPromptText}>email:</Text>
           <TextInput
@@ -86,7 +98,7 @@ export default class SignUpScreen extends React.Component {
           />
         </View>
         <DatePicker
-          date={this.state.birthdate}
+          date={birthdate}
           mode="date"
           placeholder="birthdate"
           format="MM-DD-YYYY"
@@ -96,14 +108,18 @@ export default class SignUpScreen extends React.Component {
           cancelBtnText="cancel"
           customStyles={{
             dateText: {
-              fontFamily: "montserrat",
-            }
+              fontFamily: 'montserrat',
+            },
           }}
           showIcon={false}
           style={AuthStyle.datePicker}
-          onDateChange={(date) => { this.setState({ birthdate: date }) }}
+          onDateChange={date => {
+            this.setState({ birthdate: date });
+          }}
         />
-        <TouchableOpacity onPress={() => this.SignUp(this.state.email, this.state.password)}>
+        <TouchableOpacity
+          onPress={async () => await this._signUp(email, password, birthdate)}
+        >
           <View style={AuthStyle.logInButton}>
             <Text style={AuthStyle.buttonText}>sign up</Text>
           </View>

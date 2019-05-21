@@ -605,3 +605,35 @@ export const getVolunteerNetwork = async pastEvents => {
   );
   return Array.from(volunteerNetwork);
 };
+
+// Add new user to database, including all default fields...
+// Return false if there is an error, otherwise true.
+export const registerUser = async (userId, birthdateStr) => {
+  // TODO: error check birthdate
+  db.collection('users')
+    .doc(userId)
+    .set({
+      birthdate: firebase.firestore.Timestamp.fromDate(new Date(birthdateStr)),
+      community_ref: null,
+      event_refs: {
+        going: [],
+        interested: [],
+      },
+      interest_refs: [],
+      name: {
+        first: '',
+        middle: '',
+        last: '',
+      },
+      profile_pic_url: 'https://imgur.com/a/PkFtkmU', // TODO: set to a default one.
+      volunteer_network_refs: [],
+    })
+    .then(function() {
+      console.log('User signed up successfully!');
+      return true;
+    })
+    .catch(function(error) {
+      console.error('Error writing document: ', error);
+      return false;
+    });
+};
