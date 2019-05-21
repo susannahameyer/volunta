@@ -44,7 +44,8 @@ export default class CommunityScreen extends React.Component {
 
   _loadData = async () => {
     // Get current user's community data
-    const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+    let userId = await firebase.auth().currentUser.uid;
+    const currentUserCommunityRef = await getUserCommunity(userId);
 
     const [
       communityName,
@@ -54,15 +55,13 @@ export default class CommunityScreen extends React.Component {
       communityMembers,
       [upcomingEvents, pastEvents, ongoingEvents],
     ] = await Promise.all([
-      //TODO: Change all occurrences of TEST_USER_ID to current user
-
       getCommunityName(currentUserCommunityRef),
 
       getCommunityCoverPhoto(currentUserCommunityRef),
 
       // Get doc IDs the current user has bookmarked and is going to
-      getAllUserInterestedEventsDocIds(c.TEST_USER_ID),
-      getAllUserGoingEventsDocIds(c.TEST_USER_ID),
+      getAllUserInterestedEventsDocIds(userId),
+      getAllUserGoingEventsDocIds(userId),
 
       // Get community members for Facepile
       firestore
@@ -74,7 +73,7 @@ export default class CommunityScreen extends React.Component {
             await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
         ),
 
-      getEventsForCommunity(),
+      getEventsForCommunity(currentUserCommunityRef),
     ]);
 
     this.setState({
