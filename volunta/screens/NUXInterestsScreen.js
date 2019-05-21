@@ -1,21 +1,14 @@
 import React from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default class NUXInterestsScreen extends React.Component {
-
   constructor(props) {
     super(props);
   }
 
   // Function we pass to Log In button, pushes login screen onto stack
   _onPressDone = event => {
-    this.props.navigation.navigate('Main')
+    this.props.navigation.navigate('Main');
   };
 
   render() {
@@ -23,7 +16,7 @@ export default class NUXInterestsScreen extends React.Component {
       <View style={styles.container}>
         <Text>What are your interests?</Text>
         <View>
-          <TouchableOpacity onPress={this._onPressContinue}>
+          <TouchableOpacity onPress={this._onPressDone}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>done</Text>
             </View>
@@ -45,7 +38,7 @@ const styles = StyleSheet.create({
     width: 202,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontFamily: 'montserrat',
     fontSize: 18,
     fontWeight: 'normal',
