@@ -580,3 +580,28 @@ export const getAllCommunityNames = async () => {
     });
   return communities;
 };
+
+// Takes in a list of past event objects that the user has gone to
+// Gets the volunteer network of this user based on their past service events
+export const getVolunteerNetwork = async pastEvents => {
+  volunteerNetwork = new Set();
+  await Promise.all(
+    pastEvents.map(async event => {
+      const eventRef = firestore.collection('events').doc(event.doc_id);
+      await firestore
+        .collection('users')
+        .where('event_refs.going', 'array-contains', eventRef)
+        .get()
+        .then(async snapshot => {
+          const attendees = await getUsersAttributes(snapshot.docs, [
+            'name',
+            'profile_pic_url',
+          ]);
+          attendees.forEach(attendee => {
+            volunteerNetwork.add(attendee);
+          });
+        });
+    })
+  );
+  return Array.from(volunteerNetwork);
+};

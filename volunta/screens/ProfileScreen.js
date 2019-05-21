@@ -23,6 +23,7 @@ import {
   getProfileName,
   getProfileCommunityName,
   getAllUserGoingEventsDocIds,
+  getVolunteerNetwork,
 } from '../firebase/api';
 import { firestore } from '../firebase/firebase';
 import * as c from '../firebase/fb_constants';
@@ -55,35 +56,30 @@ export default class ProfileScreen extends React.Component {
     const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
-      volunteerNetwork,
       interests,
+      // get name of user
+      profileName,
+
+      // Get doc IDs the current user has bookmarked and is going to
+      interestedEventDocIds,
+      goingEventDocIds,
+
+      // get url for profile picture
+      profilePhoto,
+      // get community name for a profile
+      communityName,
     ] = await Promise.all([
       getEventsForProfile(userId),
-      //TODO change this to actual volunteer network
-      firestore
-        .collection('users')
-        .get()
-        .then(
-          async snapshot =>
-            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
-        ),
       getUserInterestNames(userId),
+      getProfileName(userId),
+      getAllUserInterestedEventsDocIds(userId),
+      getAllUserGoingEventsDocIds(userId),
+      getProfilePhoto(userId),
+      getProfileCommunityName(userId),
     ]);
 
-    // get name of user
-    const profileName = await getProfileName(userId);
-
-    // Get doc IDs the current user has bookmarked and is going to
-    const interestedEventDocIds = await getAllUserInterestedEventsDocIds(
-      userId
-    );
-    const goingEventDocIds = await getAllUserGoingEventsDocIds(userId);
-
-    // get url for profile picture
-    const profilePhoto = await getProfilePhoto(userId);
-
-    // get community name for a profile
-    const communityName = await getProfileCommunityName(userId);
+    // get the volunteer network from the past events
+    const volunteerNetwork = await getVolunteerNetwork(pastEvents);
 
     this.setState({
       upcomingEvents,
