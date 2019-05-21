@@ -21,7 +21,7 @@ import {
 } from '../firebase/api';
 
 import { firestore } from '../firebase/firebase';
-import * as c from '../firebase/fb_constants';
+import * as firebase from 'firebase';
 
 export default class CommunityScreen extends React.Component {
   constructor(props) {
