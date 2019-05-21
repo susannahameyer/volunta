@@ -95,23 +95,24 @@ export default class ProfileScreen extends React.Component {
 
   //Gets the volunteer network of this user based on their past service events
   _getVolunteerNetwork = async pastEvents => {
-    volunteerNetwork = [];
+    volunteerNetwork = Array(pastEvents.length);
+    await Promise.all(
+      pastEvents.map(async (event, index) => {
+        const eventRef = firestore.collection('events').doc(event.doc_id);
+        await firestore
+          .collection('users')
+          .where('event_refs.going', 'array-contains', eventRef)
+          .get()
+          .then(async snapshot => {
+            const attendees = await getUsersAttributes(snapshot.docs, [
+              'name',
+              'profile_pic_url',
+            ]);
+            volunteerNetwork[index] = attendees;
+          });
+      })
+    );
 
-    pastEvents.forEach(event => {
-      const eventRef = firestore.collection('events').doc(event.doc_id);
-      firestore
-        .collection('users')
-        .where('event_refs.going', 'array-contains', eventRef)
-        .get()
-        .then(async snapshot => {
-          const attendees = await getUsersAttributes(snapshot.docs, [
-            'name',
-            'profile_pic_url',
-          ]);
-          volunteerNetwork.push(attendees);
-          console.log(volunteerNetwork);
-        });
-    });
     console.log('final network');
     console.log(volunteerNetwork);
     return volunteerNetwork;
