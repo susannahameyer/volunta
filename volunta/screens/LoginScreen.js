@@ -27,15 +27,17 @@ export default class LoginScreen extends React.Component {
   // TODO: implement Google Login
   _onPressLogInWithGoogle = event => {};
 
-  _logIn = (email, password) => {
-    firebase
+  _logIn = async (email, password) => {
+    await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.props.navigation.navigate('Main');
+      })
       .catch(error => {
         var errorCode = error.code;
         var errorMessage = error.message;
         this.setState({ errorMessage });
-        return;
       });
   };
 
