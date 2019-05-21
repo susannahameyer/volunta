@@ -40,7 +40,6 @@ export default class NUXInterestsScreen extends React.Component {
 
   _updateInterestsMap = (interestName, selected) => {
     var interestsMap = this.state.interestsMap;
-    console.log(selected);
     interestsMap = interestsMap.set(interestName, selected);
     this.setState({
       interestsMap,
@@ -58,8 +57,8 @@ export default class NUXInterestsScreen extends React.Component {
   };
 
   // TODO: Save interests set to true in interestsMap to current user's interests in db
-  _onPressDone = event => {
-    this.props.navigation.navigate('Main');
+  _onPressDone = () => {
+    this.props.navigation.navigate('Feed');
   };
 
   _renderSeparator = () => {
@@ -74,7 +73,6 @@ export default class NUXInterestsScreen extends React.Component {
 
   render() {
     const { interests, interestsMap } = this.state;
-    console.log(interestsMap);
     return (
       <View style={styles.container}>
         <Text style={styles.headerText}>what are your interests?</Text>
