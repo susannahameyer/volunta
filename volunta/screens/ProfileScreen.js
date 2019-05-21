@@ -122,7 +122,6 @@ export default class ProfileScreen extends React.Component {
       },
       buttonIndex => {
         if (buttonIndex === 1) {
-          // TODO: cancel all promises, since once we sign out we should not be able to setState
           firebase.auth().signOut();
         }
       }
@@ -172,7 +171,7 @@ export default class ProfileScreen extends React.Component {
               <Text style={styles.sectionTitle}>interests:</Text>
               {interests.length > 0 && (
                 <ExpandableInterests
-                  interests={interests} // TODO: component seems to be rendering only on first attempt!
+                  interests={interests}
                   duration={500}
                   numRows={2}
                   accordionRight={true}

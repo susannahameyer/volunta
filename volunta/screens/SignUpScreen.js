@@ -19,11 +19,12 @@ export default class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      birthdate: today,
+      birthdate: '1996-01-01T12:00:00Z',
       community: '',
       email: '',
       password: '',
       errorMessage: null,
+      dateset: false,
     };
   }
 
@@ -51,8 +52,14 @@ export default class SignUpScreen extends React.Component {
       });
   };
 
+  _setDate = date => {
+    let birthdate = date + 'T12:00:00Z'; // GMT (add 12 to make sure its the same day in Pacific)
+    this.setState({ birthdate });
+  };
+
   render() {
     const { errorMessage, email, password, birthdate } = this.state;
+
     return (
       <View style={AuthStyle.container}>
         <Image source={AssetFilePaths.logo} style={AuthStyle.logo} />
@@ -93,7 +100,7 @@ export default class SignUpScreen extends React.Component {
           date={birthdate}
           mode="date"
           placeholder="birthdate"
-          format="MM-DD-YYYY"
+          format="YYYY-MM-DD"
           minDate="1919-01-01"
           maxDate={today}
           confirmBtnText="confirm"
@@ -105,9 +112,7 @@ export default class SignUpScreen extends React.Component {
           }}
           showIcon={false}
           style={AuthStyle.datePicker}
-          onDateChange={date => {
-            this.setState({ birthdate: date });
-          }}
+          onDateChange={this._setDate}
         />
         <TouchableOpacity
           onPress={async () => await this._signUp(email, password, birthdate)}
