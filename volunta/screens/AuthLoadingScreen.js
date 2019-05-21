@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  View,
-} from 'react-native';
+import { ActivityIndicator, AsyncStorage, StatusBar, View } from 'react-native';
 import * as firebase from 'firebase';
 
 // This component is meant to check if a user is logged in. If they are,
@@ -14,13 +9,13 @@ export default class AuthLoadingScreen extends React.Component {
     super(props);
   }
 
-  componentDidMount() {
-    // TODO: Check for whether or not user has been stored in user table,
-    // if not, navigate to NUX instead of Main
-    firebase.auth().onAuthStateChanged(user => {
-      this.props.navigation.navigate(user ? 'Main' : 'Auth');
-    })
-  }
+  componentDidMount = async () => {
+    let user = await firebase.auth().currentUser;
+    if (!user) {
+      this.props.navigation.navigate('Auth');
+    }
+    // this.props.navigation.navigate(!!user ? 'Main' : 'Auth');
+  };
 
   // Render any loading content that you like here
   render() {
