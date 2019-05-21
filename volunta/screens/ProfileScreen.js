@@ -137,7 +137,6 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds,
       refreshing,
       interests,
-      mounted,
     } = this.state;
     if (!refreshing) {
       return (
