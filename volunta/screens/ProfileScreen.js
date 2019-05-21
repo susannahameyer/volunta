@@ -59,8 +59,7 @@ export default class ProfileScreen extends React.Component {
   _loadData = async () => {
     // If we are navigating to another user's profile
     // TODO: Change default to current user
-    let _userId = await firebase.auth().currentUser.uid;
-    const userId = this.props.navigation.getParam('userId', _userId);
+    const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
       volunteerNetwork,

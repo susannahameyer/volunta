@@ -40,13 +40,10 @@ export default class EventScreen extends React.Component {
       numGoing: 0,
       numGoingFromCommunity: 0,
       interests: [],
-      userId: null,
     };
   }
 
   async componentDidMount() {
-    let userId = await firebase.auth().currentUser.uid;
-    this.setState({ userId });
     this._loadData();
   }
 
@@ -72,7 +69,8 @@ export default class EventScreen extends React.Component {
       getEventInterestNames(eventRef),
       getOrganizationLogo(event.org_ref),
       getUsersGoingForAllEvents(),
-      getUserCommunity(this.state.userId),
+      // TODO: Change to current user
+      getUserCommunity(c.TEST_USER_ID),
       firestore
         .collection('users')
         .where('event_refs.going', 'array-contains', eventRef)
@@ -132,7 +130,7 @@ export default class EventScreen extends React.Component {
       facePileAttendees,
       refreshing: false,
       orgLogo,
-      going: allEventsAttendees[event.doc_id].includes(userId),
+      going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
       numGoing: facePileAttendees.length,
       numGoingFromCommunity,
       interests,
@@ -148,7 +146,7 @@ export default class EventScreen extends React.Component {
 
     // Try to update in database
     success = await updateUserInterestedEvents(
-      this.state.userId,
+      c.TEST_USER_ID, //TODO: Make this the current user
       this.state.event.doc_id,
       newInterested
     );
@@ -170,7 +168,7 @@ export default class EventScreen extends React.Component {
 
     // Try to update in database
     success = await updateUserGoingEvents(
-      this.state.userId, //TODO: Make this the current user
+      c.TEST_USER_ID, //TODO: Make this the current user
       this.state.event.doc_id,
       newGoing
     );
