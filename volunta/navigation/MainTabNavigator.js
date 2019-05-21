@@ -16,7 +16,12 @@ import Facepile from '../components/Facepile';
 import FeedSearchFilterScreen from '../screens/FeedSearchFilterScreen';
 
 const FeedStack = createStackNavigator({
-  Feed: FeedScreen,
+  Feed: {
+    screen: FeedScreen,
+    navigationOptions: () => ({
+      headerBackTitle: 'Cancel',
+    }),
+  },
   Event: EventScreen,
   SearchFilter: FeedSearchFilterScreen,
   Facepile: FacepileDetailScreen,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, FlatList, View, Dimensions, TouchableOpacity, Button } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
@@ -112,8 +112,15 @@ export default class FeedScreen extends React.Component {
       event,
       org_name,
       interested,
+      onGoBack: this._refreshResults,
     });
   };
+
+  _refreshResults=(data)=> {
+    console.log('the data from child screen is: ');
+    console.log(data);
+    console.log(typeof(data));
+  }
 
   // Not explicit used now but will potentially be.
   _keyExtractor = (item, index) => item.doc_id;
@@ -224,7 +231,7 @@ export default class FeedScreen extends React.Component {
           style={styles.filterIcon}
           onPress={this._onPressFilterButton}
         >
-          <FontAwesome name="bars" size={24} style={{ color: 'gray' }} />
+          <FontAwesome name="bars" size={20} style={{ color: 'gray' }} />
         </TouchableOpacity>
         </View>
         {displayedEvents !== [] && (
@@ -266,6 +273,6 @@ const styles = StyleSheet.create({
   filterIcon: {
     position: 'absolute',
     left: '87%',
-    top: 16
+    top: 19
   }
 });
