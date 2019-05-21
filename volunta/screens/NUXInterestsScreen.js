@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     height: 46,
     justifyContent: 'center',
     width: 202,
+    marginTop: 30,
   },
   buttonText: {
     color: '#FFFFFF',
@@ -139,6 +140,6 @@ const styles = StyleSheet.create({
   },
   interestsGrid: {
     marginTop: 30,
-    height: 370,
+    height: 350,
   },
 });
