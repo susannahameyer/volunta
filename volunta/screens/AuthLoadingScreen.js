@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, AsyncStorage, StatusBar, View } from 'react-native';
+import { ActivityIndicator, StatusBar, View } from 'react-native';
 import * as firebase from 'firebase';
 
 // This component is meant to check if a user is logged in. If they are,
