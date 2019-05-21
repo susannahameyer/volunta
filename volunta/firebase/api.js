@@ -626,7 +626,7 @@ export const registerUser = async (userId, birthdateStr) => {
         middle: '',
         last: '',
       },
-      profile_pic_url: 'https://imgur.com/a/PkFtkmU', // TODO: set to a default one.
+      profile_pic_url: 'https://imgur.com/a/PkFtkmU',
       volunteer_network_refs: [],
     })
     .then(() => {
