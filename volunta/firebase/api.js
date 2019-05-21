@@ -2,6 +2,7 @@ import { firestore } from './firebase';
 var Promise = require('bluebird');
 import * as c from './fb_constants';
 import { DefaultDict } from '../utils';
+import * as firebase from 'firebase';
 
 // Fetches events that are either ongoing or upcoming  from firestore. We add doc_id to each event object as well just in case its needed.
 export const getFeedEvents = async () => {
@@ -585,10 +586,16 @@ export const getAllCommunityNames = async () => {
 // Return false if there is an error, otherwise true.
 export const registerUser = async (userId, birthdateStr) => {
   // TODO: error check birthdate
-  db.collection('users')
+  console.log('register');
+  console.log(userId);
+  console.log(birthdateStr);
+  let d = new Date(birthdateStr);
+  console.log(d);
+  let success = await firestore
+    .collection('users')
     .doc(userId)
     .set({
-      birthdate: firebase.firestore.Timestamp.fromDate(new Date(birthdateStr)),
+      birthdate: firebase.firestore.Timestamp.fromDate(d),
       community_ref: null,
       event_refs: {
         going: [],
@@ -603,12 +610,11 @@ export const registerUser = async (userId, birthdateStr) => {
       profile_pic_url: 'https://imgur.com/a/PkFtkmU', // TODO: set to a default one.
       volunteer_network_refs: [],
     })
-    .then(function() {
-      console.log('User signed up successfully!');
+    .then(() => {
       return true;
     })
-    .catch(function(error) {
-      console.error('Error writing document: ', error);
+    .catch(error => {
       return false;
     });
+  return success;
 };

@@ -25,11 +25,6 @@ export default class SignUpScreen extends React.Component {
       password: '',
       errorMessage: null,
     };
-    this.setDate = this.setDate.bind(this);
-  }
-
-  setDate(newDate) {
-    this.setState({ birthdate: newDate });
   }
 
   // TODO: implement FB Sign in
@@ -39,23 +34,22 @@ export default class SignUpScreen extends React.Component {
   _onPressSignUpWithGoogle = event => {};
 
   _signUp = async (email, password, birthdate) => {
-    firebase
+    console.log('SIGNUP');
+    await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async () => {
-        success = await registerUser(
-          firebase.auth().currentUser.uid,
-          birthdate
-        );
+        let userId = await firebase.auth().currentUser.uid;
+        let success = await registerUser(userId, birthdate);
         if (success) this.props.navigation.navigate('NUXCommunity');
         else
           this.setState({ errorMessage: 'Error communicating with database' });
       })
       .catch(error => {
+        console.log('error in signup');
         var errorCode = error.code;
         var errorMessage = error.message;
         this.setState({ errorMessage });
-        return;
       });
   };
 
@@ -84,7 +78,7 @@ export default class SignUpScreen extends React.Component {
             autoCapitalize="none"
             style={AuthStyle.textInput}
             onChangeText={email => this.setState({ email })}
-            value={this.state.email}
+            value={email}
           />
         </View>
         <View style={AuthStyle.inputView}>
@@ -94,7 +88,7 @@ export default class SignUpScreen extends React.Component {
             autoCapitalize="none"
             style={AuthStyle.textInput}
             onChangeText={password => this.setState({ password })}
-            value={this.state.password}
+            value={password}
           />
         </View>
         <DatePicker
