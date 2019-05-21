@@ -566,3 +566,17 @@ export const getAllInterestNames = async () => {
     });
   return interests;
 };
+
+export const getAllCommunityNames = async () => {
+  var communities = [];
+  await firestore
+    .collection('communities')
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(communityRef => {
+        let name = communityRef.get('name');
+        communities.push(name);
+      });
+    });
+  return communities;
+};

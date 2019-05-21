@@ -1,33 +1,84 @@
 import React from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { getAllCommunityNames } from '../firebase/api';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 
 export default class NUXCommunityScreen extends React.Component {
-
   constructor(props) {
     super(props);
+
+    this.state = {
+      selectedCommunity: '',
+      communities: [],
+      continueDisabled: true,
+    };
   }
 
-  // Function we pass to Log In button, pushes login screen onto stack
-  _onPressContinue = event => {
-    this.props.navigation.navigate('Interests')
+  async componentDidMount() {
+    this._loadData();
+  }
+
+  _loadData = async () => {
+    const communityNames = await getAllCommunityNames();
+    const communities = communityNames.map(name => {
+      return {
+        id: name,
+        name: name,
+      };
+    });
+    this.setState({
+      communities,
+    });
+  };
+
+  // TODO: Add chosen community to current user's community in db
+  _onPressContinue = community => {
+    this.props.navigation.navigate('NUXInterests');
+  };
+
+  _onSelect = selected => {
+    this.setState({
+      selectedCommunity: selected.name,
+      continueDisabled: false,
+    });
   };
 
   render() {
+    const { selectedCommunity, communities, continueDisabled } = this.state;
+
     return (
       <View style={styles.container}>
-        <Text>
-          Welcome to volunta! Please choose the community you want 
-          to register your account with.
+        <Text style={styles.welcomeText}>Welcome to volunta!</Text>
+        <Text style={styles.detailText}>
+          {'Communities, the schools or organizations that our users belong to, are at the core of volunta.\n\n' +
+            'Register with a community to join a larger network of volunteers, ' +
+            'browse service events sponsored by your community, and connect with fellow community members.'}
         </Text>
-        <View>
-          <TouchableOpacity onPress={this._onPressContinue}>
-            <View style={styles.button}>
+        <SearchableDropdown
+          onItemSelect={item => this._onSelect(item)}
+          containerStyle={styles.dropdown}
+          textInputStyle={styles.textInput}
+          itemStyle={styles.dropdownItem}
+          itemTextStyle={{ fontFamily: 'montserrat', fontSize: 14 }}
+          itemsContainerStyle={{ maxHeight: 185 }}
+          items={communities}
+          placeholder={'search for a community...'}
+          placeholderTextColor={'grey'}
+          resetValue={false}
+        />
+        <View style={styles.continueButtonContainer}>
+          <TouchableOpacity
+            onPress={this._onPressContinue}
+            disabled={continueDisabled}
+          >
+            <View
+              style={[
+                styles.button,
+                {
+                  backgroundColor: continueDisabled ? 'grey' : '#0081AF',
+                },
+              ]}
+            >
               <Text style={styles.buttonText}>continue</Text>
             </View>
           </TouchableOpacity>
@@ -48,7 +99,7 @@ const styles = StyleSheet.create({
     width: 202,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontFamily: 'montserrat',
     fontSize: 18,
     fontWeight: 'normal',
@@ -56,7 +107,41 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    marginHorizontal: 27,
+  },
+  welcomeText: {
+    fontFamily: 'montserrat-medium',
+    fontSize: 22,
+    marginTop: 40,
+  },
+  detailText: {
+    textAlign: 'center',
+    fontFamily: 'montserrat',
+    fontSize: 18,
+    marginTop: 30,
+  },
+  buttonContainer: {
+    marginTop: 20,
+  },
+  continueButtonContainer: {
+    marginTop: 10,
+  },
+  dropdown: {
+    marginTop: 25,
+    width: 250,
+    height: 230,
+  },
+  dropdownItem: {
+    padding: 10,
+    backgroundColor: '#F2F2F2',
+    borderColor: '#bbb',
+    borderWidth: 0.2,
+  },
+  textInput: {
+    padding: 12,
+    borderWidth: 0.4,
+    borderColor: '#bbb',
+    fontFamily: 'montserrat',
+    fontSize: 14,
   },
 });
