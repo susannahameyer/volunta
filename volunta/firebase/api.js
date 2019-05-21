@@ -612,3 +612,34 @@ export const registerUser = async (userId, birthdateStr) => {
     });
   return success;
 };
+
+// Add new user to database, including all default fields...
+// Return false if there is an error, otherwise true.
+export const registerUser = async (userId, birthdateStr) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .set({
+      birthdate: firebase.firestore.Timestamp.fromDate(new Date(birthdateStr)),
+      community_ref: null,
+      event_refs: {
+        going: [],
+        interested: [],
+      },
+      interest_refs: [],
+      name: {
+        first: '',
+        middle: '',
+        last: '',
+      },
+      profile_pic_url: 'https://imgur.com/a/PkFtkmU', // TODO: set to a default one.
+      volunteer_network_refs: [],
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
