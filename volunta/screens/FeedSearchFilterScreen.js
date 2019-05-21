@@ -9,6 +9,7 @@ import {
   FlatList,
   Button
 } from 'react-native';
+import { Switch } from 'react-native-gesture-handler';
 
 export default class FeedSearchFilterScreen extends React.Component {
   constructor(props) {
@@ -17,7 +18,7 @@ export default class FeedSearchFilterScreen extends React.Component {
         minDistance: 1,
         maxDistance: 50,
         currDistance: this.props.navigation.getParam('currDistance'),
-        interests: ['puppies', 'homies', 'doggos'],
+        interests: ['environment', 'children', 'community', 'advocacy', 'arts', 'social good', 'hunger'],
         selectedInterests: ['your mom']
     }
   }
@@ -46,9 +47,15 @@ export default class FeedSearchFilterScreen extends React.Component {
   // displays single line of interests
   _renderInterest = ({ item }) => {
     return (
-        <View style={styles.interestLine}> 
-            <Text style={styles.interestText}> {item} </Text>
+      <View style={styles.interestLine}> 
+        <View style={styles.horizontalBar}>
+          <Text style={styles.interestText}> {item} </Text>
+          <Switch 
+            style={styles.switch}
+            trackColor={'#0081AF'}
+          />
         </View> 
+      </View> 
     );
   };
 
@@ -144,7 +151,6 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10
   },
   colorGrey: {
     color: '#d3d3d3'
@@ -153,11 +159,21 @@ const styles = StyleSheet.create({
     color: '#0081AF'
   },
   interestLine: {
-      height: 40,
-      marginBottom:10,
+      height: 50,
+      justifyContent: 'center'
+  },
+  horizontalBar: {
+    flexDirection: 'row',
+    width: '100%'
   },
   interestText: {
-      fontFamily: 'montserrat'
+      fontFamily: 'montserrat',
+      fontSize: 20,
+      marginLeft: 6
+  },
+  switch: {
+    position: 'absolute',
+    marginLeft: '83%'
   },
   listSeparator: {
     height: 1,
