@@ -553,16 +553,16 @@ export const getUserInterestNames = async userDocId => {
 
 // Returns a list of all interest names
 export const getAllInterestNames = async () => {
-  var communities = [];
+  var interests = [];
   await firestore
     .collection('interests')
     .orderBy('name')
     .get()
     .then(snapshot => {
-      snapshot.forEach(communityRef => {
-        let name = communityRef.get('name');
-        communities.push(name);
+      snapshot.forEach(interestRef => {
+        let name = interestRef.get('name');
+        interests.push(name);
       });
     });
-  return communities;
+  return interests;
 };
