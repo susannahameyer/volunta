@@ -11,6 +11,9 @@ import {
 } from 'react-native';
 import { Switch } from 'react-native-gesture-handler';
 import _ from 'lodash';
+import {
+  getAllInterestNames
+} from '../firebase/api';
 
 export default class FeedSearchFilterScreen extends React.Component {
   constructor(props) {
@@ -21,25 +24,31 @@ export default class FeedSearchFilterScreen extends React.Component {
         currDistance: this.props.navigation.getParam('currDistance'),
         interests: ['environment', 'children', 'community', 'advocacy', 'arts', 'social good', 'hunger'],
         selectedInterests: ['your mom'],
-        listKeys: [
-          {key: 'Basketball', switch : true},
-          {key: 'Football', switch : true},
-          {key: 'Baseball', switch : true},
-          {key: 'Soccer', switch : true},
-          {key: 'Running', switch : true},
-          {key: 'Cross Training', switch : true},
-          {key: 'Gym Workout', switch : true},
-          {key: 'Swimming', switch : true},
-        ]
     }
   }
 
   async componentDidMount() {
+    this._loadInterests();
     this.props.navigation.setParams({
       currDistance: this.state.currDistance,
       selectedInterests: this.state.selectedInterests,
     });
   }
+
+  // gets the interests from the database and creates the lines
+  // for the advanced search screen
+  _loadInterests = async () => {
+    listOfInterests = [];
+    await getAllInterestNames().then(function(interestsArr){
+      interestsArr.forEach(function(interest) {
+        let tuple = {key: interest, switch: true}
+        listOfInterests.push(tuple)
+      });
+    });
+    this.setState({
+      listKeys : listOfInterests
+    });
+  };
 
   // creates the search button in the header
   static navigationOptions = ({ navigation }) => ({
