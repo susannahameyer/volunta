@@ -4,7 +4,7 @@ import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import * as c from '../firebase/fb_constants';
 import { DefaultDict, distance, formatDist } from '../utils';
-import { Location } from 'expo';
+import { Location, Haptic } from 'expo';
 import {
   getFeedEvents,
   getAllUserInterestedEventsDocIds,
@@ -148,6 +148,7 @@ export default class FeedScreen extends React.Component {
   // Then we try updating in the database. If the update fails we toggle it back.
   // Otherwise we toggle
   _updateInterested = async eventId => {
+    Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
     if (this._isMounted) {
       // copy the map rather than modifying state
       const interestedMap = new Map(this.state.interestedMap);

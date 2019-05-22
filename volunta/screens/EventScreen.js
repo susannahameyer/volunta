@@ -20,10 +20,10 @@ import {
   getUserCommunity,
   getEventInterestNames,
   getEvent,
-  getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
   updateUserGoingEvents,
 } from '../firebase/api';
+import { Haptic } from 'expo';
 import * as c from '../firebase/fb_constants';
 
 export default class EventScreen extends React.Component {
@@ -147,6 +147,8 @@ export default class EventScreen extends React.Component {
   };
 
   _updateInterested = async () => {
+    Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+
     // Toggle button in frontend
     var newInterested = !this.state.interested;
     this.setState({
@@ -169,6 +171,8 @@ export default class EventScreen extends React.Component {
   };
 
   _updateGoing = async () => {
+    Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+
     // Toggle button in frontend
     var newGoing = !this.state.going;
     this.setState({
