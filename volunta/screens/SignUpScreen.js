@@ -30,13 +30,18 @@ export default class SignUpScreen extends React.Component {
     };
   }
 
-  _signUp = async (email, password, birthdate) => {
+  _signUp = async (email, password, birthdate, firstName, lastName) => {
     await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async () => {
         let userId = await firebase.auth().currentUser.uid;
-        let success = await registerUser(userId, birthdate);
+        let success = await registerUser(
+          userId,
+          birthdate,
+          firstName,
+          lastName
+        );
         if (success) this.props.navigation.navigate('NUX');
         else
           this.setState({ errorMessage: 'Error communicating with database' });
@@ -138,7 +143,9 @@ export default class SignUpScreen extends React.Component {
           />
         </View>
         <TouchableOpacity
-          onPress={async () => await this._signUp(email, password, birthdate)}
+          onPress={async () =>
+            await this._signUp(email, password, birthdate, firstName, lastName)
+          }
           disabled={disabled}
         >
           <View

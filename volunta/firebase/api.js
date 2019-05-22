@@ -609,7 +609,12 @@ export const getVolunteerNetwork = async pastEvents => {
 
 // Add new user to database, including all default fields...
 // Return false if there is an error, otherwise true.
-export const registerUser = async (userId, birthdateStr) => {
+export const registerUser = async (
+  userId,
+  birthdateStr,
+  firstName,
+  lastName
+) => {
   let success = await firestore
     .collection('users')
     .doc(userId)
@@ -622,9 +627,8 @@ export const registerUser = async (userId, birthdateStr) => {
       },
       interest_refs: [],
       name: {
-        first: '',
-        middle: '',
-        last: '',
+        first: firstName,
+        last: lastName,
       },
       profile_pic_url: 'https://imgur.com/a/PkFtkmU',
       volunteer_network_refs: [],
