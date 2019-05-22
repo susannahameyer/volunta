@@ -185,11 +185,11 @@ export const getEventsFromArrsOfIds = async (
 };
 
 // Retrieve profile photo for a given user id
-export const getProfilePhoto = async userRef => {
+export const getProfilePhoto = async userId => {
   let url = '';
   await firestore
     .collection('users')
-    .doc(userRef)
+    .doc(userId)
     .get()
     .then(snapshot => {
       url = snapshot.get('profile_pic_url');
@@ -631,7 +631,7 @@ export const registerUser = async (
         first: firstName,
         last: lastName,
       },
-      profile_pic_url: 'https://imgur.com/a/PkFtkmU',
+      profile_pic_url: 'https://i.imgur.com/H7qsEie.png',
       volunteer_network_refs: [],
     })
     .then(() => {
