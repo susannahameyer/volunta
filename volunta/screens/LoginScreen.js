@@ -42,6 +42,11 @@ export default class LoginScreen extends React.Component {
 
   render() {
     const { errorMessage, email, password } = this.state;
+    var disabled = true;
+    if (!!email && !!password) {
+      disabled = false;
+    }
+
     return (
       <View style={AuthStyle.container}>
         <Image
@@ -68,8 +73,19 @@ export default class LoginScreen extends React.Component {
             value={password}
           />
         </View>
-        <TouchableOpacity onPress={() => this._logIn(email, password)}>
-          <View style={[AuthStyle.logInButton, { marginBottom: 20 }]}>
+        <TouchableOpacity
+          onPress={() => this._logIn(email, password)}
+          disabled={disabled}
+        >
+          <View
+            style={[
+              AuthStyle.logInButton,
+              {
+                marginBottom: 20,
+                backgroundColor: disabled ? 'grey' : '#0081AF',
+              },
+            ]}
+          >
             <Text style={AuthStyle.buttonText}>log in</Text>
           </View>
         </TouchableOpacity>
