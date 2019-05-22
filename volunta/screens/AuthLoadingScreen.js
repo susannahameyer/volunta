@@ -20,8 +20,11 @@ export default class AuthLoadingScreen extends React.Component {
         if (userCompletedNUX) {
           this.props.navigation.navigate('Main');
         } else {
+          console.log('NUX');
           this.props.navigation.navigate('NUX');
         }
+      } else {
+        this.props.navigation.navigate('Auth');
       }
     });
   };
