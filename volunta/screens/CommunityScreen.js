@@ -14,7 +14,7 @@ import {
   getEventsForCommunity,
   getCommunityName,
   getCommunityCoverPhoto,
-  getUserCommunity,
+  getUserProperty,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
   getAllUserGoingEventsDocIds,
@@ -45,7 +45,10 @@ export default class CommunityScreen extends React.Component {
     let userId = await firebase.auth().currentUser.uid;
 
     // Get current user's community data
-    const currentUserCommunityRef = await getUserCommunity(userId);
+    const currentUserCommunityRef = await getUserProperty(
+      userId,
+      'community_ref'
+    );
 
     const [
       communityName,
