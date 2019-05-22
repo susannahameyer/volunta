@@ -10,6 +10,7 @@ import {
   Button
 } from 'react-native';
 import { Switch } from 'react-native-gesture-handler';
+import _ from 'lodash';
 
 export default class FeedSearchFilterScreen extends React.Component {
   constructor(props) {
@@ -19,11 +20,21 @@ export default class FeedSearchFilterScreen extends React.Component {
         maxDistance: 50,
         currDistance: this.props.navigation.getParam('currDistance'),
         interests: ['environment', 'children', 'community', 'advocacy', 'arts', 'social good', 'hunger'],
-        selectedInterests: ['your mom']
+        selectedInterests: ['your mom'],
+        listKeys: [
+          {key: 'Basketball', switch : true},
+          {key: 'Football', switch : true},
+          {key: 'Baseball', switch : true},
+          {key: 'Soccer', switch : true},
+          {key: 'Running', switch : true},
+          {key: 'Cross Training', switch : true},
+          {key: 'Gym Workout', switch : true},
+          {key: 'Swimming', switch : true},
+        ]
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.navigation.setParams({
       currDistance: this.state.currDistance,
       selectedInterests: this.state.selectedInterests,
@@ -42,17 +53,27 @@ export default class FeedSearchFilterScreen extends React.Component {
     }} />,
   });
 
-  _keyExtractor = (item, index) => item;
+  // handles the logic of toggling switches in state
+  _setSwitchValue = (val, ind) => {
+    const tempData = _.cloneDeep(this.state.listKeys);
+    tempData[ind].switch = val;
+    this.setState({ listKeys: tempData });
+  }
+
+  // use the index as a string as key
+  _keyExtractor = (item, index) => index.toString();
 
   // displays single line of interests
-  _renderInterest = ({ item }) => {
+  _renderInterest = ({ item, index }) => {
     return (
       <View style={styles.interestLine}> 
         <View style={styles.horizontalBar}>
-          <Text style={styles.interestText}> {item} </Text>
+          <Text style={styles.interestText}> {item.key} </Text>
           <Switch 
             style={styles.switch}
             trackColor={'#0081AF'}
+            onValueChange={(value) => this._setSwitchValue(value, index)}
+            value={item.switch}
           />
         </View> 
       </View> 
@@ -114,13 +135,14 @@ export default class FeedSearchFilterScreen extends React.Component {
                 //style={styles.flatListStyle}
                 renderItem={this._renderInterest}
                 ItemSeparatorComponent={this._renderSeparator}
-                data={this.state.interests}
+                //data={this.state.interests}
+                data={this.state.listKeys}
                 //extraData={this.state} // Needed for child to update when 'interested' changes
                 //onRefresh={() => this._loadData()}
                 keyExtractor={this._keyExtractor}
                 //refreshing={isRefreshing}
             />
-        </View>
+        </View> 
       </View>
     );
   }
@@ -173,7 +195,8 @@ const styles = StyleSheet.create({
   },
   switch: {
     position: 'absolute',
-    marginLeft: '83%'
+    marginLeft: '83%',
+    transform: [{ scaleX: 1.1 }, { scaleY: 1 }] 
   },
   listSeparator: {
     height: 1,
