@@ -14,6 +14,8 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
         interested={this.props.interestedIDs.has(item.doc_id)}
         going={this.props.goingIDs.has(item.doc_id)}
         onPress={this.props.onPress}
+        status={this.props.status}
+        source={this.props.source}
       />
     );
   };
@@ -31,7 +33,23 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
   };
 
   render() {
-    const { events } = this.props;
+    const {
+      events,
+      interestedIDs,
+      goingIDs,
+      onPress,
+      status,
+      source,
+    } = this.props;
+    if (events.length == 0) {
+      return (
+        <CommunityProfileEventCard
+          event={null}
+          status={status}
+          source={source}
+        />
+      );
+    }
 
     return (
       <View style={{ height: 164 }}>

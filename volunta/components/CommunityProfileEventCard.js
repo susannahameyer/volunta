@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { timestampToDate } from '../utils';
 import { getOrganizationName } from '../firebase/api';
 import Colors from '../constants/Colors';
+import AssetFilePaths from '../constants/AssetFilePaths';
 
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -19,14 +20,16 @@ export default class CommunityProfileEventCard extends React.Component {
 
   async componentDidMount() {
     this._isMounted = true;
-    let org_name = await getOrganizationName(this.props.event.org_ref);
-    let date = timestampToDate(this.props.event.from_date);
+    if (!!this.props.event) {
+      let org_name = await getOrganizationName(this.props.event.org_ref);
+      let date = timestampToDate(this.props.event.from_date);
 
-    if (this._isMounted) {
-      this.setState({
-        date,
-        org_name,
-      });
+      if (this._isMounted) {
+        this.setState({
+          date,
+          org_name,
+        });
+      }
     }
   }
 
@@ -35,9 +38,44 @@ export default class CommunityProfileEventCard extends React.Component {
   };
 
   render() {
-    const { event, interested, going, onPress } = this.props;
+    const { event, interested, going, onPress, status, source } = this.props;
+    const upcoming = status == 'upcoming';
+    if (!!event == false) {
+      if (!upcoming) {
+        return null;
+      }
+      var displayText = '';
+      if (source == 'profile') {
+        displayText =
+          'You currently have no upcoming events. Browse the Feed to join in!';
+      } else if (source == 'community') {
+        displayText = 'Your community currently has no upcoming events.';
+      }
+      return (
+        <View style={styles.shadow}>
+          {/* if the event is in the past list, make the height shorter */}
+          <TouchableOpacity
+            style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}
+            onPress={() => onPress(event, org_name, interested)}
+          >
+            <View style={{ flex: 1 }}>
+              <View style={styles.emptyPhotoContainer}>
+                <Image
+                  source={AssetFilePaths.flower}
+                  style={styles.emptyPhoto}
+                />
+              </View>
+              <View style={styles.textContainer}>
+                <View style={styles.emptyTextContainer}>
+                  <Text style={styles.emptyText}>{displayText}</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    }
     const { date, org_name } = this.state;
-    const upcoming = event.status == 'upcoming';
     return (
       <View style={styles.shadow}>
         {/* if the event is in the past list, make the height shorter */}
@@ -149,5 +187,28 @@ const styles = StyleSheet.create({
   smallDetailTextContainer: {
     height: 0,
     width: 0,
+  },
+  emptyPhoto: {
+    width: '80%',
+    height: '80%',
+  },
+  emptyTextContainer: {
+    top: -25,
+    position: 'absolute',
+    backgroundColor: '#F8F8F8',
+    height: 55,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    fontFamily: 'montserrat',
+    fontSize: 12,
+    marginLeft: 3,
+    textAlign: 'center',
+  },
+  emptyPhotoContainer: {
+    alignItems: 'center',
+    marginTop: 5,
   },
 });

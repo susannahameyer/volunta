@@ -116,6 +116,27 @@ export default class CommunityScreen extends React.Component {
       communityMembers,
     } = this.state;
     if (!refreshing) {
+      // Don't display past events if empty
+      var pastEventDisplay = null;
+      const hidePastEvents = pastEvents.length == 0;
+      if (!hidePastEvents) {
+        pastEventDisplay = (
+          <View style={styles.sectionContainer}>
+            <Text style={styles.titleText}>{"how we've helped"}</Text>
+            <View style={styles.pastScroll}>
+              <CommunityProfileEventCardHorizontalScroll
+                events={pastEvents}
+                onPress={this._onPressOpenEventPage}
+                interestedIDs={interestedEventDocIds}
+                goingIDs={goingEventDocIds}
+                status={'past'}
+                source={'community'}
+              />
+            </View>
+          </View>
+        );
+      }
+
       return (
         // Invisible ScrollView component to add pull-down refresh functionality
         <View style={{ flex: 1 }}>
@@ -127,7 +148,7 @@ export default class CommunityScreen extends React.Component {
               />
             }
           >
-            <View style={styles.screenContainer}>
+            <View style={[styles.screenContainer]}>
               <CommunityCoverPhoto
                 communityPhoto={communityPhoto}
                 communityName={communityName}
@@ -161,20 +182,12 @@ export default class CommunityScreen extends React.Component {
                     onPress={this._onPressOpenEventPage}
                     interestedIDs={interestedEventDocIds}
                     goingIDs={goingEventDocIds}
+                    status={'upcoming'}
+                    source={'community'}
                   />
                 </View>
               </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.titleText}>{"how we've helped"}</Text>
-                <View style={styles.pastScroll}>
-                  <CommunityProfileEventCardHorizontalScroll
-                    events={pastEvents}
-                    onPress={this._onPressOpenEventPage}
-                    interestedIDs={interestedEventDocIds}
-                    goingIDs={goingEventDocIds}
-                  />
-                </View>
-              </View>
+              {pastEventDisplay}
             </View>
           </ScrollView>
         </View>
@@ -196,7 +209,7 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     top: -85,
-    marginBottom: 20,
+    marginBottom: 17,
   },
   titleText: {
     fontFamily: 'raleway-medium',
