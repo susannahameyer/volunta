@@ -41,6 +41,7 @@ export default class CommunityProfileEventCard extends React.Component {
     const { event, interested, going, onPress, status, source } = this.props;
     const upcoming = status == 'upcoming';
     if (!!event == false) {
+      // Don't show empty event cards for empty past events
       if (!upcoming) {
         return null;
       }
@@ -53,9 +54,8 @@ export default class CommunityProfileEventCard extends React.Component {
       }
       return (
         <View style={styles.shadow}>
-          {/* if the event is in the past list, make the height shorter */}
           <TouchableOpacity
-            style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}
+            style={[styles.cardContainer, { height: 153 }]}
             onPress={() => onPress(event, org_name, interested)}
           >
             <View style={{ flex: 1 }}>

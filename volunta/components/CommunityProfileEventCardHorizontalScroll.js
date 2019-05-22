@@ -33,14 +33,7 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
   };
 
   render() {
-    const {
-      events,
-      interestedIDs,
-      goingIDs,
-      onPress,
-      status,
-      source,
-    } = this.props;
+    const { events, status, source } = this.props;
     if (events.length == 0) {
       return (
         <CommunityProfileEventCard
