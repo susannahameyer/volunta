@@ -15,4 +15,5 @@ export default {
   iconGray: '#838383',
   iconBlue: '#0081AF',
   aboutIconGray: '#727171',
+  searchBar: '#F2F2F2',
 };

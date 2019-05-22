@@ -85,7 +85,6 @@ export default class EventCard extends React.Component {
               </View>
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{date}</Text>
-                <Text style={styles.detailText}>{numGoing} going</Text>
                 {distance !== '' && (
                   <Text style={styles.detailText}>{distance}</Text>
                 )}
@@ -100,40 +99,39 @@ export default class EventCard extends React.Component {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    height: EventCardConstants.cardHeight,
-    width: EventCardConstants.cardWidth,
+    height: EventCardConstants.cardHeight + 1,
+    width: EventCardConstants.cardWidth + 1,
     backgroundColor: '#F8F8F8',
-    borderRadius: 20,
+    borderRadius: EventCardConstants.borderRadius,
     overflow: 'hidden',
     marginBottom: 16,
-    marginLeft: 17,
   },
   coverPhoto: {
-    height: '50%',
+    height: EventCardConstants.coverPhotoHeight,
     width: '100%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: EventCardConstants.borderRadius,
+    borderTopRightRadius: EventCardConstants.borderRadius,
   },
   shadow: {
     flex: 1,
     shadowColor: 'black',
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 1,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowRadius: 1,
     backgroundColor: '#0000', // invisible color
   },
   titleText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 20,
     fontWeight: 'normal',
     paddingBottom: 5,
   },
   detailText: {
-    fontFamily: 'montserrat',
-    fontSize: 14,
+    fontFamily: 'raleway',
+    fontSize: EventCardConstants.detailsFontSize,
     fontWeight: 'normal',
     color: '#838383',
   },

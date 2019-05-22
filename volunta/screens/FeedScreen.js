@@ -12,9 +12,22 @@ import {
   getNumGoingForAllEvents,
 } from '../firebase/api';
 import * as firebase from 'firebase';
+import EventCardConstants from '../constants/EventCardConstants';
+import Colors from '../constants/Colors';
 
 export default class FeedScreen extends React.Component {
   _isMounted = false;
+
+  static navigationOptions = {
+    title: 'events',
+    headerStyle: {
+      height: 50,
+    },
+    headerTitleStyle: {
+      fontFamily: 'raleway',
+      fontSize: 24,
+    },
+  };
 
   constructor(props) {
     super(props);
@@ -204,7 +217,7 @@ export default class FeedScreen extends React.Component {
     return (
       <View style={styles.pageContainer}>
         <SearchBar
-          placeholder="Search for service events"
+          placeholder=""
           onChangeText={this._updateSearchAndFilter}
           value={search}
           lightTheme
@@ -231,8 +244,10 @@ export default class FeedScreen extends React.Component {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    width: Dimensions.get('window').width,
+    width: '100%',
     flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   searchContainerStyle: {
     backgroundColor: 'white',
@@ -240,13 +255,15 @@ const styles = StyleSheet.create({
     shadowColor: 'white', //no effect
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
-    width: '95%',
+    height: 37,
+    width: EventCardConstants.cardWidth,
     alignSelf: 'center',
   },
   searchInputContainerStyle: {
-    backgroundColor: '#E8E8E8',
+    backgroundColor: Colors.searchBar,
   },
   flatListStyle: {
-    height: '100%',
+    marginTop: 48,
+    overflow: 'visible',
   },
 });

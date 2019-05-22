@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   iconLabel: {
-    fontFamily: 'montserrat-bold',
+    fontFamily: 'raleway-medium',
     fontSize: 12,
     color: Colors.iconGray,
   },

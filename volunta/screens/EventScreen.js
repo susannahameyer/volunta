@@ -305,12 +305,12 @@ const styles = StyleSheet.create({
   },
   sectionText: {
     fontSize: 18,
-    fontFamily: 'montserrat-bold',
+    fontFamily: 'raleway-medium',
     marginBottom: 8,
   },
   detailText: {
     fontSize: 14,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
   numGoingText: {
     marginTop: 10,

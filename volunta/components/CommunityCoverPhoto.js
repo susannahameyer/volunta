@@ -51,10 +51,10 @@ const styles = StyleSheet.create({
     bottom: 100,
     fontSize: 24,
     color: 'white',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
   screenText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 20,
   },
 });

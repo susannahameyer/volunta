@@ -113,17 +113,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#0000', // invisible color
   },
   titleText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 17,
   },
   detailText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 14,
     fontWeight: 'normal',
     color: '#838383',
   },
   dateText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 14,
     fontWeight: 'normal',
     color: '#838383',

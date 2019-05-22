@@ -80,13 +80,13 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     fontSize: 24,
-    fontFamily: 'montserrat-medium',
+    fontFamily: 'raleway-medium',
     width: 235,
   },
   orgName: {
     fontSize: 14,
     color: '#838383',
-    fontFamily: 'montserrat-medium',
+    fontFamily: 'raleway-medium',
     marginTop: 5,
     width: 235,
   },

@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 18,
     fontWeight: 'normal',
   },
@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   headerText: {
-    fontFamily: 'montserrat-medium',
+    fontFamily: 'raleway-medium',
     fontSize: 22,
     marginTop: 40,
   },
   detailText: {
     textAlign: 'center',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 15,
     marginTop: 30,
   },
