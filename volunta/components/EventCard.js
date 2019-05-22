@@ -31,6 +31,10 @@ export default class EventCard extends React.Component {
     }
   }
 
+  componentWillUnmount = () => {
+    this._isMounted = false;
+  };
+
   render() {
     const {
       event,

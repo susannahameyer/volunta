@@ -1,5 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Platform,
+  Linking,
+  ActionSheetIOS,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { timestampToDate, dateToWords, timestampToTimeOfDay } from '../utils';
@@ -16,8 +25,43 @@ Props:
 */
 
 export default class EventPageAboutSection extends React.Component {
+  _openMap = (location, eventName) => {
+    // Reference: https://stackoverflow.com/questions/43214062/open-maps-google-maps-in-react-native
+    let lat = location.coords._lat;
+    let lng = location.coords._long;
+    if (!!lng && !!lat) {
+      const scheme = Platform.select({
+        ios: 'maps:0,0?q=',
+        android: 'geo:0,0?q=',
+      });
+      const latLng = `${lat},${lng}`;
+      const label = eventName;
+      const url = Platform.select({
+        ios: `${scheme}${label}@${latLng}`,
+        android: `${scheme}${latLng}(${label})`,
+      });
+
+      Linking.openURL(url);
+    }
+  };
+
+  _onAddressClicked = (location, eventName) => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ['Open in Maps', 'Cancel'],
+        // destructiveButtonIndex: 1,
+        cancelButtonIndex: 1,
+      },
+      buttonIndex => {
+        if (buttonIndex === 0) {
+          this._openMap(location, eventName);
+        }
+      }
+    );
+  };
+
   render() {
-    const { fromDate, toDate, location, interests } = this.props;
+    const { fromDate, toDate, location, interests, eventName } = this.props;
     const dateFormatted = dateToWords(timestampToDate(fromDate));
     const timeFormatted =
       timestampToTimeOfDay(fromDate) + '  -  ' + timestampToTimeOfDay(toDate);
@@ -46,15 +90,19 @@ export default class EventPageAboutSection extends React.Component {
             <Ionicons name="ios-clock" size={24} color={Colors.aboutIconGray} />
             <Text style={styles.aboutInfoText}>{timeFormatted}</Text>
           </View>
-          <View style={styles.aboutInfo}>
-            <Ionicons
-              name="ios-pin"
-              size={24}
-              style={styles.pin}
-              color={Colors.aboutIconGray}
-            />
-            <Text style={styles.aboutInfoText}>{addressFormatted}</Text>
-          </View>
+          <TouchableOpacity
+            onPress={() => this._onAddressClicked(location, eventName)}
+          >
+            <View style={styles.aboutInfo}>
+              <Ionicons
+                name="ios-pin"
+                size={24}
+                style={styles.pin}
+                color={Colors.aboutIconGray}
+              />
+              <Text style={styles.aboutInfoText}>{addressFormatted}</Text>
+            </View>
+          </TouchableOpacity>
           <View style={styles.interests}>
             <EventPageInterestsScroll interests={interests} />
           </View>
