@@ -123,7 +123,9 @@ export const getProfileName = async userRef => {
     .doc(userRef)
     .get()
     .then(snapshot => {
-      name = snapshot.get('name');
+      let firstName = snapshot.get('name.first');
+      let lastName = snapshot.get('name.last');
+      name = firstName + ' ' + lastName;
     })
     .catch(error => {
       console.log(error);
