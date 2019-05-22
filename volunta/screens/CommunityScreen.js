@@ -18,6 +18,7 @@ import {
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
   getAllUserGoingEventsDocIds,
+  getCommunityDescription,
 } from '../firebase/api';
 import * as firebase from 'firebase';
 import { firestore } from '../firebase/firebase';
@@ -53,6 +54,7 @@ export default class CommunityScreen extends React.Component {
     const [
       communityName,
       communityPhoto,
+      communityDescription,
       interestedEventDocIds,
       goingEventDocIds,
       communityMembers,
@@ -60,6 +62,8 @@ export default class CommunityScreen extends React.Component {
     ] = await Promise.all([
       getCommunityName(currentUserCommunityRef),
       getCommunityCoverPhoto(currentUserCommunityRef),
+
+      getCommunityDescription(currentUserCommunityRef),
 
       // Get doc IDs the current user has bookmarked and is going to
       getAllUserInterestedEventsDocIds(userId),
@@ -83,6 +87,7 @@ export default class CommunityScreen extends React.Component {
       pastEvents,
       communityPhoto,
       communityName,
+      communityDescription,
       interestedEventDocIds,
       goingEventDocIds,
       refreshing: false,
@@ -113,59 +118,66 @@ export default class CommunityScreen extends React.Component {
     if (!refreshing) {
       return (
         // Invisible ScrollView component to add pull-down refresh functionality
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => this._loadData()}
-            />
-          }
-        >
-          <View>
-            <CommunityCoverPhoto
-              communityPhoto={communityPhoto}
-              communityName={communityName}
-            />
-            <View style={styles.topText}>
-              <Text style={styles.titleText}>{'in my community'}</Text>
-            </View>
-            <View style={styles.facepileContainer}>
-              {this.state.communityMembers !== [] && (
-                <Facepile
-                  totalWidth={335}
-                  maxNumImages={10}
-                  imageDiameter={50}
-                  members={communityMembers}
-                  pileTitle="Community Members"
-                  navigation={this.props.navigation}
-                />
-              )}
-            </View>
-
-            <View style={styles.middleText}>
-              <Text style={styles.titleText}>{'coming up'}</Text>
-            </View>
-            <View style={styles.upcomingScroll}>
-              <CommunityProfileEventCardHorizontalScroll
-                events={upcomingEvents}
-                onPress={this._onPressOpenEventPage}
-                interestedIDs={interestedEventDocIds}
-                goingIDs={goingEventDocIds}
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => this._loadData()}
               />
-            </View>
-            <View style={styles.bottomText}>
-              <Text style={styles.titleText}>{"how we've helped"}</Text>
-              <View style={styles.pastScroll}>
-                <CommunityProfileEventCardHorizontalScroll
-                  events={pastEvents}
-                  onPress={this._onPressOpenEventPage}
-                  interestedIDs={interestedEventDocIds}
-                  goingIDs={goingEventDocIds}
-                />
+            }
+          >
+            <View style={styles.screenContainer}>
+              <CommunityCoverPhoto
+                communityPhoto={communityPhoto}
+                communityName={communityName}
+              />
+              <View style={styles.sectionContainer}>
+                <Text style={styles.titleText}>{'about us'}</Text>
+                <Text style={styles.descriptionText}>
+                  {this.state.communityDescription}
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.titleText}>{'in my community'}</Text>
+                <View style={styles.facepileContainer}>
+                  {this.state.communityMembers !== [] && (
+                    <Facepile
+                      totalWidth={335}
+                      maxNumImages={10}
+                      imageDiameter={50}
+                      members={communityMembers}
+                      pileTitle="Community Members"
+                      navigation={this.props.navigation}
+                    />
+                  )}
+                </View>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.titleText}>{'coming up'}</Text>
+                <View style={styles.upcomingScroll}>
+                  <CommunityProfileEventCardHorizontalScroll
+                    events={upcomingEvents}
+                    onPress={this._onPressOpenEventPage}
+                    interestedIDs={interestedEventDocIds}
+                    goingIDs={goingEventDocIds}
+                  />
+                </View>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.titleText}>{"how we've helped"}</Text>
+                <View style={styles.pastScroll}>
+                  <CommunityProfileEventCardHorizontalScroll
+                    events={pastEvents}
+                    onPress={this._onPressOpenEventPage}
+                    interestedIDs={interestedEventDocIds}
+                    goingIDs={goingEventDocIds}
+                  />
+                </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       );
     } else {
       return (
@@ -178,24 +190,29 @@ export default class CommunityScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    paddingBottom: 22,
+  },
+  sectionContainer: {
+    top: -85,
+    marginBottom: 20,
+  },
   titleText: {
     fontFamily: 'montserrat',
     fontSize: 19,
     color: 'black',
     left: 19,
+    marginBottom: 8,
   },
-  topText: {
-    top: -85,
+  descriptionText: {
+    fontFamily: 'montserrat',
+    fontSize: 14,
+    left: 20,
+    color: 'black',
   },
   facepileContainer: {
     left: 19,
-    top: -80,
-  },
-  middleText: {
-    top: -65,
-  },
-  bottomText: {
-    top: -50,
   },
   placeholder: {
     width: 335,
@@ -206,11 +223,9 @@ const styles = StyleSheet.create({
   },
   upcomingScroll: {
     left: 15,
-    top: -60,
   },
   pastScroll: {
     left: 15,
-    top: 7,
     height: 0, //removes extra blank space at bottom of scroll
   },
   activityIndicator: {
