@@ -132,7 +132,7 @@ export default class CommunityScreen extends React.Component {
                 communityPhoto={communityPhoto}
                 communityName={communityName}
               />
-              <View style={styles.sectionContainer}>
+              <View style={[styles.sectionContainer, { width: 335 }]}>
                 <Text style={styles.titleText}>{'about us'}</Text>
                 <Text style={styles.descriptionText}>
                   {this.state.communityDescription}
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   titleText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'montserrat-medium',
     fontSize: 19,
     color: 'black',
     left: 19,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     fontFamily: 'montserrat',
     fontSize: 14,
     left: 20,
-    color: 'black',
+    color: '#444444',
   },
   facepileContainer: {
     left: 19,
