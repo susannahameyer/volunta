@@ -7,6 +7,8 @@ import Colors from '../constants/Colors';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default class CommunityProfileEventCard extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -16,10 +18,16 @@ export default class CommunityProfileEventCard extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({
-      date: timestampToDate(this.props.event.from_date),
-      org_name: await getOrganizationName(this.props.event.org_ref),
-    });
+    this._isMounted = true;
+    let org_name = await getOrganizationName(this.props.event.org_ref);
+    let date = timestampToDate(this.props.event.from_date);
+
+    if (this._isMounted) {
+      this.setState({
+        date,
+        org_name,
+      });
+    }
   }
 
   render() {

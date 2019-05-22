@@ -7,6 +7,8 @@ import { getOrganizationName } from '../firebase/api';
 import { timestampToDate } from '../utils';
 
 export default class EventCard extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -16,11 +18,17 @@ export default class EventCard extends React.Component {
   }
 
   // Fetch data here
-  async componentWillMount() {
-    this.setState({
-      date: timestampToDate(this.props.event.from_date),
-      org_name: await getOrganizationName(this.props.event.org_ref),
-    });
+  async componentDidMount() {
+    this._isMounted = true;
+    let org_name = await getOrganizationName(this.props.event.org_ref);
+    let date = timestampToDate(this.props.event.from_date);
+
+    if (this._isMounted) {
+      this.setState({
+        date,
+        org_name,
+      });
+    }
   }
 
   render() {
