@@ -324,6 +324,21 @@ export const getCommunityCoverPhoto = async communityRef => {
   return url;
 };
 
+// Retrieve the description of the community
+export const getCommunityDescription = async communityRef => {
+  let description = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      description = snapshot.get('description');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return description;
+};
+
 // Retrieve name for a given community reference
 export const getCommunityName = async communityRef => {
   let name = '';
