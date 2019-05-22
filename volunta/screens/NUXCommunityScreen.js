@@ -39,7 +39,7 @@ export default class NUXCommunityScreen extends React.Component {
   _onPressContinue = async communityName => {
     this.props.navigation.navigate('NUXInterests');
     let userId = await firebase.auth().currentUser.uid;
-    setUserCommunity(userId, this.state.communityMap.get(communityName));
+    await setUserCommunity(userId, this.state.communityMap.get(communityName));
   };
 
   _onSelect = selected => {

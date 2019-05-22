@@ -585,6 +585,22 @@ export const getAllCommunities = async () => {
   return communities;
 };
 
+// Returns a map from interest names to reference objects
+export const getAllInterests = async () => {
+  var interests = new Map();
+  await firestore
+    .collection('interests')
+    .orderBy('name')
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(interestSnapshot => {
+        let name = interestSnapshot.get('name');
+        interests.set(name, interestSnapshot.ref);
+      });
+    });
+  return interests;
+};
+
 // Takes in a list of past event objects that the user has gone to
 // Gets the volunteer network of this user based on their past service events
 export const getVolunteerNetwork = async pastEvents => {
@@ -646,10 +662,27 @@ export const registerUser = async (
 };
 
 export const setUserCommunity = async (userId, communityRef) => {
-  await firestore
+  let success = await firestore
     .collection('users')
     .doc(userId)
     .update({
       community_ref: communityRef,
+    })
+    .then(() => {
+      return true;
     });
+  return success;
+};
+
+export const setUserInterests = async (userId, interestRefs) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      interest_refs: interestRefs,
+    })
+    .then(() => {
+      return true;
+    });
+  return success;
 };
