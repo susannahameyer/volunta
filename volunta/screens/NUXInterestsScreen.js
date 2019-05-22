@@ -17,6 +17,7 @@ export default class NUXInterestsScreen extends React.Component {
     this.state = {
       interests: [],
       interestsMap: new Map(),
+      loaded: false,
     };
   }
 
@@ -35,6 +36,7 @@ export default class NUXInterestsScreen extends React.Component {
     this.setState({
       interests,
       interestsMap,
+      loaded: true,
     });
   };
 
@@ -72,7 +74,7 @@ export default class NUXInterestsScreen extends React.Component {
   };
 
   render() {
-    const { interests, interestsMap } = this.state;
+    const { interests, interestsMap, loaded } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.headerText}>what are your interests?</Text>
@@ -93,7 +95,7 @@ export default class NUXInterestsScreen extends React.Component {
             ItemSeparatorComponent={this._renderSeparator}
           />
         </View>
-        <TouchableOpacity onPress={this._onPressDone}>
+        <TouchableOpacity onPress={this._onPressDone} disabled={!loaded}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>done</Text>
           </View>
