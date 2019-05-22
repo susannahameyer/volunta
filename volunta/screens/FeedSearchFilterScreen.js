@@ -22,8 +22,6 @@ export default class FeedSearchFilterScreen extends React.Component {
         minDistance: 1,
         maxDistance: 50,
         currDistance: this.props.navigation.getParam('currDistance'),
-        interests: ['environment', 'children', 'community', 'advocacy', 'arts', 'social good', 'hunger'],
-        selectedInterests: ['your mom'],
     }
   }
 
@@ -31,7 +29,7 @@ export default class FeedSearchFilterScreen extends React.Component {
     this._loadInterests();
     this.props.navigation.setParams({
       currDistance: this.state.currDistance,
-      selectedInterests: this.state.selectedInterests,
+      selectedInterests: this.state.interestMap,
     });
   }
 
@@ -46,7 +44,7 @@ export default class FeedSearchFilterScreen extends React.Component {
       });
     });
     this.setState({
-      listKeys : listOfInterests
+      interestMap : listOfInterests
     });
   };
 
@@ -64,9 +62,9 @@ export default class FeedSearchFilterScreen extends React.Component {
 
   // handles the logic of toggling switches in state
   _setSwitchValue = (val, ind) => {
-    const tempData = _.cloneDeep(this.state.listKeys);
+    const tempData = _.cloneDeep(this.state.interestMap);
     tempData[ind].switch = val;
-    this.setState({ listKeys: tempData });
+    this.setState({ interestMap: tempData });
   }
 
   // use the index as a string as key
@@ -110,7 +108,6 @@ export default class FeedSearchFilterScreen extends React.Component {
     });
   }
 
-  // Function we pass to Sign Up button, pushes sign up screen onto stack
   render() {
     return (
       <View style={styles.container}>
@@ -141,15 +138,11 @@ export default class FeedSearchFilterScreen extends React.Component {
         <Text style={styles.header}> interest categories: </Text>
         <View style={styles.optionBlock}>
             <FlatList
-                //style={styles.flatListStyle}
+                style={styles.flatListStyle}
                 renderItem={this._renderInterest}
                 ItemSeparatorComponent={this._renderSeparator}
-                //data={this.state.interests}
-                data={this.state.listKeys}
-                //extraData={this.state} // Needed for child to update when 'interested' changes
-                //onRefresh={() => this._loadData()}
+                data={this.state.interestMap}
                 keyExtractor={this._keyExtractor}
-                //refreshing={isRefreshing}
             />
         </View> 
       </View>
@@ -210,5 +203,8 @@ const styles = StyleSheet.create({
   listSeparator: {
     height: 1,
     backgroundColor: "#CED0CE",
+  },
+  flatListStyle: {
+
   }
 });
