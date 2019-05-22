@@ -27,6 +27,8 @@ import {
 import * as c from '../firebase/fb_constants';
 
 export default class EventScreen extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -44,6 +46,7 @@ export default class EventScreen extends React.Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true;
     this._loadData();
   }
 
@@ -125,16 +128,22 @@ export default class EventScreen extends React.Component {
       allCommunityMembers.includes(user)
     ).length;
 
-    this.setState({
-      event,
-      facePileAttendees,
-      refreshing: false,
-      orgLogo,
-      going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
-      numGoing: facePileAttendees.length,
-      numGoingFromCommunity,
-      interests,
-    });
+    if (this._isMounted) {
+      this.setState({
+        event,
+        facePileAttendees,
+        refreshing: false,
+        orgLogo,
+        going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
+        numGoing: facePileAttendees.length,
+        numGoingFromCommunity,
+        interests,
+      });
+    }
+  };
+
+  componentWillUnmount = () => {
+    this._isMounted = false;
   };
 
   _updateInterested = async () => {
@@ -249,6 +258,7 @@ export default class EventScreen extends React.Component {
             toDate={event.to_date}
             location={event.location}
             interests={interests}
+            eventName={event.title}
           />
           <View style={styles.divider}>
             <View style={styles.facepileContainer}>

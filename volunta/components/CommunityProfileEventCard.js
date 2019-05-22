@@ -30,6 +30,10 @@ export default class CommunityProfileEventCard extends React.Component {
     }
   }
 
+  componentWillUnmount = () => {
+    this._isMounted = false;
+  };
+
   render() {
     const { event, interested, going, onPress } = this.props;
     const { date, org_name } = this.state;
@@ -41,7 +45,7 @@ export default class CommunityProfileEventCard extends React.Component {
           style={[styles.cardContainer, { height: upcoming ? 153 : 118 }]}
           onPress={() => onPress(event, org_name, interested)}
         >
-          <View style={styles.shadow}>
+          <View style={{ flex: 1 }}>
             <Image
               source={{ uri: event.cover_url }}
               style={styles.coverPhoto}

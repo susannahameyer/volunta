@@ -31,6 +31,10 @@ export default class EventCard extends React.Component {
     }
   }
 
+  componentWillUnmount = () => {
+    this._isMounted = false;
+  };
+
   render() {
     const {
       event,
@@ -47,7 +51,7 @@ export default class EventCard extends React.Component {
           style={styles.cardContainer}
           onPress={() => onPress(event, org_name, interested)}
         >
-          <View style={styles.shadow}>
+          <View style={{ flex: 1 }}>
             <AsyncImage
               viewStyle={styles.coverPhoto}
               source={{
