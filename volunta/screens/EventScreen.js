@@ -17,14 +17,13 @@ import {
   getOrganizationLogo,
   getUsersGoingForAllEvents,
   getCommunityMemberUserIds,
-  getUserCommunity,
+  getUserProperty,
   getEventInterestNames,
   getEvent,
   updateUserInterestedEvents,
   updateUserGoingEvents,
 } from '../firebase/api';
 import { Haptic } from 'expo';
-import * as c from '../firebase/fb_constants';
 import * as firebase from 'firebase';
 
 export default class EventScreen extends React.Component {
@@ -75,7 +74,7 @@ export default class EventScreen extends React.Component {
       getEventInterestNames(eventRef),
       getOrganizationLogo(event.org_ref),
       getUsersGoingForAllEvents(),
-      getUserCommunity(userId),
+      getUserProperty(userId, 'community_ref'),
       firestore
         .collection('users')
         .where('event_refs.going', 'array-contains', eventRef)

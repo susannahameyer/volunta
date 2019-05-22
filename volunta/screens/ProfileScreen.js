@@ -26,7 +26,6 @@ import {
   getVolunteerNetwork,
 } from '../firebase/api';
 import * as firebase from 'firebase';
-import * as c from '../firebase/fb_constants';
 
 const SIDE_MARGIN = 20;
 
