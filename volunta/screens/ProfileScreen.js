@@ -25,9 +25,8 @@ import {
   getAllUserGoingEventsDocIds,
   getVolunteerNetwork,
 } from '../firebase/api';
-import { firestore } from '../firebase/firebase';
-import * as c from '../firebase/fb_constants';
 import * as firebase from 'firebase';
+import * as c from '../firebase/fb_constants';
 
 const SIDE_MARGIN = 20;
 
@@ -56,11 +55,12 @@ export default class ProfileScreen extends React.Component {
     this._isMounted = false;
   };
 
-  //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space.
+  //TODO: consolidate profile/community logic in a shared space.
   _loadData = async () => {
     // If we are navigating to another user's profile
     // TODO: Change default to current user
-    const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
+    let currentUserId = await firebase.auth().currentUser.uid;
+    const userId = this.props.navigation.getParam('userId', currentUserId);
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
       interests,
