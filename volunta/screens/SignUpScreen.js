@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import AuthStyle from '../stylesheets/AuthStyle';
 import AssetFilePaths from '../constants/AssetFilePaths';
@@ -73,7 +74,7 @@ export default class SignUpScreen extends React.Component {
     }
 
     return (
-      <View style={AuthStyle.container}>
+      <KeyboardAvoidingView style={AuthStyle.container} behavior="padding">
         <Image source={AssetFilePaths.logo} style={AuthStyle.logo} />
         {!!errorMessage && <Text style={AuthStyle.error}>{errorMessage}</Text>}
         <View style={AuthStyle.inputView}>
@@ -164,7 +165,7 @@ export default class SignUpScreen extends React.Component {
           title="Already have an account? Login"
           onPress={() => this.props.navigation.navigate('LogIn')}
         />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
