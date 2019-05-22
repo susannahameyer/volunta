@@ -151,7 +151,10 @@ export default class SignUpScreen extends React.Component {
           <View
             style={[
               AuthStyle.logInButton,
-              { backgroundColor: disabled ? 'grey' : '#0081AF' },
+              {
+                backgroundColor: disabled ? 'grey' : '#0081AF',
+                marginBottom: 22,
+              },
             ]}
           >
             <Text style={AuthStyle.buttonText}>sign up</Text>
