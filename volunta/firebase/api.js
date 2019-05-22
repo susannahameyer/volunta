@@ -293,21 +293,20 @@ export const getAllUserGoingEventsDocIds = async userDocId => {
   return going;
 };
 
-// Retrieve the community reference object for the current user
-export const getUserCommunity = async userDocId => {
-  let communityRef = '';
-  await firestore
+// Retrieve am object for the current user ie. (userId, 'community_ref')
+export const getUserProperty = async (userDocId, property) => {
+  let value = await firestore
     .collection('users')
     .doc(userDocId)
     .get()
     .then(snapshot => {
-      communityRef = snapshot.get('community_ref');
+      return snapshot.get(property);
     })
     .catch(error => {
       console.log(error);
       return null;
     });
-  return communityRef;
+  return value;
 };
 
 // Retreive cover photo url for a given community reference
@@ -633,6 +632,7 @@ export const registerUser = async (
       },
       profile_pic_url: 'https://i.imgur.com/H7qsEie.png',
       volunteer_network_refs: [],
+      registration_completed: false,
     })
     .then(() => {
       return true;
