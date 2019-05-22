@@ -570,15 +570,16 @@ export const getAllInterestNames = async () => {
   return interests;
 };
 
-export const getAllCommunityNames = async () => {
-  var communities = [];
+// Returns a map from community names to reference objects
+export const getAllCommunities = async () => {
+  var communities = new Map();
   await firestore
     .collection('communities')
     .get()
     .then(snapshot => {
-      snapshot.forEach(communityRef => {
-        let name = communityRef.get('name');
-        communities.push(name);
+      snapshot.forEach(communitySnapshot => {
+        let name = communitySnapshot.get('name');
+        communities.set(name, communitySnapshot.ref);
       });
     });
   return communities;
@@ -642,4 +643,13 @@ export const registerUser = async (
       return false;
     });
   return success;
+};
+
+export const setUserCommunity = async (userId, communityRef) => {
+  await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      community_ref: communityRef,
+    });
 };
