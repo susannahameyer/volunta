@@ -686,3 +686,16 @@ export const setUserInterests = async (userId, interestRefs) => {
     });
   return success;
 };
+
+export const setUserRegistrationComplete = async userId => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      registration_completed: true,
+    })
+    .then(() => {
+      return true;
+    });
+  return success;
+};

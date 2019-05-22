@@ -11,6 +11,7 @@ import {
   getAllInterestNames,
   getAllInterests,
   setUserInterests,
+  setUserRegistrationComplete,
 } from '../firebase/api';
 import InterestSquare from '../components/InterestSquare';
 import * as firebase from 'firebase';
@@ -80,7 +81,7 @@ export default class NUXInterestsScreen extends React.Component {
       }
     }
     await setUserInterests(userId, selectedInterestRefs);
-    // setUserCommunity(userId, this.state.communityMap.get(communityName));
+    await setUserRegistrationComplete(userId);
   };
 
   _renderSeparator = () => {
