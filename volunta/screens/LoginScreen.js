@@ -21,12 +21,6 @@ export default class LoginScreen extends React.Component {
     };
   }
 
-  // TODO: implement FB Login
-  _onPressLogInWithFB = event => {};
-
-  // TODO: implement Google Login
-  _onPressLogInWithGoogle = event => {};
-
   _logIn = async (email, password) => {
     await firebase
       .auth()
@@ -48,24 +42,19 @@ export default class LoginScreen extends React.Component {
 
   render() {
     const { errorMessage, email, password } = this.state;
+    var disabled = true;
+    if (!!email && !!password) {
+      disabled = false;
+    }
+
     return (
       <View style={AuthStyle.container}>
-        <Image source={AssetFilePaths.logo} style={AuthStyle.logo} />
-        <View>
-          <TouchableOpacity onPress={this._onPressLogInWithFB}>
-            <View style={AuthStyle.socialButton}>
-              <Text style={AuthStyle.buttonText}>log in with facebook</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this._onPressLogInWithGoogle}>
-            <View style={AuthStyle.socialButton}>
-              <Text style={AuthStyle.buttonText}>log in with google</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={AuthStyle.divider} />
+        <Image
+          source={AssetFilePaths.logo}
+          style={[AuthStyle.logo, { marginBottom: 50 }]}
+        />
         {!!errorMessage && <Text style={AuthStyle.error}>{errorMessage}</Text>}
-        <View style={AuthStyle.inputView}>
+        <View style={[AuthStyle.inputView, { marginBottom: 20 }]}>
           <Text style={AuthStyle.inputPromptText}>email:</Text>
           <TextInput
             autoCapitalize="none"
@@ -74,7 +63,7 @@ export default class LoginScreen extends React.Component {
             value={email}
           />
         </View>
-        <View style={AuthStyle.inputView}>
+        <View style={[AuthStyle.inputView, { marginBottom: 100 }]}>
           <Text style={AuthStyle.inputPromptText}>password:</Text>
           <TextInput
             secureTextEntry
@@ -84,8 +73,19 @@ export default class LoginScreen extends React.Component {
             value={password}
           />
         </View>
-        <TouchableOpacity onPress={() => this._logIn(email, password)}>
-          <View style={AuthStyle.logInButton}>
+        <TouchableOpacity
+          onPress={() => this._logIn(email, password)}
+          disabled={disabled}
+        >
+          <View
+            style={[
+              AuthStyle.logInButton,
+              {
+                marginBottom: 20,
+                backgroundColor: disabled ? 'grey' : '#0081AF',
+              },
+            ]}
+          >
             <Text style={AuthStyle.buttonText}>log in</Text>
           </View>
         </TouchableOpacity>

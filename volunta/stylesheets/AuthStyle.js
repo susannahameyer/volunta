@@ -15,8 +15,8 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   datePicker: {
-    marginTop: 20,
     width: 306,
+    marginBottom: 20,
   },
   divider: {
     backgroundColor: Colors.mediumGray,
@@ -25,7 +25,7 @@ export default StyleSheet.create({
     width: 306,
   },
   inputView: {
-    marginTop: 20,
+    marginTop: 30,
   },
   logInButton: {
     alignItems: 'center',
@@ -34,20 +34,18 @@ export default StyleSheet.create({
     height: 46,
     justifyContent: 'center',
     marginTop: 20,
-    opacity: 0.5,
     width: 167,
   },
   logo: {
-    width: 234,
-    height: 223,
+    width: 133,
+    height: 118,
     resizeMode: 'contain',
   },
   inputPromptText: {
     color: Colors.darkGray,
     fontFamily: 'montserrat',
-    fontSize: 18,
-    fontWeight: 'normal',
-    marginLeft: 0,
+    fontSize: 16,
+    color: '#979797',
   },
   socialButton: {
     alignItems: 'center',
@@ -60,11 +58,16 @@ export default StyleSheet.create({
     width: 306,
   },
   textInput: {
-    height: 40,
+    height: 26,
     width: 306,
-    borderColor: 'gray',
+    borderColor: '#979797',
     borderWidth: 1,
     marginTop: 2,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderTopWidth: 0,
+    fontFamily: 'montserrat',
+    fontSize: 15,
   },
   error: {
     color: 'red',
