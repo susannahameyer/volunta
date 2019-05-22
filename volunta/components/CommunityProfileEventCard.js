@@ -30,6 +30,10 @@ export default class CommunityProfileEventCard extends React.Component {
     }
   }
 
+  componentWillUnmount = () => {
+    this._isMounted = false;
+  };
+
   render() {
     const { event, interested, going, onPress } = this.props;
     const { date, org_name } = this.state;
