@@ -25,14 +25,10 @@ export default class SignUpScreen extends React.Component {
       password: '',
       errorMessage: null,
       dateset: false,
+      firstName: '',
+      lastName: '',
     };
   }
-
-  // TODO: implement FB Sign in
-  _onPressSignUpWithFB = event => {};
-
-  // TODO: implement Google Sign in
-  _onPressSignUpWithGoogle = event => {};
 
   _signUp = async (email, password, birthdate) => {
     await firebase
@@ -58,25 +54,41 @@ export default class SignUpScreen extends React.Component {
   };
 
   render() {
-    const { errorMessage, email, password, birthdate } = this.state;
+    const {
+      errorMessage,
+      email,
+      password,
+      birthdate,
+      firstName,
+      lastName,
+    } = this.state;
+    var disabled = true;
+    if (!!email && !!password && !!birthdate && !!firstName && !!lastName) {
+      disabled = false;
+    }
 
     return (
       <View style={AuthStyle.container}>
         <Image source={AssetFilePaths.logo} style={AuthStyle.logo} />
-        <View>
-          <TouchableOpacity onPress={this._onPressSignUpWithFB}>
-            <View style={AuthStyle.socialButton}>
-              <Text style={AuthStyle.buttonText}>sign up with facebook</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this._onPressSignUpWithGoogle}>
-            <View style={AuthStyle.socialButton}>
-              <Text style={AuthStyle.buttonText}>sign up with google</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={AuthStyle.divider} />
         {!!errorMessage && <Text style={AuthStyle.error}>{errorMessage}</Text>}
+        <View style={AuthStyle.inputView}>
+          <Text style={AuthStyle.inputPromptText}>first name:</Text>
+          <TextInput
+            autoCapitalize="none"
+            style={AuthStyle.textInput}
+            onChangeText={firstName => this.setState({ firstName })}
+            value={firstName}
+          />
+        </View>
+        <View style={AuthStyle.inputView}>
+          <Text style={AuthStyle.inputPromptText}>last name:</Text>
+          <TextInput
+            autoCapitalize="none"
+            style={AuthStyle.textInput}
+            onChangeText={lastName => this.setState({ lastName })}
+            value={lastName}
+          />
+        </View>
         <View style={AuthStyle.inputView}>
           <Text style={AuthStyle.inputPromptText}>email:</Text>
           <TextInput
@@ -96,28 +108,45 @@ export default class SignUpScreen extends React.Component {
             value={password}
           />
         </View>
-        <DatePicker
-          date={birthdate}
-          mode="date"
-          placeholder="birthdate"
-          format="YYYY-MM-DD"
-          minDate="1919-01-01"
-          maxDate={today}
-          confirmBtnText="confirm"
-          cancelBtnText="cancel"
-          customStyles={{
-            dateText: {
-              fontFamily: 'montserrat',
-            },
-          }}
-          showIcon={false}
-          style={AuthStyle.datePicker}
-          onDateChange={this._setDate}
-        />
+        <View style={AuthStyle.inputView}>
+          <Text style={AuthStyle.inputPromptText}>birthdate:</Text>
+          <DatePicker
+            date={birthdate}
+            mode="date"
+            placeholder="birthdate"
+            format="YYYY-MM-DD"
+            minDate="1919-01-01"
+            maxDate={today}
+            confirmBtnText="confirm"
+            cancelBtnText="cancel"
+            customStyles={{
+              dateText: {
+                fontFamily: 'montserrat',
+                fontSize: 16,
+              },
+              dateInput: {
+                borderLeftWidth: 0,
+                borderTopWidth: 0,
+                borderRightWidth: 0,
+                borderColor: '#979797',
+                alignItems: 'flex-start',
+              },
+            }}
+            showIcon={false}
+            style={AuthStyle.datePicker}
+            onDateChange={this._setDate}
+          />
+        </View>
         <TouchableOpacity
           onPress={async () => await this._signUp(email, password, birthdate)}
+          disabled={disabled}
         >
-          <View style={AuthStyle.logInButton}>
+          <View
+            style={[
+              AuthStyle.logInButton,
+              { backgroundColor: disabled ? 'grey' : '#0081AF' },
+            ]}
+          >
             <Text style={AuthStyle.buttonText}>sign up</Text>
           </View>
         </TouchableOpacity>
