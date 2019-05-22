@@ -569,18 +569,35 @@ export const getAllInterestNames = async () => {
   return interests;
 };
 
-export const getAllCommunityNames = async () => {
-  var communities = [];
+// Returns a map from community names to reference objects
+export const getAllCommunities = async () => {
+  var communities = new Map();
   await firestore
     .collection('communities')
     .get()
     .then(snapshot => {
-      snapshot.forEach(communityRef => {
-        let name = communityRef.get('name');
-        communities.push(name);
+      snapshot.forEach(communitySnapshot => {
+        let name = communitySnapshot.get('name');
+        communities.set(name, communitySnapshot.ref);
       });
     });
   return communities;
+};
+
+// Returns a map from interest names to reference objects
+export const getAllInterests = async () => {
+  var interests = new Map();
+  await firestore
+    .collection('interests')
+    .orderBy('name')
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(interestSnapshot => {
+        let name = interestSnapshot.get('name');
+        interests.set(name, interestSnapshot.ref);
+      });
+    });
+  return interests;
 };
 
 // Takes in a list of past event objects that the user has gone to
@@ -633,6 +650,54 @@ export const registerUser = async (
       },
       profile_pic_url: 'https://i.imgur.com/H7qsEie.png',
       volunteer_network_refs: [],
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+export const setUserCommunity = async (userId, communityRef) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      community_ref: communityRef,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+export const setUserInterests = async (userId, interestRefs) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      interest_refs: interestRefs,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+export const setUserRegistrationComplete = async userId => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      registration_completed: true,
     })
     .then(() => {
       return true;

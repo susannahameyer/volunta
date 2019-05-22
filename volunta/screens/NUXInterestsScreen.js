@@ -7,8 +7,14 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import { getAllInterestNames } from '../firebase/api';
+import {
+  getAllInterestNames,
+  getAllInterests,
+  setUserInterests,
+  setUserRegistrationComplete,
+} from '../firebase/api';
 import InterestSquare from '../components/InterestSquare';
+import * as firebase from 'firebase';
 
 export default class NUXInterestsScreen extends React.Component {
   constructor(props) {
@@ -16,8 +22,11 @@ export default class NUXInterestsScreen extends React.Component {
 
     this.state = {
       interests: [],
+      // Maps from interest name to boolean of user selection
       interestsMap: new Map(),
       loaded: false,
+      // Maps from interest name to reference object
+      interestRefsMap: new Map(),
     };
   }
 
@@ -27,6 +36,7 @@ export default class NUXInterestsScreen extends React.Component {
 
   _loadData = async () => {
     const interests = await getAllInterestNames();
+    const interestRefsMap = await getAllInterests();
     var interestsMap = new Map();
     // Map all interests to false (i.e. not selected) at first
     interests.forEach(interest => {
@@ -37,6 +47,7 @@ export default class NUXInterestsScreen extends React.Component {
       interests,
       interestsMap,
       loaded: true,
+      interestRefsMap,
     });
   };
 
@@ -59,8 +70,18 @@ export default class NUXInterestsScreen extends React.Component {
   };
 
   // TODO: Save interests set to true in interestsMap to current user's interests in db
-  _onPressDone = () => {
+  _onPressDone = async interestRefs => {
     this.props.navigation.navigate('Feed');
+    let userId = await firebase.auth().currentUser.uid;
+    let selectedInterestRefs = [];
+    for (const k of this.state.interestsMap.keys()) {
+      if (this.state.interestsMap.get(k) == true) {
+        let interestRef = this.state.interestRefsMap.get(k);
+        selectedInterestRefs.push(interestRef);
+      }
+    }
+    await setUserInterests(userId, selectedInterestRefs);
+    await setUserRegistrationComplete(userId);
   };
 
   _renderSeparator = () => {
