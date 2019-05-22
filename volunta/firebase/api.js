@@ -670,6 +670,9 @@ export const setUserCommunity = async (userId, communityRef) => {
     })
     .then(() => {
       return true;
+    })
+    .catch(error => {
+      return false;
     });
   return success;
 };
@@ -683,6 +686,9 @@ export const setUserInterests = async (userId, interestRefs) => {
     })
     .then(() => {
       return true;
+    })
+    .catch(error => {
+      return false;
     });
   return success;
 };
@@ -696,6 +702,9 @@ export const setUserRegistrationComplete = async userId => {
     })
     .then(() => {
       return true;
+    })
+    .catch(error => {
+      return false;
     });
   return success;
 };
