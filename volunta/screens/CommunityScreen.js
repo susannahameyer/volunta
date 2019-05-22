@@ -47,7 +47,7 @@ export default class CommunityScreen extends React.Component {
     // Get current user's community data
     const currentUserCommunityRef = await getUserProperty(
       userId,
-      'cummunity_ref'
+      'community_ref'
     );
 
     const [
