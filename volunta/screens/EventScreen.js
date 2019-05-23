@@ -81,7 +81,11 @@ export default class EventScreen extends React.Component {
         .get()
         .then(
           async snapshot =>
-            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+            await getUsersAttributes(snapshot.docs, [
+              'name',
+              'profile_pic_url',
+              'profile_pic_is_base64',
+            ])
         ),
       firestore
         .collection('users')
@@ -89,7 +93,11 @@ export default class EventScreen extends React.Component {
         .get()
         .then(
           async snapshot =>
-            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+            await getUsersAttributes(snapshot.docs, [
+              'name',
+              'profile_pic_url',
+              'profile_pic_is_base64',
+            ])
         ),
     ]);
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
-import * as c from '../firebase/fb_constants';
 import { DefaultDict, distance, formatDist } from '../utils';
 import { Location, Haptic } from 'expo';
 import {
