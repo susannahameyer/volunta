@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Dimensions,
   StyleSheet,
   View,
   Text,
@@ -183,7 +184,7 @@ export default class CommunityScreen extends React.Component {
                 communityPhoto={communityPhoto}
                 communityName={communityName}
               />
-              <View style={[styles.sectionContainer, { width: 335 }]}>
+              <View style={[styles.sectionContainer, { width: 193 }]}>
                 <Text style={styles.titleText}>{'about us'}</Text>
                 <Text style={styles.descriptionText}>
                   {this.state.communityDescription}
@@ -236,6 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 19,
     color: 'black',
     marginBottom: 8,
+    marginTop: 12,
   },
   descriptionText: {
     fontFamily: 'raleway',

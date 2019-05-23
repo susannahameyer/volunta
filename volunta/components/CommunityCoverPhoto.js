@@ -13,7 +13,7 @@ export default class CommunityCoverPhoto extends React.Component {
         {/* Gradient banner for text */}
         <View style={styles.banner}>
           <LinearGradient
-            colors={['rgba(90,90,90,0.25)', 'rgba(40,40,40,.95)']}
+            colors={['rgba(110, 110, 110, 0)', '#383839']}
             style={{ flex: 1 }}
           />
         </View>
@@ -32,7 +32,7 @@ export default class CommunityCoverPhoto extends React.Component {
 const styles = StyleSheet.create({
   photo: {
     width: Dimensions.get('window').width,
-    height: 175,
+    height: 195,
     left: 0,
     top: 0,
   },
