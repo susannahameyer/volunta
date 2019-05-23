@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   aboutText: {
     fontSize: 18,
-    fontFamily: 'montserrat-bold',
+    fontFamily: 'raleway-medium',
     marginBottom: 4,
   },
   aboutInfo: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   aboutInfoText: {
     fontSize: 14,
-    fontFamily: 'montserrat-medium',
+    fontFamily: 'raleway-medium',
     marginLeft: 15,
   },
   pin: {

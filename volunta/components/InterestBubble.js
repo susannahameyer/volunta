@@ -59,6 +59,6 @@ const styles = StyleSheet.create({
   bubbleText: {
     marginHorizontal: 15,
     color: 'white',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
 });

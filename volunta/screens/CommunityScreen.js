@@ -199,14 +199,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   titleText: {
-    fontFamily: 'montserrat-medium',
+    fontFamily: 'raleway-medium',
     fontSize: 19,
     color: 'black',
     left: 19,
     marginBottom: 8,
   },
   descriptionText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 14,
     left: 20,
     color: '#444444',

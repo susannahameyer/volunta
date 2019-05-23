@@ -65,7 +65,7 @@ export default class NUXCommunityScreen extends React.Component {
           containerStyle={styles.dropdown}
           textInputStyle={styles.textInput}
           itemStyle={styles.dropdownItem}
-          itemTextStyle={{ fontFamily: 'montserrat', fontSize: 14 }}
+          itemTextStyle={{ fontFamily: 'raleway', fontSize: 14 }}
           itemsContainerStyle={{ maxHeight: 185 }}
           items={communities}
           placeholder={'search for a community...'}
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 18,
     fontWeight: 'normal',
   },
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 27,
   },
   welcomeText: {
-    fontFamily: 'montserrat-medium',
+    fontFamily: 'raleway-medium',
     fontSize: 22,
     marginTop: 40,
   },
   detailText: {
     textAlign: 'center',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 18,
     marginTop: 30,
   },
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 0.4,
     borderColor: '#bbb',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 14,
   },
 });

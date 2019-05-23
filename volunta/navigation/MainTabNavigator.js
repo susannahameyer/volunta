@@ -18,12 +18,14 @@ const FeedStack = createStackNavigator({
   Event: EventScreen,
   Facepile: FacepileDetailScreen,
   Profile: ProfileScreen,
+},{
+  headerMode: 'screen',
 });
 
 FeedStack.navigationOptions = {
   tabBarLabel: 'Feed',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'ios-menu'} />
+    <TabBarIcon focused={focused} name={'md-list-box'} />
   ),
 };
 

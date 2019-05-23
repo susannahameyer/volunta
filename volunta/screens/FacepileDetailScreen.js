@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   profileText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 14,
     color: 'black',
     fontWeight: 'bold',

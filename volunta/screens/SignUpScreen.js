@@ -127,7 +127,7 @@ export default class SignUpScreen extends React.Component {
             cancelBtnText="cancel"
             customStyles={{
               dateText: {
-                fontFamily: 'montserrat',
+                fontFamily: 'raleway',
                 fontSize: 16,
               },
               dateInput: {

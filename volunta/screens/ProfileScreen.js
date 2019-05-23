@@ -238,11 +238,11 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
   helpedTitle: {
     fontSize: 20,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     marginBottom: 8,
   },
   profilePic: {
@@ -262,12 +262,12 @@ const styles = StyleSheet.create({
   },
   personName: {
     fontSize: 28,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
   communityName: {
     fontSize: 16,
     color: '#838383',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
   comingUpBar: {
     height: 200,

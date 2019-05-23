@@ -41,7 +41,6 @@ export default class EventCard extends React.Component {
       interested,
       onPress,
       onClickInterested,
-      numGoing,
       distance,
     } = this.props;
     const { org_name, date } = this.state;
@@ -51,7 +50,7 @@ export default class EventCard extends React.Component {
           style={styles.cardContainer}
           onPress={() => onPress(event, org_name, interested)}
         >
-          <View style={{ flex: 1 }}>
+          <View style={styles.coverPhoto}>
             <AsyncImage
               viewStyle={styles.coverPhoto}
               source={{
@@ -62,8 +61,8 @@ export default class EventCard extends React.Component {
 
             <Icon
               name="circle"
-              size={43}
-              style={styles.circle}
+              size={45}
+              style={styles.interestedIcon}
               color={'white'}
             />
             <Icon
@@ -73,23 +72,22 @@ export default class EventCard extends React.Component {
               onPress={() => onClickInterested(event.doc_id)}
               color={interested ? '#0081AF' : 'grey'}
             />
+          </View>
 
-            <View style={styles.textContainer}>
-              <View style={styles.titleTextContainer}>
-                <Text numberOfLines={2} style={styles.titleText}>
-                  {event.title}
-                </Text>
-                <Text style={styles.detailText} numberOfLines={1}>
-                  {org_name}
-                </Text>
-              </View>
-              <View style={styles.detailTextContainer}>
-                <Text style={styles.detailText}>{date}</Text>
-                <Text style={styles.detailText}>{numGoing} going</Text>
-                {distance !== '' && (
-                  <Text style={styles.detailText}>{distance}</Text>
-                )}
-              </View>
+          <View style={styles.textContainer}>
+            <View style={styles.titleTextContainer}>
+              <Text numberOfLines={2} style={styles.titleText}>
+                {event.title}
+              </Text>
+              <Text style={styles.detailText} numberOfLines={1}>
+                {org_name}
+              </Text>
+            </View>
+            <View style={styles.detailTextContainer}>
+              <Text style={styles.detailText}>{date}</Text>
+              {distance !== '' && (
+                <Text style={styles.detailText}>{distance}</Text>
+              )}
             </View>
           </View>
         </TouchableOpacity>
@@ -103,39 +101,39 @@ const styles = StyleSheet.create({
     height: EventCardConstants.cardHeight,
     width: EventCardConstants.cardWidth,
     backgroundColor: '#F8F8F8',
-    borderRadius: 20,
+    borderRadius: EventCardConstants.borderRadius,
     overflow: 'hidden',
     marginBottom: 16,
-    marginLeft: 17,
   },
   coverPhoto: {
-    height: '50%',
+    height: EventCardConstants.coverPhotoHeight,
     width: '100%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: EventCardConstants.borderRadius,
+    borderTopRightRadius: EventCardConstants.borderRadius,
   },
   shadow: {
     flex: 1,
     shadowColor: 'black',
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 1,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowRadius: 1,
     backgroundColor: '#0000', // invisible color
   },
   titleText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway-medium',
     fontSize: 20,
     fontWeight: 'normal',
-    paddingBottom: 5,
+    paddingBottom: 3,
   },
   detailText: {
-    fontFamily: 'montserrat',
-    fontSize: 14,
+    fontFamily: 'raleway',
+    fontSize: EventCardConstants.detailsFontSize,
     fontWeight: 'normal',
     color: '#838383',
+    paddingBottom: 3,
   },
   textContainer: {
     flex: 1,
@@ -145,7 +143,7 @@ const styles = StyleSheet.create({
   titleTextContainer: {
     flex: 3,
     justifyContent: 'center',
-    paddingLeft: 13,
+    marginLeft: 13,
   },
   detailTextContainer: {
     flex: 1,
@@ -155,12 +153,7 @@ const styles = StyleSheet.create({
   },
   interestedIcon: {
     position: 'absolute',
-    left: EventCardConstants.cardWidth - 45,
-    bottom: EventCardConstants.cardHeight / 2,
-  },
-  circle: {
-    marginLeft: EventCardConstants.cardWidth - 45,
-    top: 57,
-    position: 'absolute',
+    bottom: 5,
+    right: 5,
   },
 });

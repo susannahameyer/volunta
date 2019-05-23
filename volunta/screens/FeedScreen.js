@@ -12,9 +12,22 @@ import {
   getNumGoingForAllEvents,
 } from '../firebase/api';
 import * as firebase from 'firebase';
+import EventCardConstants from '../constants/EventCardConstants';
+import Colors from '../constants/Colors';
 
 export default class FeedScreen extends React.Component {
   _isMounted = false;
+
+  static navigationOptions = {
+    title: 'events',
+    headerStyle: {
+      height: 50,
+    },
+    headerTitleStyle: {
+      fontFamily: 'raleway',
+      fontSize: 24,
+    },
+  };
 
   constructor(props) {
     super(props);
@@ -140,7 +153,6 @@ export default class FeedScreen extends React.Component {
         onPress={this._onPressEventCard}
         interested={this.state.interestedMap.get(item.doc_id)}
         onClickInterested={this._updateInterested}
-        numGoing={this.state.goingCounts[item.doc_id]}
         distance={this._getDistance(item.location.coords)}
       />
     );
@@ -204,7 +216,7 @@ export default class FeedScreen extends React.Component {
     return (
       <View style={styles.pageContainer}>
         <SearchBar
-          placeholder="Search for service events"
+          placeholder=""
           onChangeText={this._updateSearchAndFilter}
           value={search}
           lightTheme
@@ -231,22 +243,24 @@ export default class FeedScreen extends React.Component {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    width: Dimensions.get('window').width,
+    width: '100%',
     flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   searchContainerStyle: {
     backgroundColor: 'white',
-    borderWidth: 0, // no effect
-    shadowColor: 'white', //no effect
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
-    width: '95%',
-    alignSelf: 'center',
+    height: 37,
+    marginTop: 3,
   },
   searchInputContainerStyle: {
-    backgroundColor: '#E8E8E8',
+    backgroundColor: Colors.searchBar,
+    width: EventCardConstants.cardWidth,
   },
   flatListStyle: {
-    height: '100%',
+    marginTop: 24,
+    overflow: 'visible',
   },
 });

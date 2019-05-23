@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
     width: 202,
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontFamily: 'montserrat',
+    color: "#FFFFFF",
+    fontFamily: 'raleway',
     fontSize: 18,
     fontWeight: 'normal',
   },
