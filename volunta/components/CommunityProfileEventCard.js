@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 12,
     marginLeft: 3,
     textAlign: 'center',
