@@ -153,7 +153,6 @@ export default class FeedScreen extends React.Component {
         onPress={this._onPressEventCard}
         interested={this.state.interestedMap.get(item.doc_id)}
         onClickInterested={this._updateInterested}
-        numGoing={this.state.goingCounts[item.doc_id]}
         distance={this._getDistance(item.location.coords)}
       />
     );
@@ -251,19 +250,17 @@ const styles = StyleSheet.create({
   },
   searchContainerStyle: {
     backgroundColor: 'white',
-    borderWidth: 0, // no effect
-    shadowColor: 'white', //no effect
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
     height: 37,
-    width: EventCardConstants.cardWidth,
-    alignSelf: 'center',
+    marginTop: 3,
   },
   searchInputContainerStyle: {
     backgroundColor: Colors.searchBar,
+    width: EventCardConstants.cardWidth,
   },
   flatListStyle: {
-    marginTop: 48,
+    marginTop: 24,
     overflow: 'visible',
   },
 });
