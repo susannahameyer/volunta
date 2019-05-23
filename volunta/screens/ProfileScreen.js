@@ -136,6 +136,8 @@ export default class ProfileScreen extends React.Component {
       refreshing,
       interests,
     } = this.state;
+    const hidePastEvents = pastEvents.length == 0;
+
     if (!refreshing) {
       return (
         // Invisible ScrollView component to add pull-down refresh functionality
@@ -185,16 +187,22 @@ export default class ProfileScreen extends React.Component {
                   interestedIDs={interestedEventDocIds}
                   onPress={this._onPressOpenEventPage}
                   goingIDs={goingEventDocIds}
+                  status={'upcoming'}
+                  source={'profile'}
                 />
               </View>
             </View>
-            <View style={styles.helpedBar}>
+            <View
+              style={[styles.helpedBar, { height: hidePastEvents ? 0 : 160 }]}
+            >
               <Text style={styles.helpedTitle}>how I've helped:</Text>
               <CommunityProfileEventCardHorizontalScroll
                 events={pastEvents}
                 interestedIDs={interestedEventDocIds}
                 onPress={this._onPressOpenEventPage}
                 goingIDs={goingEventDocIds}
+                status={'past'}
+                source={'profile'}
               />
             </View>
             <View>
