@@ -56,7 +56,7 @@ export default class CommunityProfileEventCard extends React.Component {
         <View style={styles.shadow}>
           <TouchableOpacity
             style={[styles.cardContainer, { height: 153 }]}
-            onPress={() => onPress(event, org_name, interested)}
+            disabled={true}
           >
             <View style={{ flex: 1 }}>
               <View style={styles.emptyPhotoContainer}>
