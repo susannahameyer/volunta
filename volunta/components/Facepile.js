@@ -3,10 +3,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 
 import {
   Image,
-  Platform,
-  ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   FlatList,
