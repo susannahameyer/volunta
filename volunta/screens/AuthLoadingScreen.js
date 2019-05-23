@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, AsyncStorage, StatusBar, View } from 'react-native';
+import { ActivityIndicator, StatusBar, View } from 'react-native';
 import * as firebase from 'firebase';
 import { getUserProperty } from '../firebase/api';
 
@@ -17,7 +17,15 @@ export default class AuthLoadingScreen extends React.Component {
           user.uid,
           'registration_completed'
         );
-        if (userCompletedNUX) {
+        console.log(userCompletedNUX);
+        if (userCompletedNUX == null || userCompletedNUX == undefined) {
+          await user.delete().catch(() => {
+            // Fails when user has not signed in recently, su must make them sign in again so we can delete the account and sign up again.
+            // TODO: show some sort of error explaining what happened.
+            this.props.navigation.navigate('Auth');
+          });
+          this.props.navigation.navigate('Auth');
+        } else if (userCompletedNUX) {
           this.props.navigation.navigate('Main');
         } else {
           this.props.navigation.navigate('NUX');
