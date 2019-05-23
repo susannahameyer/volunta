@@ -227,13 +227,6 @@ const styles = StyleSheet.create({
   facepileContainer: {
     left: 19,
   },
-  placeholder: {
-    width: 335,
-    height: 50,
-    backgroundColor: 'grey',
-    left: 19,
-    top: -42,
-  },
   upcomingScroll: {
     left: 15,
   },
