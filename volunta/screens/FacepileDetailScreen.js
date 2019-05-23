@@ -31,6 +31,9 @@ export default class FacepileDetailScreen extends React.Component {
 
   //Renders a single user that can be clicked to enter their profile
   _renderUser = user => {
+    let img_uri = user.profile_pic_is_base64
+      ? `data:image/gif;base64,${user.profile_pic_url}`
+      : user.profile_pic_url;
     return (
       <TouchableOpacity
         style={styles.userDetailsContainer}
@@ -38,11 +41,10 @@ export default class FacepileDetailScreen extends React.Component {
           this.props.navigation.push('Profile', { userId: user.id })
         }
       >
-        <Image
-          style={styles.profileImage}
-          source={{ uri: user.profile_pic_url }}
-        />
-        <Text style={styles.profileText}>{user.name}</Text>
+        <Image style={styles.profileImage} source={{ uri: img_uri }} />
+        <Text style={styles.profileText}>
+          {user.name.first + ' ' + user.name.last}
+        </Text>
         <Icon
           name={'right'}
           size={20}
