@@ -9,6 +9,7 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  AlertIOS,
 } from 'react-native';
 import Facepile from '../components/Facepile';
 import ExpandableInterests from '../components/ExpandableInterests';
@@ -16,16 +17,18 @@ import CommunityProfileEventCardHorizontalScroll from '../components/CommunityPr
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   getAllUserInterestedEventsDocIds,
-  getUsersAttributes,
   getUserInterestNames,
   getEventsForProfile,
-  getProfilePhoto,
+  getUserProperty,
   getProfileName,
   getProfileCommunityName,
   getAllUserGoingEventsDocIds,
   getVolunteerNetwork,
+  setUserProfilePicUrl,
 } from '../firebase/api';
+import { ImagePicker } from 'expo';
 import * as firebase from 'firebase';
+import { DEFAULT_PROFILE_PIC_URL } from '../constants/Constants';
 
 const SIDE_MARGIN = 20;
 
@@ -42,6 +45,8 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds: new Set(),
       refreshing: true,
       interests: [],
+      profilePic: null,
+      profilePicIsBase64: null,
     };
   }
 
@@ -71,7 +76,8 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds,
 
       // get url for profile picture
-      profilePhoto,
+      profilePic,
+      profilePicIsBase64,
       // get community name for a profile
       communityName,
     ] = await Promise.all([
@@ -80,7 +86,8 @@ export default class ProfileScreen extends React.Component {
       getProfileName(userId),
       getAllUserInterestedEventsDocIds(userId),
       getAllUserGoingEventsDocIds(userId),
-      getProfilePhoto(userId),
+      getUserProperty(userId, 'profile_pic_url'),
+      getUserProperty(userId, 'profile_pic_is_base64'),
       getProfileCommunityName(userId),
     ]);
 
@@ -92,7 +99,8 @@ export default class ProfileScreen extends React.Component {
         upcomingEvents,
         pastEvents,
         profileName,
-        profilePhoto,
+        profilePic,
+        profilePicIsBase64,
         communityName,
         volunteerNetwork,
         interestedEventDocIds,
@@ -127,6 +135,99 @@ export default class ProfileScreen extends React.Component {
     );
   };
 
+  _uploadFromLibrary = async () => {
+    const { status } = await Expo.Permissions.askAsync(
+      Expo.Permissions.CAMERA_ROLL
+    );
+    if (status == 'granted') {
+      pickerReturn = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.1, // 0: low quality, 1: high quality
+        base64: true,
+      });
+      // pickerReturn : cancelled, [uri, width, height, type]
+      if (!pickerReturn.cancelled) {
+        await this._onPickerReturn(pickerReturn.base64);
+      }
+    } else {
+      AlertIOS.alert('Please update your camera roll permissions in Settings!');
+    }
+  };
+
+  _uploadFromCamera = async () => {
+    const { status } = await Expo.Permissions.askAsync(
+      Expo.Permissions.CAMERA_ROLL,
+      Expo.Permissions.CAMERA
+    );
+    if (status == 'granted') {
+      pickerReturn = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        quality: 0.1, // 0: low quality, 1: high quality
+        base64: true,
+      });
+      // pickerReturn : cancelled, [uri, width, height, exif, base64]
+      if (!pickerReturn.cancelled) {
+        await this._onPickerReturn(pickerReturn.base64);
+      }
+    } else {
+      AlertIOS.alert('Please update your camera permissions in Settings!');
+    }
+  };
+
+  _onPickerReturn = async base64img => {
+    let userId = await firebase.auth().currentUser.uid;
+    console.log(base64img);
+    setUserProfilePicUrl(userId, base64img, true);
+    AlertIOS.alert('Looking great! Please refresh the page to see the update.');
+  };
+
+  _uploadImageLink = async () => {
+    let userId = await firebase.auth().currentUser.uid;
+    AlertIOS.prompt('Please make the link works!', null, async url => {
+      await setUserProfilePicUrl(userId, url, false).then();
+      AlertIOS.alert(
+        'Looking great! Please refresh the page to see the update.'
+      );
+    });
+  };
+
+  _restoreDefaultImg = async () => {
+    console.log(DEFAULT_PROFILE_PIC_URL);
+    let userId = await firebase.auth().currentUser.uid;
+    await setUserProfilePicUrl(userId, DEFAULT_PROFILE_PIC_URL, false).then();
+    AlertIOS.alert(
+      'Your current image has been removed! Please refresh the page to see the update.'
+    );
+  };
+
+  _onPressProfilePic = () => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: [
+          'Cancel',
+          'Upload Image Link',
+          'Upload From Library',
+          'Upload From Camera',
+          'Restore Default Image',
+        ],
+        cancelButtonIndex: 0,
+      },
+      async buttonIndex => {
+        // Camera Roll: ask for permission
+        if (buttonIndex === 1) {
+          await this._uploadImageLink();
+        } else if (buttonIndex === 2) {
+          await this._uploadFromLibrary();
+        } else if (buttonIndex === 3) {
+          await this._uploadFromCamera();
+        } else if (buttonIndex === 4) {
+          await this._restoreDefaultImg();
+        }
+      }
+    );
+  };
+
   render() {
     const {
       upcomingEvents,
@@ -135,8 +236,13 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds,
       refreshing,
       interests,
+      profilePic,
+      profilePicIsBase64,
     } = this.state;
     if (!refreshing) {
+      let img_uri = profilePicIsBase64
+        ? `data:image/gif;base64,${profilePic}`
+        : profilePic;
       return (
         // Invisible ScrollView component to add pull-down refresh functionality
         <ScrollView
@@ -149,10 +255,9 @@ export default class ProfileScreen extends React.Component {
         >
           <View style={styles.container}>
             <View style={styles.profileBar}>
-              <Image
-                style={styles.profilePic}
-                source={{ uri: this.state.profilePhoto }}
-              />
+              <TouchableOpacity onPress={this._onPressProfilePic}>
+                <Image style={styles.profilePic} source={{ uri: img_uri }} />
+              </TouchableOpacity>
               <View style={styles.upperText}>
                 <Text style={styles.personName}>{this.state.profileName}</Text>
                 <Text style={styles.communityName}>

@@ -1,6 +1,6 @@
 import { firestore } from './firebase';
 var Promise = require('bluebird');
-import * as c from './fb_constants';
+import { DEFAULT_PROFILE_PIC_URL } from '../constants/Constants';
 import { DefaultDict } from '../utils';
 import * as firebase from 'firebase';
 
@@ -647,7 +647,8 @@ export const registerUser = async (
         first: firstName,
         last: lastName,
       },
-      profile_pic_url: 'https://i.imgur.com/H7qsEie.png',
+      profile_pic_url: DEFAULT_PROFILE_PIC_URL,
+      profile_pic_is_base64: false,
       volunteer_network_refs: [],
       registration_completed: false,
     })
@@ -698,6 +699,24 @@ export const setUserRegistrationComplete = async userId => {
     .doc(userId)
     .update({
       registration_completed: true,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+// base64: boolean saying if profile pic is on base64 format or not.
+export const setUserProfilePicUrl = async (userId, profilePicUrl, base64) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      profile_pic_url: profilePicUrl,
+      profile_pic_is_base64: base64,
     })
     .then(() => {
       return true;
