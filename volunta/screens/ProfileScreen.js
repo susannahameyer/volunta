@@ -177,7 +177,6 @@ export default class ProfileScreen extends React.Component {
 
   _onPickerReturn = async base64img => {
     let userId = await firebase.auth().currentUser.uid;
-    console.log(base64img);
     setUserProfilePicUrl(userId, base64img, true);
     AlertIOS.alert('Looking great! Please refresh the page to see the update.');
   };
@@ -193,7 +192,6 @@ export default class ProfileScreen extends React.Component {
   };
 
   _restoreDefaultImg = async () => {
-    console.log(DEFAULT_PROFILE_PIC_URL);
     let userId = await firebase.auth().currentUser.uid;
     await setUserProfilePicUrl(userId, DEFAULT_PROFILE_PIC_URL, false).then();
     AlertIOS.alert(
