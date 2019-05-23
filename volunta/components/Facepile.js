@@ -66,6 +66,10 @@ export default class Facepile extends React.Component {
     }
 
     //Renders the image
+    profile_pic_url;
+    let img_uri = item.profile_pic_is_base64
+      ? `data:image/gif;base64,${item.profile_pic_url}`
+      : item.profile_pic_url;
     return (
       <View>
         <TouchableOpacity
@@ -77,7 +81,7 @@ export default class Facepile extends React.Component {
           }}
         >
           <Image
-            source={{ uri: item.profile_pic_url }}
+            source={{ uri: img_uri }}
             style={[styles.profileImage, imageStyle]}
           />
         </TouchableOpacity>
