@@ -47,6 +47,7 @@ export default class ProfileScreen extends React.Component {
       interests: [],
       profilePic: null,
       profilePicIsBase64: null,
+      isCurrentUser: false,
     };
   }
 
@@ -65,6 +66,9 @@ export default class ProfileScreen extends React.Component {
     // TODO: Change default to current user
     let currentUserId = await firebase.auth().currentUser.uid;
     const userId = this.props.navigation.getParam('userId', currentUserId);
+    if (userId == currentUserId) {
+      this.setState({ isCurrentUser: true });
+    }
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
       interests,
@@ -236,6 +240,7 @@ export default class ProfileScreen extends React.Component {
       interests,
       profilePic,
       profilePicIsBase64,
+      isCurrentUser,
     } = this.state;
     const hidePastEvents = pastEvents.length == 0;
 
@@ -255,7 +260,10 @@ export default class ProfileScreen extends React.Component {
         >
           <View style={styles.container}>
             <View style={styles.profileBar}>
-              <TouchableOpacity onPress={this._onPressProfilePic}>
+              <TouchableOpacity
+                onPress={this._onPressProfilePic}
+                disabled={!isCurrentUser}
+              >
                 <Image style={styles.profilePic} source={{ uri: img_uri }} />
               </TouchableOpacity>
               <View style={styles.upperText}>
