@@ -588,6 +588,7 @@ export const getAllCommunities = async () => {
   var communities = new Map();
   await firestore
     .collection('communities')
+    .orderBy('name')
     .get()
     .then(snapshot => {
       snapshot.forEach(communitySnapshot => {
