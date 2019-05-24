@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, FlatList, View, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  ActivityIndicator,
+  Dimensions,
+} from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
 import { DefaultDict, distance, formatDist } from '../utils';
@@ -212,31 +218,39 @@ export default class FeedScreen extends React.Component {
 
   render() {
     const { search, displayedEvents, isRefreshing } = this.state;
-    return (
-      <View style={styles.pageContainer}>
-        <SearchBar
-          placeholder=""
-          onChangeText={this._updateSearchAndFilter}
-          value={search}
-          lightTheme
-          round
-          containerStyle={styles.searchContainerStyle}
-          inputContainerStyle={styles.searchInputContainerStyle}
-          ref={searchBar => (this.searchBar = searchBar)}
-        />
-        {displayedEvents !== [] && (
-          <FlatList
-            style={styles.flatListStyle}
-            renderItem={this._renderEventCard}
-            data={displayedEvents}
-            extraData={this.state} // Needed for child to update when 'interested' changes
-            onRefresh={() => this._loadData()}
-            keyExtractor={this._keyExtractor}
-            refreshing={isRefreshing}
+    if (!isRefreshing) {
+      return (
+        <View style={styles.pageContainer}>
+          <SearchBar
+            placeholder=""
+            onChangeText={this._updateSearchAndFilter}
+            value={search}
+            lightTheme
+            round
+            containerStyle={styles.searchContainerStyle}
+            inputContainerStyle={styles.searchInputContainerStyle}
+            ref={searchBar => (this.searchBar = searchBar)}
           />
-        )}
-      </View>
-    );
+          {displayedEvents !== [] && (
+            <FlatList
+              style={styles.flatListStyle}
+              renderItem={this._renderEventCard}
+              data={displayedEvents}
+              extraData={this.state} // Needed for child to update when 'interested' changes
+              onRefresh={() => this._loadData()}
+              keyExtractor={this._keyExtractor}
+              refreshing={isRefreshing}
+            />
+          )}
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size={0} />
+        </View>
+      );
+    }
   }
 }
 
@@ -261,5 +275,8 @@ const styles = StyleSheet.create({
   flatListStyle: {
     marginTop: 24,
     overflow: 'visible',
+  },
+  activityIndicator: {
+    marginTop: 300,
   },
 });
