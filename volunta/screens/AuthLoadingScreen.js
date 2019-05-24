@@ -17,10 +17,9 @@ export default class AuthLoadingScreen extends React.Component {
           user.uid,
           'registration_completed'
         );
-        console.log(userCompletedNUX);
         if (userCompletedNUX == null || userCompletedNUX == undefined) {
           await user.delete().catch(() => {
-            // Fails when user has not signed in recently, su must make them sign in again so we can delete the account and sign up again.
+            // Fails when user has not signed up recently, su must make them sign in again so we can delete the account and sign up again.
             // TODO: show some sort of error explaining what happened.
             this.props.navigation.navigate('Auth');
           });
