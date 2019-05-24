@@ -422,5 +422,6 @@ const styles = StyleSheet.create({
   },
   facepileContainer: {
     marginTop: 28,
+    marginBottom: 10,
   },
 });
