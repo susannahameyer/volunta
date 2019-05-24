@@ -318,7 +318,9 @@ export default class ProfileScreen extends React.Component {
               </View>
             </View>
             <View style={styles.facepileContainer}>
-              <Text style={styles.sectionTitle}>volunteer network</Text>
+              <Text style={[styles.sectionTitle, { marginBottom: 15 }]}>
+                volunteer network
+              </Text>
               {this.state.volunteerNetwork !== [] && (
                 <Facepile
                   totalWidth={335}
@@ -419,6 +421,6 @@ const styles = StyleSheet.create({
     marginTop: 300,
   },
   facepileContainer: {
-    marginTop: 22,
+    marginTop: 28,
   },
 });
