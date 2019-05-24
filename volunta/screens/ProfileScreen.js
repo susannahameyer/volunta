@@ -274,7 +274,7 @@ export default class ProfileScreen extends React.Component {
               </View>
               <TouchableOpacity
                 onPress={this._onPressSettings}
-                style={styles.editIcon}
+                style={[styles.editIcon, { width: isCurrentUser ? 30 : 0 }]}
               >
                 <Ionicons name="ios-settings" size={30} color="#0081AF" />
               </TouchableOpacity>
