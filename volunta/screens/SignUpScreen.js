@@ -24,7 +24,6 @@ export default class SignUpScreen extends React.Component {
       email: '',
       password: '',
       errorMessage: null,
-      dateset: false,
       firstName: '',
       lastName: '',
     };
