@@ -21,7 +21,6 @@ export default class SignUpScreen extends React.Component {
     super(props);
     this.state = {
       birthdate: '1996-01-01T12:00:00Z',
-      community: '',
       email: '',
       password: '',
       errorMessage: null,
