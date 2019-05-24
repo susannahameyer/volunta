@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     height: 74,
     borderRadius: 37,
     marginRight: 15,
-    marginBottom: 0,
     marginTop: 15,
+    marginLeft: 10,
     alignSelf: 'center',
   },
   headerText: {

@@ -10,6 +10,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   AlertIOS,
+  Dimensions,
 } from 'react-native';
 import Facepile from '../components/Facepile';
 import ExpandableInterests from '../components/ExpandableInterests';
@@ -258,29 +259,29 @@ export default class ProfileScreen extends React.Component {
             />
           }
         >
-          <View style={styles.container}>
-            <View style={styles.profileBar}>
-              <TouchableOpacity
-                onPress={this._onPressProfilePic}
-                disabled={!isCurrentUser}
-              >
-                <Image style={styles.profilePic} source={{ uri: img_uri }} />
-              </TouchableOpacity>
-              <View style={styles.upperText}>
-                <Text style={styles.personName}>{this.state.profileName}</Text>
-                <Text style={styles.communityName}>
-                  {this.state.communityName}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={this._onPressSettings}
-                style={[styles.editIcon, { width: isCurrentUser ? 30 : 0 }]}
-              >
-                <Ionicons name="ios-settings" size={30} color="#0081AF" />
-              </TouchableOpacity>
+          <View style={styles.profileBar}>
+            <TouchableOpacity
+              onPress={this._onPressProfilePic}
+              disabled={!isCurrentUser}
+            >
+              <Image style={styles.profilePic} source={{ uri: img_uri }} />
+            </TouchableOpacity>
+            <View style={styles.upperText}>
+              <Text style={styles.personName}>{this.state.profileName}</Text>
+              <Text style={styles.communityName}>
+                {this.state.communityName}
+              </Text>
             </View>
+            <TouchableOpacity
+              onPress={this._onPressSettings}
+              style={[styles.editIcon, { width: isCurrentUser ? 30 : 0 }]}
+            >
+              <Ionicons name="ios-settings" size={30} color="#0081AF" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.container}>
             <View style={styles.interestBar}>
-              <Text style={styles.sectionTitle}>interests:</Text>
+              <Text style={styles.sectionTitle}>interests</Text>
               {interests.length > 0 && (
                 <ExpandableInterests
                   interests={interests}
@@ -291,8 +292,8 @@ export default class ProfileScreen extends React.Component {
               )}
             </View>
             <View style={styles.comingUpBar}>
-              <Text style={styles.sectionTitle}>coming up:</Text>
-              <View style={styles.upcomingScroll}>
+              <Text style={styles.sectionTitle}>coming up</Text>
+              <View style={styles.scroll}>
                 <CommunityProfileEventCardHorizontalScroll
                   events={upcomingEvents}
                   interestedIDs={interestedEventDocIds}
@@ -303,23 +304,21 @@ export default class ProfileScreen extends React.Component {
                 />
               </View>
             </View>
-            <View
-              style={[styles.helpedBar, { height: hidePastEvents ? 0 : 160 }]}
-            >
-              <Text style={styles.helpedTitle}>how I've helped:</Text>
-              <CommunityProfileEventCardHorizontalScroll
-                events={pastEvents}
-                interestedIDs={interestedEventDocIds}
-                onPress={this._onPressOpenEventPage}
-                goingIDs={goingEventDocIds}
-                status={'past'}
-                source={'profile'}
-              />
-            </View>
-            <View>
-              <Text style={styles.sectionTitle}>volunteer network:</Text>
+            <View style={hidePastEvents ? { height: 0 } : styles.helpedBar}>
+              <Text style={styles.sectionTitle}>how I've helped</Text>
+              <View style={styles.scroll}>
+                <CommunityProfileEventCardHorizontalScroll
+                  events={pastEvents}
+                  interestedIDs={interestedEventDocIds}
+                  onPress={this._onPressOpenEventPage}
+                  goingIDs={goingEventDocIds}
+                  status={'past'}
+                  source={'profile'}
+                />
+              </View>
             </View>
             <View style={styles.facepileContainer}>
+              <Text style={styles.sectionTitle}>volunteer network</Text>
               {this.state.volunteerNetwork !== [] && (
                 <Facepile
                   totalWidth={335}
@@ -350,6 +349,21 @@ const styles = StyleSheet.create({
   },
   profileBar: {
     flexDirection: 'row',
+    marginTop: 10,
+    backgroundColor: 'white',
+    width: Dimensions.get('window').width,
+    borderLeftWidth: 0,
+
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+    paddingHorizontal: SIDE_MARGIN,
+    paddingBottom: 5,
   },
   editIcon: {
     marginLeft: 35,
@@ -357,12 +371,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: 'raleway',
-  },
-  helpedTitle: {
-    fontSize: 20,
-    fontFamily: 'raleway',
-    marginBottom: 8,
+    fontFamily: 'raleway-medium',
+    marginBottom: 10,
+    marginTop: 20,
   },
   profilePic: {
     width: 78,
@@ -391,11 +402,12 @@ const styles = StyleSheet.create({
   comingUpBar: {
     height: 200,
   },
-  upcomingScroll: {
+  scroll: {
     marginTop: 8,
   },
   helpedBar: {
     height: 160,
+    marginTop: 20,
   },
   placeholder: {
     width: 335,
@@ -405,5 +417,8 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     marginTop: 300,
+  },
+  facepileContainer: {
+    marginTop: 22,
   },
 });
