@@ -226,6 +226,9 @@ export default class EventScreen extends React.Component {
           ' going or interested including ' +
           numGoingFromCommunity +
           ' from your community';
+    if (numGoingFromCommunity == 0) {
+      goingStr = numGoing + ' going or interested';
+    }
 
     // Render Facepile view only if there are users interested or going
     var facepileView = (
