@@ -13,20 +13,20 @@ export default class EventCard extends React.Component {
     super(props);
     this.state = {
       date: '',
-      org_name: '',
+      orgName: '',
     };
   }
 
   // Fetch data here
   async componentDidMount() {
     this._isMounted = true;
-    let org_name = await getOrganizationName(this.props.event.org_ref);
+    let orgName = await getOrganizationName(this.props.event.org_ref);
     let date = timestampToDate(this.props.event.from_date);
 
     if (this._isMounted) {
       this.setState({
         date,
-        org_name,
+        orgName,
       });
     }
   }
@@ -43,12 +43,12 @@ export default class EventCard extends React.Component {
       onClickInterested,
       distance,
     } = this.props;
-    const { org_name, date } = this.state;
+    const { orgName, date } = this.state;
     return (
       <View style={styles.shadow}>
         <TouchableOpacity
           style={styles.cardContainer}
-          onPress={() => onPress(event, org_name, interested)}
+          onPress={() => onPress(event, orgName, interested)}
         >
           <View style={styles.coverPhoto}>
             <AsyncImage
@@ -80,7 +80,7 @@ export default class EventCard extends React.Component {
                 {event.title}
               </Text>
               <Text style={styles.detailText} numberOfLines={1}>
-                {org_name}
+                {orgName}
               </Text>
             </View>
             <View style={styles.detailTextContainer}>
