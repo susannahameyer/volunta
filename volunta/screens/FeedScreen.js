@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   },
   filterIcon: {
     position: 'absolute',
-    left: '87%',
-    top: 19
+    left: '82%',
+    top: 22
   }
 });
