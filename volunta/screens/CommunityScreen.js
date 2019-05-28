@@ -122,6 +122,7 @@ export default class CommunityScreen extends React.Component {
     if (!refreshing) {
       // Don't display past events if empty
       var pastEventDisplay = null;
+      var upcomingStyle = { left: 15 };
       const hidePastEvents = pastEvents.length == 0;
       if (!hidePastEvents) {
         pastEventDisplay = (
@@ -139,6 +140,9 @@ export default class CommunityScreen extends React.Component {
             </View>
           </View>
         );
+      } else {
+        // Remove spacing at the bottom when past events are empty
+        upcomingStyle = { left: 15, height: 0 };
       }
 
       return (
@@ -180,7 +184,7 @@ export default class CommunityScreen extends React.Component {
               </View>
               <View style={styles.sectionContainer}>
                 <Text style={styles.titleText}>{'coming up'}</Text>
-                <View style={styles.upcomingScroll}>
+                <View style={upcomingStyle}>
                   <CommunityProfileEventCardHorizontalScroll
                     events={upcomingEvents}
                     onPress={this._onPressOpenEventPage}
