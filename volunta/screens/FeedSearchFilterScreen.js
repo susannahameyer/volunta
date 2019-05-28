@@ -78,7 +78,7 @@ export default class FeedSearchFilterScreen extends React.Component {
           <Text style={styles.interestText}> {item.key} </Text>
           <Switch 
             style={styles.switch}
-            trackColor={'#0081AF'}
+            trackColor={{true: '#0081AF', false: 'grey'}}
             onValueChange={(value) => this._setSwitchValue(value, index)}
             value={item.switch}
           />

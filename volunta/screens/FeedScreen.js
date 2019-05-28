@@ -122,6 +122,9 @@ export default class FeedScreen extends React.Component {
   // updating both local state and navigation state so the advanced search
   // screen data can persist
   _refreshResults = data => {
+    console.log("passing the data back");
+    console.log(data);
+    console.log(data[1]);
     this.state.currDistance = data[0];
     this.props.navigation.setParams({currDistance: data[0]});
     this.state.currInterests = data[1];
