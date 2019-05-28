@@ -433,14 +433,16 @@ export const getUsersAttributes = async (userDocSnapshots, attributes) => {
   // Robust implementation: http://bluebirdjs.com/docs/api/promise.map.html
 
   let results = [];
-  userDocSnapshots.forEach(snapshot => {
-    let result = {};
-    attributes.forEach(attribute => {
-      result[attribute] = snapshot.get(attribute);
+  if (!!userDocSnapshots) {
+    userDocSnapshots.forEach(snapshot => {
+      let result = {};
+      attributes.forEach(attribute => {
+        result[attribute] = snapshot.get(attribute);
+      });
+      result['id'] = snapshot.id;
+      results.push(result);
     });
-    result['id'] = snapshot.id;
-    results.push(result);
-  });
+  }
   return results;
 };
 

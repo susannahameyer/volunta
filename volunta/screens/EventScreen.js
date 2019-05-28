@@ -137,13 +137,18 @@ export default class EventScreen extends React.Component {
       allCommunityMembers.includes(user)
     ).length;
 
+    const going =
+      event.doc_id in allEventsAttendees
+        ? allEventsAttendees[event.doc_id].includes(userId)
+        : false;
+
     if (this._isMounted) {
       this.setState({
         event,
         facePileAttendees,
         refreshing: false,
         orgLogo,
-        going: allEventsAttendees[event.doc_id].includes(userId),
+        going,
         numGoing: facePileAttendees.length,
         numGoingFromCommunity,
         interests,
