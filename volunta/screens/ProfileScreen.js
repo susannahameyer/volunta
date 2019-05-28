@@ -393,13 +393,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   personName: {
-    fontSize: 28,
+    fontSize: 24,
     fontFamily: 'raleway',
   },
   communityName: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#838383',
     fontFamily: 'raleway',
+    marginTop: 4,
   },
   comingUpBar: {
     height: 200,
