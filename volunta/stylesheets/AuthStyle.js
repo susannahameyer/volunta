@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   buttonText: {
     color: '#FFFFFF',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 18,
     fontWeight: 'normal',
   },
@@ -43,7 +43,7 @@ export default StyleSheet.create({
   },
   inputPromptText: {
     color: Colors.darkGray,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 16,
     color: '#979797',
   },
@@ -66,12 +66,12 @@ export default StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderTopWidth: 0,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 15,
   },
   error: {
     color: 'red',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 12,
   },
 });

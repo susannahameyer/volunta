@@ -54,21 +54,6 @@ export default class EventPageButtonBar extends React.Component {
               {'Going'}
             </Text>
           </View>
-          <View style={styles.iconBlock}>
-            <Icon
-              name="circle-outline"
-              size={57}
-              color={Colors.iconGray}
-              style={styles.circle}
-            />
-            <Ionicons
-              name="ios-more"
-              size={40}
-              color={Colors.iconGray}
-              style={styles.moreIcon}
-            />
-            <Text style={[styles.iconLabel, { marginTop: 7 }]}>{'More'}</Text>
-          </View>
         </View>
       </View>
     );
@@ -86,7 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   iconLabel: {
-    fontFamily: 'montserrat-bold',
+    fontFamily: 'raleway-medium',
     fontSize: 12,
     color: Colors.iconGray,
   },

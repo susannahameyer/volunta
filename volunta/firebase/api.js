@@ -1,6 +1,6 @@
 import { firestore } from './firebase';
 var Promise = require('bluebird');
-import * as c from './fb_constants';
+import { DEFAULT_PROFILE_PIC_URL } from '../constants/Constants';
 import { DefaultDict } from '../utils';
 import * as firebase from 'firebase';
 
@@ -36,12 +36,11 @@ export const getFeedEvents = async () => {
 
 // Fetch event data for the community page
 // TODO: finalize logic for upcoming vs past vs ongoing events
-export const getEventsForCommunity = async userId => {
+export const getEventsForCommunity = async currentUserCommunityRef => {
   let returnArrUpcoming = [];
   let returnArrPast = [];
   let returnArrOngoing = [];
   let eventsRef = firestore.collection('events');
-  const currentUserCommunityRef = await getUserCommunity(userId);
 
   await eventsRef
     .where('sponsors', 'array-contains', currentUserCommunityRef)
@@ -186,11 +185,11 @@ export const getEventsFromArrsOfIds = async (
 };
 
 // Retrieve profile photo for a given user id
-export const getProfilePhoto = async userRef => {
+export const getProfilePhoto = async userId => {
   let url = '';
   await firestore
     .collection('users')
-    .doc(userRef)
+    .doc(userId)
     .get()
     .then(snapshot => {
       url = snapshot.get('profile_pic_url');
@@ -294,21 +293,20 @@ export const getAllUserGoingEventsDocIds = async userDocId => {
   return going;
 };
 
-// Retrieve the community reference object for the current user
-export const getUserCommunity = async userDocId => {
-  let communityRef = '';
-  await firestore
+// Retrieve am object for the current user ie. (userId, 'community_ref')
+export const getUserProperty = async (userDocId, property) => {
+  let value = await firestore
     .collection('users')
     .doc(userDocId)
     .get()
     .then(snapshot => {
-      communityRef = snapshot.get('community_ref');
+      return snapshot.get(property);
     })
     .catch(error => {
       console.log(error);
       return null;
     });
-  return communityRef;
+  return value;
 };
 
 // Retreive cover photo url for a given community reference
@@ -324,6 +322,21 @@ export const getCommunityCoverPhoto = async communityRef => {
       return null;
     });
   return url;
+};
+
+// Retrieve the description of the community
+export const getCommunityDescription = async communityRef => {
+  let description = '';
+  await communityRef
+    .get()
+    .then(snapshot => {
+      description = snapshot.get('description');
+    })
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
+  return description;
 };
 
 // Retrieve name for a given community reference
@@ -570,18 +583,36 @@ export const getAllInterestNames = async () => {
   return interests;
 };
 
-export const getAllCommunityNames = async () => {
-  var communities = [];
+// Returns a map from community names to reference objects
+export const getAllCommunities = async () => {
+  var communities = new Map();
   await firestore
     .collection('communities')
+    .orderBy('name')
     .get()
     .then(snapshot => {
-      snapshot.forEach(communityRef => {
-        let name = communityRef.get('name');
-        communities.push(name);
+      snapshot.forEach(communitySnapshot => {
+        let name = communitySnapshot.get('name');
+        communities.set(name, communitySnapshot.ref);
       });
     });
   return communities;
+};
+
+// Returns a map from interest names to reference objects
+export const getAllInterests = async () => {
+  var interests = new Map();
+  await firestore
+    .collection('interests')
+    .orderBy('name')
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(interestSnapshot => {
+        let name = interestSnapshot.get('name');
+        interests.set(name, interestSnapshot.ref);
+      });
+    });
+  return interests;
 };
 
 // Takes in a list of past event objects that the user has gone to
@@ -632,8 +663,76 @@ export const registerUser = async (
         first: firstName,
         last: lastName,
       },
-      profile_pic_url: 'https://imgur.com/a/PkFtkmU',
+      profile_pic_url: DEFAULT_PROFILE_PIC_URL,
+      profile_pic_is_base64: false,
       volunteer_network_refs: [],
+      registration_completed: false,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+export const setUserCommunity = async (userId, communityRef) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      community_ref: communityRef,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+export const setUserInterests = async (userId, interestRefs) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      interest_refs: interestRefs,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+export const setUserRegistrationComplete = async userId => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      registration_completed: true,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(error => {
+      return false;
+    });
+  return success;
+};
+
+// base64: boolean saying if profile pic is on base64 format or not.
+export const setUserProfilePicUrl = async (userId, profilePicUrl, base64) => {
+  let success = await firestore
+    .collection('users')
+    .doc(userId)
+    .update({
+      profile_pic_url: profilePicUrl,
+      profile_pic_is_base64: base64,
     })
     .then(() => {
       return true;

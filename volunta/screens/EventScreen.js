@@ -17,14 +17,14 @@ import {
   getOrganizationLogo,
   getUsersGoingForAllEvents,
   getCommunityMemberUserIds,
-  getUserCommunity,
+  getUserProperty,
   getEventInterestNames,
   getEvent,
   updateUserInterestedEvents,
   updateUserGoingEvents,
 } from '../firebase/api';
 import { Haptic } from 'expo';
-import * as c from '../firebase/fb_constants';
+import * as firebase from 'firebase';
 
 export default class EventScreen extends React.Component {
   _isMounted = false;
@@ -51,10 +51,12 @@ export default class EventScreen extends React.Component {
   }
 
   _loadData = async () => {
-    var event = this.state.event;
-    const eventRef = firestore.collection('events').doc(event.doc_id);
+    const eventRef = firestore
+      .collection('events')
+      .doc(this.state.event.doc_id);
     // Get event to load any updates on refresh
-    event = await getEvent(eventRef);
+    let event = await getEvent(eventRef);
+    let userId = await firebase.auth().currentUser.uid;
 
     const [
       // Get list of interests that correspond to the event
@@ -72,15 +74,18 @@ export default class EventScreen extends React.Component {
       getEventInterestNames(eventRef),
       getOrganizationLogo(event.org_ref),
       getUsersGoingForAllEvents(),
-      // TODO: Change to current user
-      getUserCommunity(c.TEST_USER_ID),
+      getUserProperty(userId, 'community_ref'),
       firestore
         .collection('users')
         .where('event_refs.going', 'array-contains', eventRef)
         .get()
         .then(
           async snapshot =>
-            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+            await getUsersAttributes(snapshot.docs, [
+              'name',
+              'profile_pic_url',
+              'profile_pic_is_base64',
+            ])
         ),
       firestore
         .collection('users')
@@ -88,7 +93,11 @@ export default class EventScreen extends React.Component {
         .get()
         .then(
           async snapshot =>
-            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+            await getUsersAttributes(snapshot.docs, [
+              'name',
+              'profile_pic_url',
+              'profile_pic_is_base64',
+            ])
         ),
     ]);
 
@@ -134,7 +143,7 @@ export default class EventScreen extends React.Component {
         facePileAttendees,
         refreshing: false,
         orgLogo,
-        going: allEventsAttendees[event.doc_id].includes(c.TEST_USER_ID),
+        going: allEventsAttendees[event.doc_id].includes(userId),
         numGoing: facePileAttendees.length,
         numGoingFromCommunity,
         interests,
@@ -156,8 +165,9 @@ export default class EventScreen extends React.Component {
     });
 
     // Try to update in database
+    let userId = await firebase.auth().currentUser.uid;
     success = await updateUserInterestedEvents(
-      c.TEST_USER_ID, //TODO: Make this the current user
+      userId,
       this.state.event.doc_id,
       newInterested
     );
@@ -180,8 +190,9 @@ export default class EventScreen extends React.Component {
     });
 
     // Try to update in database
+    let userId = await firebase.auth().currentUser.uid;
     success = await updateUserGoingEvents(
-      c.TEST_USER_ID, //TODO: Make this the current user
+      userId,
       this.state.event.doc_id,
       newGoing
     );
@@ -208,6 +219,17 @@ export default class EventScreen extends React.Component {
       interests,
     } = this.state;
 
+    let goingStr =
+      numGoing == numGoingFromCommunity
+        ? numGoing + ' going or interested, all from your community '
+        : numGoing +
+          ' going or interested including ' +
+          numGoingFromCommunity +
+          ' from your community';
+    if (numGoingFromCommunity == 0) {
+      goingStr = numGoing + ' going or interested';
+    }
+
     // Render Facepile view only if there are users interested or going
     var facepileView = (
       <Text style={[styles.detailText, styles.numGoingText]}>
@@ -226,10 +248,7 @@ export default class EventScreen extends React.Component {
             navigation={this.props.navigation}
           />
           <Text style={[styles.detailText, styles.numGoingText]}>
-            {numGoing +
-              ' going or interested including ' +
-              numGoingFromCommunity +
-              ' from your community'}
+            {goingStr}
           </Text>
         </View>
       );
@@ -297,12 +316,12 @@ const styles = StyleSheet.create({
   },
   sectionText: {
     fontSize: 18,
-    fontFamily: 'montserrat-bold',
+    fontFamily: 'raleway-medium',
     marginBottom: 8,
   },
   detailText: {
     fontSize: 14,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
   numGoingText: {
     marginTop: 10,

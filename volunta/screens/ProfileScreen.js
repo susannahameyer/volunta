@@ -9,6 +9,8 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  AlertIOS,
+  Dimensions,
 } from 'react-native';
 import Facepile from '../components/Facepile';
 import ExpandableInterests from '../components/ExpandableInterests';
@@ -16,18 +18,18 @@ import CommunityProfileEventCardHorizontalScroll from '../components/CommunityPr
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   getAllUserInterestedEventsDocIds,
-  getUsersAttributes,
   getUserInterestNames,
   getEventsForProfile,
-  getProfilePhoto,
+  getUserProperty,
   getProfileName,
   getProfileCommunityName,
   getAllUserGoingEventsDocIds,
   getVolunteerNetwork,
+  setUserProfilePicUrl,
 } from '../firebase/api';
-import { firestore } from '../firebase/firebase';
-import * as c from '../firebase/fb_constants';
+import { ImagePicker } from 'expo';
 import * as firebase from 'firebase';
+import { DEFAULT_PROFILE_PIC_URL } from '../constants/Constants';
 
 const SIDE_MARGIN = 20;
 
@@ -44,6 +46,9 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds: new Set(),
       refreshing: true,
       interests: [],
+      profilePic: null,
+      profilePicIsBase64: null,
+      isCurrentUser: false,
     };
   }
 
@@ -56,11 +61,15 @@ export default class ProfileScreen extends React.Component {
     this._isMounted = false;
   };
 
-  //TODO: change this to be profile-specific and consolidate profile/community logic in a shared space.
+  //TODO: consolidate profile/community logic in a shared space.
   _loadData = async () => {
     // If we are navigating to another user's profile
     // TODO: Change default to current user
-    const userId = this.props.navigation.getParam('userId', c.TEST_USER_ID);
+    let currentUserId = await firebase.auth().currentUser.uid;
+    const userId = this.props.navigation.getParam('userId', currentUserId);
+    if (userId == currentUserId) {
+      this.setState({ isCurrentUser: true });
+    }
     const [
       [upcomingEvents, pastEvents, ongoingEvents],
       interests,
@@ -72,7 +81,8 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds,
 
       // get url for profile picture
-      profilePhoto,
+      profilePic,
+      profilePicIsBase64,
       // get community name for a profile
       communityName,
     ] = await Promise.all([
@@ -81,7 +91,8 @@ export default class ProfileScreen extends React.Component {
       getProfileName(userId),
       getAllUserInterestedEventsDocIds(userId),
       getAllUserGoingEventsDocIds(userId),
-      getProfilePhoto(userId),
+      getUserProperty(userId, 'profile_pic_url'),
+      getUserProperty(userId, 'profile_pic_is_base64'),
       getProfileCommunityName(userId),
     ]);
 
@@ -93,7 +104,8 @@ export default class ProfileScreen extends React.Component {
         upcomingEvents,
         pastEvents,
         profileName,
-        profilePhoto,
+        profilePic,
+        profilePicIsBase64,
         communityName,
         volunteerNetwork,
         interestedEventDocIds,
@@ -128,6 +140,97 @@ export default class ProfileScreen extends React.Component {
     );
   };
 
+  _uploadFromLibrary = async () => {
+    const { status } = await Expo.Permissions.askAsync(
+      Expo.Permissions.CAMERA_ROLL
+    );
+    if (status == 'granted') {
+      pickerReturn = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.1, // 0: low quality, 1: high quality
+        base64: true,
+      });
+      // pickerReturn : cancelled, [uri, width, height, type]
+      if (!pickerReturn.cancelled) {
+        await this._onPickerReturn(pickerReturn.base64);
+      }
+    } else {
+      AlertIOS.alert('Please update your camera roll permissions in Settings!');
+    }
+  };
+
+  _uploadFromCamera = async () => {
+    const { status } = await Expo.Permissions.askAsync(
+      Expo.Permissions.CAMERA_ROLL,
+      Expo.Permissions.CAMERA
+    );
+    if (status == 'granted') {
+      pickerReturn = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        quality: 0.1, // 0: low quality, 1: high quality
+        base64: true,
+      });
+      // pickerReturn : cancelled, [uri, width, height, exif, base64]
+      if (!pickerReturn.cancelled) {
+        await this._onPickerReturn(pickerReturn.base64);
+      }
+    } else {
+      AlertIOS.alert('Please update your camera permissions in Settings!');
+    }
+  };
+
+  _onPickerReturn = async base64img => {
+    let userId = await firebase.auth().currentUser.uid;
+    setUserProfilePicUrl(userId, base64img, true);
+    AlertIOS.alert('Looking great! Please refresh the page to see the update.');
+  };
+
+  _uploadImageLink = async () => {
+    let userId = await firebase.auth().currentUser.uid;
+    AlertIOS.prompt('Please make the link works!', null, async url => {
+      await setUserProfilePicUrl(userId, url, false).then();
+      AlertIOS.alert(
+        'Looking great! Please refresh the page to see the update.'
+      );
+    });
+  };
+
+  _restoreDefaultImg = async () => {
+    let userId = await firebase.auth().currentUser.uid;
+    await setUserProfilePicUrl(userId, DEFAULT_PROFILE_PIC_URL, false).then();
+    AlertIOS.alert(
+      'Your current image has been removed! Please refresh the page to see the update.'
+    );
+  };
+
+  _onPressProfilePic = () => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: [
+          'Cancel',
+          'Upload Image Link',
+          'Upload From Library',
+          'Upload From Camera',
+          'Restore Default Image',
+        ],
+        cancelButtonIndex: 0,
+      },
+      async buttonIndex => {
+        // Camera Roll: ask for permission
+        if (buttonIndex === 1) {
+          await this._uploadImageLink();
+        } else if (buttonIndex === 2) {
+          await this._uploadFromLibrary();
+        } else if (buttonIndex === 3) {
+          await this._uploadFromCamera();
+        } else if (buttonIndex === 4) {
+          await this._restoreDefaultImg();
+        }
+      }
+    );
+  };
+
   render() {
     const {
       upcomingEvents,
@@ -136,8 +239,16 @@ export default class ProfileScreen extends React.Component {
       goingEventDocIds,
       refreshing,
       interests,
+      profilePic,
+      profilePicIsBase64,
+      isCurrentUser,
     } = this.state;
+    const hidePastEvents = pastEvents.length == 0;
+
     if (!refreshing) {
+      let img_uri = profilePicIsBase64
+        ? `data:image/gif;base64,${profilePic}`
+        : profilePic;
       return (
         // Invisible ScrollView component to add pull-down refresh functionality
         <ScrollView
@@ -148,27 +259,29 @@ export default class ProfileScreen extends React.Component {
             />
           }
         >
-          <View style={styles.container}>
-            <View style={styles.profileBar}>
-              <Image
-                style={styles.profilePic}
-                source={{ uri: this.state.profilePhoto }}
-              />
-              <View style={styles.upperText}>
-                <Text style={styles.personName}>{this.state.profileName}</Text>
-                <Text style={styles.communityName}>
-                  {this.state.communityName}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={this._onPressSettings}
-                style={styles.editIcon}
-              >
-                <Ionicons name="ios-settings" size={30} color="#0081AF" />
-              </TouchableOpacity>
+          <View style={styles.profileBar}>
+            <TouchableOpacity
+              onPress={this._onPressProfilePic}
+              disabled={!isCurrentUser}
+            >
+              <Image style={styles.profilePic} source={{ uri: img_uri }} />
+            </TouchableOpacity>
+            <View style={styles.upperText}>
+              <Text style={styles.personName}>{this.state.profileName}</Text>
+              <Text style={styles.communityName}>
+                {this.state.communityName}
+              </Text>
             </View>
+            <TouchableOpacity
+              onPress={this._onPressSettings}
+              style={[styles.editIcon, { width: isCurrentUser ? 30 : 0 }]}
+            >
+              <Ionicons name="ios-settings" size={30} color="#0081AF" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.container}>
             <View style={styles.interestBar}>
-              <Text style={styles.sectionTitle}>interests:</Text>
+              <Text style={styles.sectionTitle}>interests</Text>
               {interests.length > 0 && (
                 <ExpandableInterests
                   interests={interests}
@@ -179,29 +292,35 @@ export default class ProfileScreen extends React.Component {
               )}
             </View>
             <View style={styles.comingUpBar}>
-              <Text style={styles.sectionTitle}>coming up:</Text>
-              <View style={styles.upcomingScroll}>
+              <Text style={styles.sectionTitle}>coming up</Text>
+              <View style={styles.scroll}>
                 <CommunityProfileEventCardHorizontalScroll
                   events={upcomingEvents}
                   interestedIDs={interestedEventDocIds}
                   onPress={this._onPressOpenEventPage}
                   goingIDs={goingEventDocIds}
+                  status={'upcoming'}
+                  source={'profile'}
                 />
               </View>
             </View>
-            <View style={styles.helpedBar}>
-              <Text style={styles.helpedTitle}>how I've helped:</Text>
-              <CommunityProfileEventCardHorizontalScroll
-                events={pastEvents}
-                interestedIDs={interestedEventDocIds}
-                onPress={this._onPressOpenEventPage}
-                goingIDs={goingEventDocIds}
-              />
-            </View>
-            <View>
-              <Text style={styles.sectionTitle}>volunteer network:</Text>
+            <View style={hidePastEvents ? { height: 0 } : styles.helpedBar}>
+              <Text style={styles.sectionTitle}>how I've helped</Text>
+              <View style={styles.scroll}>
+                <CommunityProfileEventCardHorizontalScroll
+                  events={pastEvents}
+                  interestedIDs={interestedEventDocIds}
+                  onPress={this._onPressOpenEventPage}
+                  goingIDs={goingEventDocIds}
+                  status={'past'}
+                  source={'profile'}
+                />
+              </View>
             </View>
             <View style={styles.facepileContainer}>
+              <Text style={[styles.sectionTitle, { marginBottom: 15 }]}>
+                volunteer network
+              </Text>
               {this.state.volunteerNetwork !== [] && (
                 <Facepile
                   totalWidth={335}
@@ -232,6 +351,21 @@ const styles = StyleSheet.create({
   },
   profileBar: {
     flexDirection: 'row',
+    marginTop: 10,
+    backgroundColor: 'white',
+    width: Dimensions.get('window').width,
+    borderLeftWidth: 0,
+
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+    paddingHorizontal: SIDE_MARGIN,
+    paddingBottom: 5,
   },
   editIcon: {
     marginLeft: 35,
@@ -239,12 +373,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: 'montserrat',
-  },
-  helpedTitle: {
-    fontSize: 20,
-    fontFamily: 'montserrat',
-    marginBottom: 8,
+    fontFamily: 'raleway-medium',
+    marginBottom: 10,
+    marginTop: 20,
   },
   profilePic: {
     width: 78,
@@ -262,22 +393,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   personName: {
-    fontSize: 28,
-    fontFamily: 'montserrat',
+    fontSize: 24,
+    fontFamily: 'raleway',
   },
   communityName: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#838383',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
+    marginTop: 4,
   },
   comingUpBar: {
     height: 200,
   },
-  upcomingScroll: {
+  scroll: {
     marginTop: 8,
   },
   helpedBar: {
     height: 160,
+    marginTop: 20,
   },
   placeholder: {
     width: 335,
@@ -287,5 +420,9 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     marginTop: 300,
+  },
+  facepileContainer: {
+    marginTop: 28,
+    marginBottom: 10,
   },
 });

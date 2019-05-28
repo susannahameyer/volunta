@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { getAllCommunityNames } from '../firebase/api';
+import { getAllCommunities, setUserCommunity } from '../firebase/api';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import * as firebase from 'firebase';
 
 export default class NUXCommunityScreen extends React.Component {
   constructor(props) {
@@ -10,6 +11,7 @@ export default class NUXCommunityScreen extends React.Component {
     this.state = {
       selectedCommunity: '',
       communities: [],
+      communityMap: new Map(),
       continueDisabled: true,
     };
   }
@@ -19,7 +21,8 @@ export default class NUXCommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
-    const communityNames = await getAllCommunityNames();
+    const communityMap = await getAllCommunities();
+    const communityNames = Array.from(communityMap.keys());
     const communities = communityNames.map(name => {
       return {
         id: name,
@@ -28,12 +31,15 @@ export default class NUXCommunityScreen extends React.Component {
     });
     this.setState({
       communities,
+      communityMap,
     });
   };
 
   // TODO: Add chosen community to current user's community in db
-  _onPressContinue = community => {
+  _onPressContinue = async communityName => {
     this.props.navigation.navigate('NUXInterests');
+    let userId = await firebase.auth().currentUser.uid;
+    await setUserCommunity(userId, this.state.communityMap.get(communityName));
   };
 
   _onSelect = selected => {
@@ -59,7 +65,7 @@ export default class NUXCommunityScreen extends React.Component {
           containerStyle={styles.dropdown}
           textInputStyle={styles.textInput}
           itemStyle={styles.dropdownItem}
-          itemTextStyle={{ fontFamily: 'montserrat', fontSize: 14 }}
+          itemTextStyle={{ fontFamily: 'raleway', fontSize: 14 }}
           itemsContainerStyle={{ maxHeight: 185 }}
           items={communities}
           placeholder={'search for a community...'}
@@ -68,7 +74,7 @@ export default class NUXCommunityScreen extends React.Component {
         />
         <View style={styles.continueButtonContainer}>
           <TouchableOpacity
-            onPress={this._onPressContinue}
+            onPress={async () => await this._onPressContinue(selectedCommunity)}
             disabled={continueDisabled}
           >
             <View
@@ -100,7 +106,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 18,
     fontWeight: 'normal',
   },
@@ -110,13 +116,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 27,
   },
   welcomeText: {
-    fontFamily: 'montserrat-medium',
+    fontFamily: 'raleway-medium',
     fontSize: 22,
     marginTop: 40,
   },
   detailText: {
     textAlign: 'center',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 18,
     marginTop: 30,
   },
@@ -141,7 +147,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 0.4,
     borderColor: '#bbb',
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 14,
   },
 });

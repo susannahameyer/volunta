@@ -14,14 +14,14 @@ import {
   getEventsForCommunity,
   getCommunityName,
   getCommunityCoverPhoto,
-  getUserCommunity,
+  getUserProperty,
   getAllUserInterestedEventsDocIds,
   getUsersAttributes,
   getAllUserGoingEventsDocIds,
+  getCommunityDescription,
 } from '../firebase/api';
-
+import * as firebase from 'firebase';
 import { firestore } from '../firebase/firebase';
-import * as c from '../firebase/fb_constants';
 
 export default class CommunityScreen extends React.Component {
   constructor(props) {
@@ -43,26 +43,31 @@ export default class CommunityScreen extends React.Component {
   }
 
   _loadData = async () => {
+    let userId = await firebase.auth().currentUser.uid;
+
     // Get current user's community data
-    const currentUserCommunityRef = await getUserCommunity(c.TEST_USER_ID);
+    const currentUserCommunityRef = await getUserProperty(
+      userId,
+      'community_ref'
+    );
 
     const [
       communityName,
       communityPhoto,
+      communityDescription,
       interestedEventDocIds,
       goingEventDocIds,
       communityMembers,
       [upcomingEvents, pastEvents, ongoingEvents],
     ] = await Promise.all([
-      //TODO: Change all occurrences of TEST_USER_ID to current user
-
       getCommunityName(currentUserCommunityRef),
-
       getCommunityCoverPhoto(currentUserCommunityRef),
 
+      getCommunityDescription(currentUserCommunityRef),
+
       // Get doc IDs the current user has bookmarked and is going to
-      getAllUserInterestedEventsDocIds(c.TEST_USER_ID),
-      getAllUserGoingEventsDocIds(c.TEST_USER_ID),
+      getAllUserInterestedEventsDocIds(userId),
+      getAllUserGoingEventsDocIds(userId),
 
       // Get community members for Facepile
       firestore
@@ -71,10 +76,14 @@ export default class CommunityScreen extends React.Component {
         .get()
         .then(
           async snapshot =>
-            await getUsersAttributes(snapshot.docs, ['name', 'profile_pic_url'])
+            await getUsersAttributes(snapshot.docs, [
+              'name',
+              'profile_pic_url',
+              'profile_pic_is_base64',
+            ])
         ),
 
-      getEventsForCommunity(c.TEST_USER_ID),
+      getEventsForCommunity(currentUserCommunityRef),
     ]);
 
     this.setState({
@@ -82,6 +91,7 @@ export default class CommunityScreen extends React.Component {
       pastEvents,
       communityPhoto,
       communityName,
+      communityDescription,
       interestedEventDocIds,
       goingEventDocIds,
       refreshing: false,
@@ -110,61 +120,85 @@ export default class CommunityScreen extends React.Component {
       communityMembers,
     } = this.state;
     if (!refreshing) {
-      return (
-        // Invisible ScrollView component to add pull-down refresh functionality
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => this._loadData()}
-            />
-          }
-        >
-          <View>
-            <CommunityCoverPhoto
-              communityPhoto={communityPhoto}
-              communityName={communityName}
-            />
-            <View style={styles.topText}>
-              <Text style={styles.titleText}>{'in my community'}</Text>
-            </View>
-            <View style={styles.facepileContainer}>
-              {this.state.communityMembers !== [] && (
-                <Facepile
-                  totalWidth={335}
-                  maxNumImages={10}
-                  imageDiameter={50}
-                  members={communityMembers}
-                  pileTitle="Community Members"
-                  navigation={this.props.navigation}
-                />
-              )}
-            </View>
-
-            <View style={styles.middleText}>
-              <Text style={styles.titleText}>{'coming up'}</Text>
-            </View>
-            <View style={styles.upcomingScroll}>
+      // Don't display past events if empty
+      var pastEventDisplay = null;
+      var upcomingStyle = { left: 15 };
+      const hidePastEvents = pastEvents.length == 0;
+      if (!hidePastEvents) {
+        pastEventDisplay = (
+          <View style={styles.sectionContainer}>
+            <Text style={styles.titleText}>{"how we've helped"}</Text>
+            <View style={styles.pastScroll}>
               <CommunityProfileEventCardHorizontalScroll
-                events={upcomingEvents}
+                events={pastEvents}
                 onPress={this._onPressOpenEventPage}
                 interestedIDs={interestedEventDocIds}
                 goingIDs={goingEventDocIds}
+                status={'past'}
+                source={'community'}
               />
             </View>
-            <View style={styles.bottomText}>
-              <Text style={styles.titleText}>{"how we've helped"}</Text>
-              <View style={styles.pastScroll}>
-                <CommunityProfileEventCardHorizontalScroll
-                  events={pastEvents}
-                  onPress={this._onPressOpenEventPage}
-                  interestedIDs={interestedEventDocIds}
-                  goingIDs={goingEventDocIds}
-                />
-              </View>
-            </View>
           </View>
-        </ScrollView>
+        );
+      } else {
+        // Remove spacing at the bottom when past events are empty
+        upcomingStyle = { left: 15, height: 0 };
+      }
+
+      return (
+        // Invisible ScrollView component to add pull-down refresh functionality
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => this._loadData()}
+              />
+            }
+          >
+            <View style={[styles.screenContainer]}>
+              <CommunityCoverPhoto
+                communityPhoto={communityPhoto}
+                communityName={communityName}
+              />
+              <View style={[styles.sectionContainer, { width: 335 }]}>
+                <Text style={styles.titleText}>{'about us'}</Text>
+                <Text style={styles.descriptionText}>
+                  {this.state.communityDescription}
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.titleText}>{'in my community'}</Text>
+                <View style={styles.facepileContainer}>
+                  {this.state.communityMembers !== [] && (
+                    <Facepile
+                      totalWidth={335}
+                      maxNumImages={10}
+                      imageDiameter={50}
+                      members={communityMembers}
+                      pileTitle="Community Members"
+                      navigation={this.props.navigation}
+                    />
+                  )}
+                </View>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.titleText}>{'coming up'}</Text>
+                <View style={upcomingStyle}>
+                  <CommunityProfileEventCardHorizontalScroll
+                    events={upcomingEvents}
+                    onPress={this._onPressOpenEventPage}
+                    interestedIDs={interestedEventDocIds}
+                    goingIDs={goingEventDocIds}
+                    status={'upcoming'}
+                    source={'community'}
+                  />
+                </View>
+              </View>
+              {pastEventDisplay}
+            </View>
+          </ScrollView>
+        </View>
       );
     } else {
       return (
@@ -177,39 +211,35 @@ export default class CommunityScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    paddingBottom: 22,
+  },
+  sectionContainer: {
+    top: -85,
+    marginBottom: 17,
+  },
   titleText: {
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway-medium',
     fontSize: 19,
     color: 'black',
     left: 19,
+    marginBottom: 8,
   },
-  topText: {
-    top: -85,
+  descriptionText: {
+    fontFamily: 'raleway',
+    fontSize: 14,
+    left: 20,
+    color: '#444444',
   },
   facepileContainer: {
     left: 19,
-    top: -80,
-  },
-  middleText: {
-    top: -65,
-  },
-  bottomText: {
-    top: -50,
-  },
-  placeholder: {
-    width: 335,
-    height: 50,
-    backgroundColor: 'grey',
-    left: 19,
-    top: -42,
   },
   upcomingScroll: {
     left: 15,
-    top: -60,
   },
   pastScroll: {
     left: 15,
-    top: 7,
     height: 0, //removes extra blank space at bottom of scroll
   },
   activityIndicator: {

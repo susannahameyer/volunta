@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     marginTop: 16,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
   },
   sliderBar: {
     marginLeft: '7%'
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   interestText: {
-      fontFamily: 'montserrat',
+      fontFamily: 'raleway',
       fontSize: 20,
       marginLeft: 6
   },

@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import AssetFilePaths from '../constants/AssetFilePaths';
 import AuthStyle from '../stylesheets/AuthStyle';
@@ -48,7 +49,7 @@ export default class LoginScreen extends React.Component {
     }
 
     return (
-      <View style={AuthStyle.container}>
+      <KeyboardAvoidingView style={AuthStyle.container} behavior="padding">
         <Image
           source={AssetFilePaths.logo}
           style={[AuthStyle.logo, { marginBottom: 50 }]}
@@ -93,7 +94,7 @@ export default class LoginScreen extends React.Component {
           title="Don't have an account? Sign up"
           onPress={() => this.props.navigation.navigate('SignUp')}
         />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

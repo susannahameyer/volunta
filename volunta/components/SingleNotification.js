@@ -39,12 +39,12 @@ const styles = StyleSheet.create({
         marginLeft: 85,
         width: 225,
         color: 'black',
-        fontFamily: 'montserrat',
+        fontFamily: 'raleway',
         fontSize: 12
     },
     timeText: {
         color: 'black',
-        fontFamily: 'montserrat',
+        fontFamily: 'raleway',
         fontSize: 14,
         position: 'absolute',
         marginTop: 35,

@@ -1,8 +1,14 @@
 import React from 'react';
-import { StyleSheet, FlatList, View, Dimensions, TouchableOpacity, Button } from 'react-native';
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  ActivityIndicator,
+  Dimensions,
+  TouchableOpacity
+} from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
-import * as c from '../firebase/fb_constants';
 import { DefaultDict, distance, formatDist } from '../utils';
 import { Location, Haptic } from 'expo';
 import {
@@ -12,9 +18,23 @@ import {
   getNumGoingForAllEvents,
 } from '../firebase/api';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import * as firebase from 'firebase';
+import EventCardConstants from '../constants/EventCardConstants';
+import Colors from '../constants/Colors';
 
 export default class FeedScreen extends React.Component {
   _isMounted = false;
+
+  static navigationOptions = {
+    title: 'events',
+    headerStyle: {
+      height: 50,
+    },
+    headerTitleStyle: {
+      fontFamily: 'raleway',
+      fontSize: 24,
+    },
+  };
 
   constructor(props) {
     super(props);
@@ -23,7 +43,7 @@ export default class FeedScreen extends React.Component {
       displayedEvents: [],
       isRefreshing: true,
       search: '',
-      userId: c.TEST_USER_ID, // TODO: pass in as prop
+      userId: '',
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
@@ -34,8 +54,10 @@ export default class FeedScreen extends React.Component {
 
   // Fetch any data needed from api
   async componentDidMount() {
+    let userId = await firebase.auth().currentUser.uid;
+    this.setState({ userId });
     this._isMounted = true;
-    this._loadData();
+    await this._loadData();
   }
 
   componentWillUnmount = () => {
@@ -162,7 +184,6 @@ export default class FeedScreen extends React.Component {
         onPress={this._onPressEventCard}
         interested={this.state.interestedMap.get(item.doc_id)}
         onClickInterested={this._updateInterested}
-        numGoing={this.state.goingCounts[item.doc_id]}
         distance={this._getDistance(item.location.coords)}
       />
     );
@@ -223,61 +244,74 @@ export default class FeedScreen extends React.Component {
 
   render() {
     const { search, displayedEvents, isRefreshing, currDistance, currInterests } = this.state;
-    return (
-      <View style={styles.pageContainer}>
-        <View>
-        <SearchBar
-          placeholder="Search for service events"
-          onChangeText={this._updateSearchAndFilter}
-          value={search}
-          lightTheme
-          round
-          containerStyle={styles.searchContainerStyle}
-          inputContainerStyle={styles.searchInputContainerStyle}
-          ref={searchBar => (this.searchBar = searchBar)}
-        />
-        <TouchableOpacity 
-          style={styles.filterIcon}
-          onPress={() => this._onPressAdvancedSearch(currDistance, currInterests)}
-        >
-          <FontAwesome name="bars" size={20} style={{ color: 'gray' }} />
-        </TouchableOpacity>
-        </View>
-        {displayedEvents !== [] && (
-          <FlatList
-            style={styles.flatListStyle}
-            renderItem={this._renderEventCard}
-            data={displayedEvents}
-            extraData={this.state} // Needed for child to update when 'interested' changes
-            onRefresh={() => this._loadData()}
-            keyExtractor={this._keyExtractor}
-            refreshing={isRefreshing}
+    if (!isRefreshing) {
+      return (
+        <View style={styles.pageContainer}>
+          <View>
+          <SearchBar
+            placeholder="Search for service events"
+            onChangeText={this._updateSearchAndFilter}
+            value={search}
+            lightTheme
+            round
+            containerStyle={styles.searchContainerStyle}
+            inputContainerStyle={styles.searchInputContainerStyle}
+            ref={searchBar => (this.searchBar = searchBar)}
           />
-        )}
-      </View>
-    );
+          <TouchableOpacity 
+            style={styles.filterIcon}
+            onPress={() => this._onPressAdvancedSearch(currDistance, currInterests)}
+          >
+            <FontAwesome name="bars" size={20} style={{ color: 'gray' }} />
+          </TouchableOpacity>
+          </View>
+          {displayedEvents !== [] && (
+            <FlatList
+              style={styles.flatListStyle}
+              renderItem={this._renderEventCard}
+              data={displayedEvents}
+              extraData={this.state} // Needed for child to update when 'interested' changes
+              onRefresh={() => this._loadData()}
+              keyExtractor={this._keyExtractor}
+              refreshing={isRefreshing}
+            />
+          )}
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size={0} />
+        </View>
+      );
+    }
   }
 }
 
 const styles = StyleSheet.create({
   pageContainer: {
-    width: Dimensions.get('window').width,
+    width: '100%',
     flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   searchContainerStyle: {
     backgroundColor: 'white',
-    borderWidth: 0, // no effect
-    shadowColor: 'white', //no effect
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
-    width: '95%',
-    alignSelf: 'center',
+    height: 37,
+    marginTop: 3,
   },
   searchInputContainerStyle: {
-    backgroundColor: '#E8E8E8',
+    backgroundColor: Colors.searchBar,
+    width: EventCardConstants.cardWidth,
   },
   flatListStyle: {
-    height: '100%',
+    marginTop: 24,
+    overflow: 'visible',
+  },
+  activityIndicator: {
+    marginTop: 300,
   },
   filterIcon: {
     position: 'absolute',

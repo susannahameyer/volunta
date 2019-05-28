@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   bubbleText: {
     marginHorizontal: 15,
-    fontFamily: 'montserrat',
+    fontFamily: 'raleway',
     fontSize: 14,
   },
   separator: {
