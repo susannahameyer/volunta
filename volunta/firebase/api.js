@@ -560,6 +560,9 @@ export const getUserInterestNames = async userDocId => {
     .then(snapshot => {
       interestRefs = snapshot.get('interest_refs');
     });
+  if (interestRefs.length == 0) {
+    return interestRefs;
+  }
   interestRefs = await Promise.all(
     interestRefs.map(async interestRef => {
       var interestSnapshot = await interestRef.get();
