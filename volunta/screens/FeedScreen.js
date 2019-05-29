@@ -272,6 +272,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.searchBar,
     width: EventCardConstants.cardWidth,
   },
+  flatListContentStyle: {
+    alignItems: 'center',
+    flex: 1,
+  },
   flatListStyle: {
     marginTop: 24,
     overflow: 'visible',

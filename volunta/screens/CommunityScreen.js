@@ -183,7 +183,7 @@ export default class CommunityScreen extends React.Component {
                 communityPhoto={communityPhoto}
                 communityName={communityName}
               />
-              <View style={[styles.sectionContainer, { width: 335 }]}>
+              <View style={[styles.sectionContainer, { width: 325 }]}>
                 <Text style={styles.titleText}>{'about us'}</Text>
                 <Text style={styles.descriptionText}>
                   {this.state.communityDescription}
@@ -233,9 +233,10 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontFamily: 'raleway-medium',
-    fontSize: 19,
+    fontSize: 20,
     color: 'black',
     marginBottom: 8,
+    marginTop: 12,
   },
   descriptionText: {
     fontFamily: 'raleway',
