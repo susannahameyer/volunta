@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   orgName: {
     fontSize: 14,
     color: '#838383',
-    fontFamily: 'raleway-medium',
+    fontFamily: 'raleway',
     marginTop: 5,
     width: 235,
   },

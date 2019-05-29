@@ -35,7 +35,7 @@ export default class EventPageButtonBar extends React.Component {
                 { color: interested ? Colors.iconBlue : Colors.iconGray },
               ]}
             >
-              {'Interested'}
+              {'interested'}
             </Text>
           </View>
           <View style={styles.iconBlock}>
@@ -51,7 +51,7 @@ export default class EventPageButtonBar extends React.Component {
                 { color: going ? Colors.iconBlue : Colors.iconGray },
               ]}
             >
-              {'Going'}
+              {'going'}
             </Text>
           </View>
         </View>
@@ -64,15 +64,16 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomColor: '#DADADA',
     borderBottomWidth: 1,
+    marginHorizontal: 20,
   },
   container: {
     flexDirection: 'row',
-    marginVertical: 10,
+    marginVertical: 14,
     justifyContent: 'space-evenly',
   },
   iconLabel: {
-    fontFamily: 'raleway-medium',
-    fontSize: 12,
+    fontFamily: 'raleway',
+    fontSize: 14,
     color: Colors.iconGray,
   },
   iconBlock: {
