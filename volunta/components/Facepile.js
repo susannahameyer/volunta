@@ -87,6 +87,9 @@ export default class Facepile extends React.Component {
   };
 
   render() {
+    if (this.props.members.length == 0) {
+      return null;
+    }
     return (
       <FlatList
         data={this.props.members.slice(0, this.props.maxNumImages)}

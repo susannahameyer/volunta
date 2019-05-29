@@ -242,8 +242,15 @@ export default class ProfileScreen extends React.Component {
       profilePic,
       profilePicIsBase64,
       isCurrentUser,
+      volunteerNetwork,
+      profileName,
+      communityName,
     } = this.state;
+
     const hidePastEvents = pastEvents.length == 0;
+
+    const volunteerNetworkDisplay =
+      volunteerNetwork.length == 0 ? { height: 0 } : {};
 
     if (!refreshing) {
       let img_uri = profilePicIsBase64
@@ -267,10 +274,8 @@ export default class ProfileScreen extends React.Component {
               <Image style={styles.profilePic} source={{ uri: img_uri }} />
             </TouchableOpacity>
             <View style={styles.upperText}>
-              <Text style={styles.personName}>{this.state.profileName}</Text>
-              <Text style={styles.communityName}>
-                {this.state.communityName}
-              </Text>
+              <Text style={styles.personName}>{profileName}</Text>
+              <Text style={styles.communityName}>{communityName}</Text>
             </View>
             <TouchableOpacity
               onPress={this._onPressSettings}
@@ -317,7 +322,7 @@ export default class ProfileScreen extends React.Component {
                 />
               </View>
             </View>
-            <View style={styles.facepileContainer}>
+            <View style={[styles.facepileContainer, volunteerNetworkDisplay]}>
               <Text style={[styles.sectionTitle, { marginBottom: 15 }]}>
                 volunteer network
               </Text>
@@ -327,7 +332,7 @@ export default class ProfileScreen extends React.Component {
                   maxNumImages={10}
                   imageDiameter={50}
                   navigation={this.props.navigation}
-                  members={this.state.volunteerNetwork}
+                  members={volunteerNetwork}
                   pileTitle="Volunteer Network"
                 />
               )}
@@ -374,7 +379,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontFamily: 'raleway-medium',
-    marginBottom: 10,
+    marginBottom: 8,
     marginTop: 20,
   },
   profilePic: {

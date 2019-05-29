@@ -48,7 +48,7 @@ export default class CommunityProfileEventCard extends React.Component {
       var displayText = '';
       if (source == 'profile') {
         displayText =
-          'You currently have no upcoming events. Browse the Feed to join in!';
+          'You currently have no upcoming events. Browse the event feed to join in!';
       } else if (source == 'community') {
         displayText = 'Your community currently has no upcoming events.';
       }
