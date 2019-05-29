@@ -15,6 +15,7 @@ export default class FacepileDetailScreen extends React.Component {
     this.state = {
       users: this.props.navigation.getParam('users'),
       displayedUsers: this.props.navigation.getParam('users'),
+      currentUserId: this.props.navigation.getParam('currentUserId'),
       searchText: '',
     };
   }
@@ -31,6 +32,10 @@ export default class FacepileDetailScreen extends React.Component {
 
   //Renders a single user that can be clicked to enter their profile
   _renderUser = user => {
+    // ignore the current user when rendering the people
+    if (user.id === this.state.currentUserId) {
+      return;
+    }
     let img_uri = user.profile_pic_is_base64
       ? `data:image/gif;base64,${user.profile_pic_url}`
       : user.profile_pic_url;

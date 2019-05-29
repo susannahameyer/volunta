@@ -91,6 +91,7 @@ export default class CommunityScreen extends React.Component {
       pastEvents,
       communityPhoto,
       communityName,
+      userId,
       communityDescription,
       interestedEventDocIds,
       goingEventDocIds,
@@ -136,6 +137,7 @@ export default class CommunityScreen extends React.Component {
                 members={communityMembers}
                 pileTitle="Community Members"
                 navigation={this.props.navigation}
+                currentUserId={this.state.userId}
               />
             )}
           </View>

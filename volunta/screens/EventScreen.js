@@ -148,6 +148,7 @@ export default class EventScreen extends React.Component {
         facePileAttendees,
         refreshing: false,
         orgLogo,
+        userId,
         going,
         numGoing: facePileAttendees.length,
         numGoingFromCommunity,
@@ -223,16 +224,29 @@ export default class EventScreen extends React.Component {
       numGoingFromCommunity,
       interests,
     } = this.state;
+    if (going || interested) {
+      numGoing -= 1;
+      numGoingFromCommunity -= 1;
+    }
+    var othersString = 'others';
+    if (numGoing == 1) {
+      othersString = 'other';
+    }
 
     let goingStr =
       numGoing == numGoingFromCommunity
-        ? numGoing + ' going or interested, all from your community '
+        ? numGoing +
+          ' ' +
+          othersString +
+          ' going or interested, all from your community '
         : numGoing +
+          ' ' +
+          othersString +
           ' going or interested including ' +
           numGoingFromCommunity +
           ' from your community';
     if (numGoingFromCommunity == 0) {
-      goingStr = numGoing + ' going or interested';
+      goingStr = numGoing + ' ' + othersString + ' going or interested';
     }
 
     // Render Facepile view only if there are users interested or going
@@ -252,6 +266,7 @@ export default class EventScreen extends React.Component {
             members={facePileAttendees}
             pileTitle="Event Followers"
             navigation={this.props.navigation}
+            currentUserId={this.state.userId}
           />
           <Text style={[styles.detailText, styles.numGoingText]}>
             {goingStr}
