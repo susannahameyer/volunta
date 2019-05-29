@@ -237,9 +237,7 @@ export default class EventScreen extends React.Component {
 
     // Render Facepile view only if there are users interested or going
     var facepileView = (
-      <Text style={[styles.detailText, styles.numGoingText]}>
-        Be the first to join the event!
-      </Text>
+      <Text style={styles.detailText}>Be the first to join the event!</Text>
     );
     if (numGoing > 0) {
       facepileView = (
@@ -290,12 +288,12 @@ export default class EventScreen extends React.Component {
           />
           <View style={styles.divider}>
             <View style={styles.facepileContainer}>
-              <Text style={styles.sectionText}>{"Who's going?"}</Text>
+              <Text style={styles.sectionText}>Who's going?</Text>
               {facepileView}
             </View>
           </View>
           <View style={styles.facepileContainer}>
-            <Text style={styles.sectionText}>{'Details'}</Text>
+            <Text style={styles.sectionText}>Details</Text>
             <Text style={styles.detailText}>{event.description}</Text>
           </View>
         </ScrollView>
