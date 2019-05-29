@@ -135,7 +135,7 @@ export default class FeedSearchFilterScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.header}> max distance </Text>
+        <Text style={styles.header}> max distance: </Text>
         <View style={styles.optionBlock}>
         <View style={styles.sliderBar}>
             <Slider
@@ -177,11 +177,12 @@ export default class FeedSearchFilterScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eaeaea',
+    backgroundColor: '#f2f2f2',
   },
   header: {
     fontSize: 24,
     marginTop: 16,
+    marginBottom: 8,
     fontFamily: 'raleway',
   },
   sliderBar: {
@@ -194,11 +195,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#c1c1c1'
   },
-  
   textCon: {
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 5,
+    fontSize:16
   },
   colorGrey: {
     color: '#d3d3d3'
@@ -222,13 +224,14 @@ const styles = StyleSheet.create({
   switch: {
     position: 'absolute',
     marginLeft: '83%',
-    transform: [{ scaleX: 1.1 }, { scaleY: 1 }] 
+    transform: [{ scaleX: 1.1 }, { scaleY: 1 }],
+    marginTop: -3
   },
   listSeparator: {
     height: 1,
     backgroundColor: "#CED0CE",
   },
   flatListStyle: {
-
+    height: 454
   }
 });
