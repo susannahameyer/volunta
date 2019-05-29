@@ -92,6 +92,7 @@ export default class FeedScreen extends React.Component {
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
     if (this._isMounted) {
+      filteredEvents = this._filterEventsFromAdvancedSearch(events);
       this.setState({
         isRefreshing: false,
         events,
@@ -109,6 +110,20 @@ export default class FeedScreen extends React.Component {
       }
     }
   };
+
+  _filterEventsFromAdvancedSearch = events => {
+    newEventList = []
+    for (event of events) {
+      if (this._getDistanceAsInt(event) <= this.state.currDistance) {
+        newEventList.push(event);
+      }
+    }
+  }
+
+  // given an event, returns distance to user in miles
+  _getDistanceAsInt = event => {
+    return parseInt(this._getDistance(event.location.coords).match(/\d+/)[0]);
+  }
 
   // Called when user types something into search bar.
   // Update displayed text.
