@@ -315,6 +315,7 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomColor: '#DADADA',
     borderBottomWidth: 1,
+    marginHorizontal: 20,
   },
   facepileContainer: {
     marginHorizontal: 20,
