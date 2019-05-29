@@ -22,9 +22,14 @@ Props:
     - pileTitle: What will be displayed when the user click in, default: 'details'
     - navigation: required to make sure that the pile can go to another screen
     - members: list  of User IDs
+    - currentUserId: the current user ID so that the pile won't render it
 */
 export default class Facepile extends React.Component {
   _renderFacepilePhoto = (item, index) => {
+    //Does not render the current user
+    if (this.props.currentUserId && item.id === this.props.currentUserId) {
+      return;
+    }
     //Calculates the overlap between the images based on width and image size
     const overlapMargin =
       (this.props.totalWidth -
@@ -87,6 +92,7 @@ export default class Facepile extends React.Component {
           this.props.navigation.push('Facepile', {
             users: this.props.members,
             title: this.props.pileTitle,
+            currentUserId: this.props.currentUserId,
           });
         }}
       >

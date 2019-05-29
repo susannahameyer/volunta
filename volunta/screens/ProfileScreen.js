@@ -104,6 +104,7 @@ export default class ProfileScreen extends React.Component {
         upcomingEvents,
         pastEvents,
         profileName,
+        currentUserId,
         profilePic,
         profilePicIsBase64,
         communityName,
@@ -334,6 +335,7 @@ export default class ProfileScreen extends React.Component {
                   navigation={this.props.navigation}
                   members={volunteerNetwork}
                   pileTitle="Volunteer Network"
+                  currentUserId={this.state.currentUserId}
                 />
               )}
             </View>
