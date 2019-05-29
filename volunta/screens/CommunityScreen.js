@@ -120,9 +120,31 @@ export default class CommunityScreen extends React.Component {
       communityMembers,
     } = this.state;
     if (!refreshing) {
+      var facepileView = (
+        <Text style={styles.descriptionText}>
+          You're the first to join your community. Welcome!
+        </Text>
+      );
+      if (communityMembers.length > 0) {
+        facepileView = (
+          <View>
+            {this.state.communityMembers !== [] && (
+              <Facepile
+                totalWidth={335}
+                maxNumImages={10}
+                imageDiameter={50}
+                members={communityMembers}
+                pileTitle="Community Members"
+                navigation={this.props.navigation}
+              />
+            )}
+          </View>
+        );
+      }
+
       // Don't display past events if empty
       var pastEventDisplay = null;
-      var upcomingStyle = { left: 15 };
+      var upcomingStyle = {};
       const hidePastEvents = pastEvents.length == 0;
       if (!hidePastEvents) {
         pastEventDisplay = (
@@ -142,7 +164,7 @@ export default class CommunityScreen extends React.Component {
         );
       } else {
         // Remove spacing at the bottom when past events are empty
-        upcomingStyle = { left: 15, height: 0 };
+        upcomingStyle = { height: 0 };
       }
 
       return (
@@ -156,7 +178,7 @@ export default class CommunityScreen extends React.Component {
               />
             }
           >
-            <View style={[styles.screenContainer]}>
+            <View style={styles.screenContainer}>
               <CommunityCoverPhoto
                 communityPhoto={communityPhoto}
                 communityName={communityName}
@@ -169,22 +191,11 @@ export default class CommunityScreen extends React.Component {
               </View>
               <View style={styles.sectionContainer}>
                 <Text style={styles.titleText}>{'in my community'}</Text>
-                <View style={styles.facepileContainer}>
-                  {this.state.communityMembers !== [] && (
-                    <Facepile
-                      totalWidth={335}
-                      maxNumImages={10}
-                      imageDiameter={50}
-                      members={communityMembers}
-                      pileTitle="Community Members"
-                      navigation={this.props.navigation}
-                    />
-                  )}
-                </View>
+                {facepileView}
               </View>
               <View style={styles.sectionContainer}>
                 <Text style={styles.titleText}>{'coming up'}</Text>
-                <View style={upcomingStyle}>
+                <View>
                   <CommunityProfileEventCardHorizontalScroll
                     events={upcomingEvents}
                     onPress={this._onPressOpenEventPage}
@@ -213,33 +224,25 @@ export default class CommunityScreen extends React.Component {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    paddingBottom: 22,
+    paddingBottom: 34,
   },
   sectionContainer: {
     top: -85,
     marginBottom: 17,
+    marginLeft: 19,
   },
   titleText: {
     fontFamily: 'raleway-medium',
     fontSize: 19,
     color: 'black',
-    left: 19,
     marginBottom: 8,
   },
   descriptionText: {
     fontFamily: 'raleway',
     fontSize: 14,
-    left: 20,
     color: '#444444',
   },
-  facepileContainer: {
-    left: 19,
-  },
-  upcomingScroll: {
-    left: 15,
-  },
   pastScroll: {
-    left: 15,
     height: 0, //removes extra blank space at bottom of scroll
   },
   activityIndicator: {

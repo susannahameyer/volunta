@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontFamily: 'raleway-medium',
-    marginBottom: 10,
+    marginBottom: 8,
     marginTop: 20,
   },
   profilePic: {
