@@ -117,7 +117,8 @@ export default class FeedScreen extends React.Component {
     this.setState({
       search,
       displayedEvents: this.state.events.filter(event =>
-        event.title.includes(search)
+        event.title.includes(search) 
+        // && this._getDistance(event.location.coords).replace( /^\D+/g, '') < this.state.currDistance
       ),
     });
   };
@@ -144,9 +145,6 @@ export default class FeedScreen extends React.Component {
   // updating both local state and navigation state so the advanced search
   // screen data can persist
   _refreshResults = data => {
-    console.log("passing the data back");
-    console.log(data);
-    console.log(data[1]);
     this.state.currDistance = data[0];
     this.props.navigation.setParams({currDistance: data[0]});
     this.state.currInterests = data[1];
@@ -245,6 +243,7 @@ export default class FeedScreen extends React.Component {
   render() {
     const { search, displayedEvents, isRefreshing, currDistance, currInterests } = this.state;
     if (!isRefreshing) {
+      console.log(currInterests)
       return (
         <View style={styles.pageContainer}>
           <View>

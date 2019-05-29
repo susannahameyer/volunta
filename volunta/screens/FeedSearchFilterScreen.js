@@ -15,6 +15,7 @@ import {
   getAllInterestNames
 } from '../firebase/api';
 
+
 export default class FeedSearchFilterScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +23,7 @@ export default class FeedSearchFilterScreen extends React.Component {
         minDistance: 1,
         maxDistance: 50,
         currDistance: this.props.navigation.getParam('currDistance'),
+        interestMap: this.props.navigation.getParam('currInterests')
     }
   }
 
@@ -29,23 +31,35 @@ export default class FeedSearchFilterScreen extends React.Component {
     this._loadInterests();
     this.props.navigation.setParams({
       currDistance: this.state.currDistance,
-      selectedInterests: this.state.interestMap,
+      currInterests: this.state.interestMap,
     });
   }
 
   // gets the interests from the database and creates the lines
   // for the advanced search screen
   _loadInterests = async () => {
-    listOfInterests = [];
-    await getAllInterestNames().then(function(interestsArr){
-      interestsArr.forEach(function(interest) {
-        let tuple = {key: interest, switch: true}
-        listOfInterests.push(tuple)
+    // see if we have already queried the database for the list of interests
+    navigationCurrInterests = this.props.navigation.getParam('currInterests');
+    
+    // if so, use the previous values for the switches
+    if (!navigationCurrInterests.length == 0) {  
+      this.setState({
+        interestMap : navigationCurrInterests
       });
-    });
-    this.setState({
-      interestMap : listOfInterests
-    });
+    } 
+    // otherwise, query the database for the list and populate with default true values
+    else{
+      listOfInterests = [];
+      await getAllInterestNames().then(function(interestsArr){
+        interestsArr.forEach(function(interest) {
+          let tuple = {key: interest, switch: true}
+          listOfInterests.push(tuple)
+        });
+      });
+      this.setState({
+        interestMap : listOfInterests
+      });
+    }
   };
 
   // creates the search button in the header
@@ -53,18 +67,28 @@ export default class FeedSearchFilterScreen extends React.Component {
     headerRight: 
     <Button title="Search" onPress={() => {
       currDistance = navigation.getParam('currDistance');
-      selectedInterests = navigation.getParam('selectedInterests')
+      currInterests = navigation.getParam('currInterests')
       // onAdvancedSearchPressed is the callback from the parent function
-      navigation.state.params.onAdvancedSearchPressed([currDistance, selectedInterests]);
+      navigation.state.params.onAdvancedSearchPressed([currDistance, currInterests]);
       navigation.goBack();
     }} />,
   });
+
+  // syncs the navigation parameters with the local state of which interests are on or off
+  _updateNavigationState = () => {
+    this.props.navigation.setParams({
+      currInterests: this.state.interestMap,
+    });
+  }
 
   // handles the logic of toggling switches in state
   _setSwitchValue = (val, ind) => {
     const tempData = _.cloneDeep(this.state.interestMap);
     tempData[ind].switch = val;
-    this.setState({ interestMap: tempData });
+    this.setState(
+      { interestMap: tempData },
+        this._updateNavigationState // callback because setState is async
+      );
   }
 
   // use the index as a string as key
