@@ -16,6 +16,10 @@ import {
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
+  getEventInterestNames,
+  getEvent,
+  getEventInterestNamesFromID,
+  getAllInterests,
 } from '../firebase/api';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import * as firebase from 'firebase';
@@ -47,7 +51,7 @@ export default class FeedScreen extends React.Component {
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
-      currDistance: this.props.navigation.getParam('currDistance', 10), // maximum distance for events
+      currDistance: this.props.navigation.getParam('currDistance', 29), // maximum distance for events
       currInterests: this.props.navigation.getParam('currInterests', []) // list of interests to filter on
     };
   }
@@ -92,18 +96,18 @@ export default class FeedScreen extends React.Component {
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
     if (this._isMounted) {
-      filteredEvents = this._filterEventsFromAdvancedSearch(events);
       this.setState({
         isRefreshing: false,
         events,
         interestedMap,
         goingCounts,
       });
-
+      
       // Enable refresh while searching
       if (!this.state.search) {
+        advancedSearchEvents = await this._filterEventsFromAdvancedSearch(events);
         this.setState({
-          displayedEvents: events,
+          displayedEvents: advancedSearchEvents,
         });
       } else {
         this._updateSearchAndFilter(this.state.search);
@@ -111,13 +115,41 @@ export default class FeedScreen extends React.Component {
     }
   };
 
-  _filterEventsFromAdvancedSearch = events => {
-    newEventList = []
-    for (event of events) {
-      if (this._getDistanceAsInt(event) <= this.state.currDistance) {
-        newEventList.push(event);
+  // takes in an array of events ref and return those that match search criteria
+  _filterEventsFromAdvancedSearch = async (events) => {
+    if (this.state.currInterests.length !== []) {
+      newEventList = []
+      let interestMap = await getAllInterests();
+      console.log(interestMap.get('children'))
+      console.log('current interests are: ')
+      console.log(this.state.currInterests)
+      currSearchInterestNames = this._getCurrentInterestNames(this.state.currInterests);
+      console.log('current search interest names are:')
+      console.log(currSearchInterestNames)
+      for (event of events) {
+        console.log("in the loop")
+        eventInterestNames = await getEventInterestNamesFromID(event.doc_id); 
+        if (this._getDistanceAsInt(event) <= this.state.currDistance &&
+        this._hasIntersection(currSearchInterestNames, eventInterestNames)) {
+              console.log("pushing")
+              newEventList.push(event);
+        }
       }
+      console.log("The length of matching event list:")
+      console.log(newEventList.length)
+      return newEventList;
     }
+  }
+
+  // returns array of strings of currently active interests
+  _getCurrentInterestNames = interests => {
+    return interests.filter(i => i.switch).map(i => i.key);
+  }
+
+  // determines if two arrays have some element in common or not
+  _hasIntersection = (arr1, arr2) => {
+    if (arr1.length == 0 || arr2.length == 0) return true; // default to displaying
+    return arr1.filter(e => arr2.includes(e)).length > 0;
   }
 
   // given an event, returns distance to user in miles
@@ -133,7 +165,6 @@ export default class FeedScreen extends React.Component {
       search,
       displayedEvents: this.state.events.filter(event =>
         event.title.includes(search) 
-        // && this._getDistance(event.location.coords).replace( /^\D+/g, '') < this.state.currDistance
       ),
     });
   };
@@ -164,6 +195,9 @@ export default class FeedScreen extends React.Component {
     this.props.navigation.setParams({currDistance: data[0]});
     this.state.currInterests = data[1];
     this.props.navigation.setParams({currInterests: data[1]});
+    this.state.isRefreshing = true;
+    this._loadData();
+    //this.forceUpdate();
   }
 
   // Not explicit used now but will potentially be.
@@ -258,7 +292,6 @@ export default class FeedScreen extends React.Component {
   render() {
     const { search, displayedEvents, isRefreshing, currDistance, currInterests } = this.state;
     if (!isRefreshing) {
-      console.log(currInterests)
       return (
         <View style={styles.pageContainer}>
           <View>
