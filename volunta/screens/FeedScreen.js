@@ -122,33 +122,27 @@ export default class FeedScreen extends React.Component {
   // takes in an array of events ref and return those that match search criteria
   _filterEventsFromAdvancedSearch = async (events) => {
     // if the list of selected interests is undefined, or all unselected, return all elements
-    currSearchInterestRefs = this._getCurrentInterestRefs(this.state.currInterests, this.state.interestRefsMap);
-    if (currSearchInterestRefs.length === 0) return events;
+    currSearchInterestRefIDs = this._getCurrentInterestRefIDs(this.state.currInterests, this.state.interestRefsMap);
+    if (currSearchInterestRefIDs.length === 0) return events;
     // otherwise, trim list of events to display
     newEventList = []    
     for (event of events) {
-      for (var prop in event) {
-        console.log(prop)
-      }
-      console.log("in the loop") 
+      // convert the array of references to referenceIDs for easy comparison
+      let eventInterestRefIDs = event.interest_refs.map(i => i.id) ;
       if (this._getDistanceAsInt(event) <= this.state.currDistance &&
-      this._hasIntersection(event.interest_refs, currSearchInterestRefs)) {
-          console.log("pushing")
+      this._hasIntersection(eventInterestRefIDs, currSearchInterestRefIDs)) {
           newEventList.push(event);
       }
     }
-    console.log("The length of matching event list:")
-    console.log(newEventList.length)
     return newEventList;
   }
 
   // returns array of strings of currently active interests
-  _getCurrentInterestRefs = (interests, map) => {
+  _getCurrentInterestRefIDs = (interests, map) => {
     let namesArr = interests.filter(i => i.switch).map(i => i.key);
     let refs = namesArr.map(function (name) { 
-      return map.get(name); 
+      return map.get(name).id; 
     });
-    console.log(refs.length)
     return refs;
   }
 
