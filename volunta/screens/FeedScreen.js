@@ -53,7 +53,7 @@ export default class FeedScreen extends React.Component {
       location: false, // Initialize to false, then update to location object
       currDistance: this.props.navigation.getParam('currDistance', 40), // maximum distance for events
       currInterests: this.props.navigation.getParam('currInterests', []), // list of interests to filter on
-      interestRefsMap: new Map(),
+      interestRefsMap: new Map(), // maps from names of interests to reference object
     };
   }
 
@@ -129,6 +129,7 @@ export default class FeedScreen extends React.Component {
     for (event of events) {
       // convert the array of references to referenceIDs for easy comparison
       let eventInterestRefIDs = event.interest_refs.map(i => i.id) ;
+      // check and make sure distance and selected interests match properly
       if (this._getDistanceAsInt(event) <= this.state.currDistance &&
       this._hasIntersection(eventInterestRefIDs, currSearchInterestRefIDs)) {
           newEventList.push(event);
@@ -138,10 +139,10 @@ export default class FeedScreen extends React.Component {
   }
 
   // returns array of strings of currently active interests
-  _getCurrentInterestRefIDs = (interests, map) => {
+  _getCurrentInterestRefIDs = (interests, nameToRefMap) => {
     let namesArr = interests.filter(i => i.switch).map(i => i.key);
     let refs = namesArr.map(function (name) { 
-      return map.get(name).id; 
+      return nameToRefMap.get(name).id; 
     });
     return refs;
   }
@@ -149,9 +150,7 @@ export default class FeedScreen extends React.Component {
   // determines if two arrays have some element in common or not
   _hasIntersection = (arr1, arr2) => {
     if (arr1.length == 0 || arr2.length == 0) return true; // default to displaying
-    console.log(arr1)
-    console.log(arr2)
-    return arr1.filter(e => arr2.includes(e)).length > 0; // something here on the comparisons
+    return arr1.filter(e => arr2.includes(e)).length > 0;
   }
 
   // given an event, returns distance to user in miles
