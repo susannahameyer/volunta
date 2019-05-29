@@ -51,8 +51,9 @@ export default class FeedScreen extends React.Component {
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
-      currDistance: this.props.navigation.getParam('currDistance', 29), // maximum distance for events
-      currInterests: this.props.navigation.getParam('currInterests', []) // list of interests to filter on
+      currDistance: this.props.navigation.getParam('currDistance', 40), // maximum distance for events
+      currInterests: this.props.navigation.getParam('currInterests', []), // list of interests to filter on
+      interestRefsMap: new Map(),
     };
   }
 
@@ -93,6 +94,7 @@ export default class FeedScreen extends React.Component {
       getNumGoingForAllEvents(),
     ]);
 
+    const interestRefsMap = await getAllInterests();
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
     if (this._isMounted) {
@@ -101,13 +103,15 @@ export default class FeedScreen extends React.Component {
         events,
         interestedMap,
         goingCounts,
+        interestRefsMap
       });
       
       // Enable refresh while searching
       if (!this.state.search) {
         advancedSearchEvents = await this._filterEventsFromAdvancedSearch(events);
         this.setState({
-          displayedEvents: advancedSearchEvents,
+          //displayedEvents: events,
+          displayedEvents : advancedSearchEvents
         });
       } else {
         this._updateSearchAndFilter(this.state.search);
@@ -117,39 +121,43 @@ export default class FeedScreen extends React.Component {
 
   // takes in an array of events ref and return those that match search criteria
   _filterEventsFromAdvancedSearch = async (events) => {
-    if (this.state.currInterests.length !== []) {
-      newEventList = []
-      let interestMap = await getAllInterests();
-      console.log(interestMap.get('children'))
-      console.log('current interests are: ')
-      console.log(this.state.currInterests)
-      currSearchInterestNames = this._getCurrentInterestNames(this.state.currInterests);
-      console.log('current search interest names are:')
-      console.log(currSearchInterestNames)
-      for (event of events) {
-        console.log("in the loop")
-        eventInterestNames = await getEventInterestNamesFromID(event.doc_id); 
-        if (this._getDistanceAsInt(event) <= this.state.currDistance &&
-        this._hasIntersection(currSearchInterestNames, eventInterestNames)) {
-              console.log("pushing")
-              newEventList.push(event);
-        }
+    // if the list of selected interests is undefined, or all unselected, return all elements
+    currSearchInterestRefs = this._getCurrentInterestRefs(this.state.currInterests, this.state.interestRefsMap);
+    if (currSearchInterestRefs.length === 0) return events;
+    // otherwise, trim list of events to display
+    newEventList = []    
+    for (event of events) {
+      for (var prop in event) {
+        console.log(prop)
       }
-      console.log("The length of matching event list:")
-      console.log(newEventList.length)
-      return newEventList;
+      console.log("in the loop") 
+      if (this._getDistanceAsInt(event) <= this.state.currDistance &&
+      this._hasIntersection(event.interest_refs, currSearchInterestRefs)) {
+          console.log("pushing")
+          newEventList.push(event);
+      }
     }
+    console.log("The length of matching event list:")
+    console.log(newEventList.length)
+    return newEventList;
   }
 
   // returns array of strings of currently active interests
-  _getCurrentInterestNames = interests => {
-    return interests.filter(i => i.switch).map(i => i.key);
+  _getCurrentInterestRefs = (interests, map) => {
+    let namesArr = interests.filter(i => i.switch).map(i => i.key);
+    let refs = namesArr.map(function (name) { 
+      return map.get(name); 
+    });
+    console.log(refs.length)
+    return refs;
   }
 
   // determines if two arrays have some element in common or not
   _hasIntersection = (arr1, arr2) => {
     if (arr1.length == 0 || arr2.length == 0) return true; // default to displaying
-    return arr1.filter(e => arr2.includes(e)).length > 0;
+    console.log(arr1)
+    console.log(arr2)
+    return arr1.filter(e => arr2.includes(e)).length > 0; // something here on the comparisons
   }
 
   // given an event, returns distance to user in miles
