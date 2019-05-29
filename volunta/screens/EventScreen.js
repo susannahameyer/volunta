@@ -247,7 +247,7 @@ export default class EventScreen extends React.Component {
             maxNumImages={10}
             imageDiameter={50}
             members={facePileAttendees}
-            pileTitle="Event Attendees"
+            pileTitle="Event Followers"
             navigation={this.props.navigation}
           />
           <Text style={[styles.detailText, styles.numGoingText]}>
