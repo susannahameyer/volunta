@@ -195,7 +195,7 @@ export default class CommunityScreen extends React.Component {
               </View>
               <View style={styles.sectionContainer}>
                 <Text style={styles.titleText}>{'coming up'}</Text>
-                <View>
+                <View style={upcomingStyle}>
                   <CommunityProfileEventCardHorizontalScroll
                     events={upcomingEvents}
                     onPress={this._onPressOpenEventPage}

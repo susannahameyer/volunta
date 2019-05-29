@@ -236,8 +236,11 @@ export default class EventScreen extends React.Component {
     }
 
     // Render Facepile view only if there are users interested or going
+    const emptyFacepileText = going
+      ? "You're the first to join this event!"
+      : 'Be the first to join the event!';
     var facepileView = (
-      <Text style={styles.detailText}>Be the first to join the event!</Text>
+      <Text style={styles.detailText}>{emptyFacepileText}</Text>
     );
     if (numGoing > 0) {
       facepileView = (
