@@ -291,12 +291,12 @@ export default class EventScreen extends React.Component {
           />
           <View style={styles.divider}>
             <View style={styles.facepileContainer}>
-              <Text style={styles.sectionText}>Who's going?</Text>
+              <Text style={styles.sectionText}>who's going?</Text>
               {facepileView}
             </View>
           </View>
-          <View style={styles.facepileContainer}>
-            <Text style={styles.sectionText}>Details</Text>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.sectionText}>details</Text>
             <Text style={styles.detailText}>{event.description}</Text>
           </View>
         </ScrollView>
@@ -315,8 +315,12 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomColor: '#DADADA',
     borderBottomWidth: 1,
+    marginHorizontal: 20,
   },
   facepileContainer: {
+    marginVertical: 12,
+  },
+  detailsContainer: {
     marginHorizontal: 20,
     marginVertical: 12,
   },

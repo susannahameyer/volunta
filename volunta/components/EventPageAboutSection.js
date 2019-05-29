@@ -49,7 +49,6 @@ export default class EventPageAboutSection extends React.Component {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: ['Open in Maps', 'Cancel'],
-        // destructiveButtonIndex: 1,
         cancelButtonIndex: 1,
       },
       buttonIndex => {
@@ -76,36 +75,34 @@ export default class EventPageAboutSection extends React.Component {
 
     return (
       <View style={styles.divider}>
-        <View style={styles.container}>
-          <Text style={styles.aboutText}>{'About'}</Text>
+        <Text style={styles.aboutText}>{'about'}</Text>
+        <View style={styles.aboutInfo}>
+          <Ionicons
+            name="ios-calendar"
+            size={20}
+            color={Colors.aboutIconGray}
+          />
+          <Text style={styles.aboutInfoText}>{dateFormatted}</Text>
+        </View>
+        <View style={styles.aboutInfo}>
+          <Ionicons name="ios-clock" size={20} color={Colors.aboutIconGray} />
+          <Text style={styles.aboutInfoText}>{timeFormatted}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => this._onAddressClicked(location, eventName)}
+        >
           <View style={styles.aboutInfo}>
             <Ionicons
-              name="ios-calendar"
-              size={24}
+              name="ios-pin"
+              size={20}
+              style={styles.pin}
               color={Colors.aboutIconGray}
             />
-            <Text style={styles.aboutInfoText}>{dateFormatted}</Text>
+            <Text style={styles.aboutInfoText}>{addressFormatted}</Text>
           </View>
-          <View style={styles.aboutInfo}>
-            <Ionicons name="ios-clock" size={24} color={Colors.aboutIconGray} />
-            <Text style={styles.aboutInfoText}>{timeFormatted}</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => this._onAddressClicked(location, eventName)}
-          >
-            <View style={styles.aboutInfo}>
-              <Ionicons
-                name="ios-pin"
-                size={24}
-                style={styles.pin}
-                color={Colors.aboutIconGray}
-              />
-              <Text style={styles.aboutInfoText}>{addressFormatted}</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={styles.interests}>
-            <EventPageInterestsScroll interests={interests} />
-          </View>
+        </TouchableOpacity>
+        <View style={styles.interests}>
+          <EventPageInterestsScroll interests={interests} />
         </View>
       </View>
     );
@@ -116,28 +113,29 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomColor: '#DADADA',
     borderBottomWidth: 1,
-  },
-  container: {
     marginHorizontal: 20,
-    marginVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 15,
   },
   aboutText: {
     fontSize: 18,
     fontFamily: 'raleway-medium',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   aboutInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     width: Dimensions.get('window').width - 70,
+    marginBottom: 5,
+    marginLeft: 5,
   },
   aboutInfoText: {
     fontSize: 14,
-    fontFamily: 'raleway-medium',
+    fontFamily: 'raleway',
     marginLeft: 15,
   },
   pin: {
-    marginLeft: 3,
+    marginLeft: 2,
   },
   interests: {
     marginTop: 5,

@@ -20,7 +20,7 @@ export default class EventPageHeader extends React.Component {
     } = this.props;
     return (
       <View>
-        <View style={styles.shadow}>
+        <View>
           <Image source={{ uri: coverPhoto }} style={styles.coverPhoto} />
         </View>
         <View style={styles.divider}>
@@ -44,18 +44,11 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: 181,
   },
-  shadow: {
-    shadowColor: 'black',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.25,
-  },
   divider: {
-    paddingBottom: 10,
     borderBottomColor: '#DADADA',
     borderBottomWidth: 1,
+    marginHorizontal: 20,
+    paddingBottom: 10,
   },
   container: {
     width: Dimensions.get('window').width,
@@ -86,7 +79,7 @@ const styles = StyleSheet.create({
   orgName: {
     fontSize: 14,
     color: '#838383',
-    fontFamily: 'raleway-medium',
+    fontFamily: 'raleway',
     marginTop: 5,
     width: 235,
   },

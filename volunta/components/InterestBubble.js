@@ -60,5 +60,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     color: 'white',
     fontFamily: 'raleway',
+    fontSize: 12,
   },
 });
