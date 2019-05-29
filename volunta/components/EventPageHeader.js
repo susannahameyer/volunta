@@ -46,8 +46,15 @@ const styles = StyleSheet.create({
   },
   divider: {
     paddingBottom: 10,
-    borderBottomColor: '#DADADA',
-    borderBottomWidth: 1,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 1.5,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+    backgroundColor: 'white',
   },
   container: {
     width: Dimensions.get('window').width,
