@@ -20,7 +20,7 @@ export default class EventPageHeader extends React.Component {
     } = this.props;
     return (
       <View>
-        <View style={styles.shadow}>
+        <View>
           <Image source={{ uri: coverPhoto }} style={styles.coverPhoto} />
         </View>
         <View style={styles.divider}>
@@ -43,14 +43,6 @@ const styles = StyleSheet.create({
   coverPhoto: {
     width: Dimensions.get('window').width,
     height: 181,
-  },
-  shadow: {
-    shadowColor: 'black',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.25,
   },
   divider: {
     paddingBottom: 10,
