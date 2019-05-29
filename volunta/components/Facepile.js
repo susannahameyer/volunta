@@ -68,19 +68,10 @@ export default class Facepile extends React.Component {
       : item.profile_pic_url;
     return (
       <View>
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.push('Facepile', {
-              users: this.props.members,
-              title: this.props.pileTitle,
-            });
-          }}
-        >
-          <Image
-            source={{ uri: img_uri }}
-            style={[styles.profileImage, imageStyle]}
-          />
-        </TouchableOpacity>
+        <Image
+          source={{ uri: img_uri }}
+          style={[styles.profileImage, imageStyle]}
+        />
         {overlay}
       </View>
     );
@@ -91,17 +82,28 @@ export default class Facepile extends React.Component {
       return null;
     }
     return (
-      <FlatList
-        data={this.props.members.slice(0, this.props.maxNumImages)}
-        horizontal={true}
-        contentContainerStyle={{
-          flex: 1,
-          alignItems: 'center',
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.push('Facepile', {
+            users: this.props.members,
+            title: this.props.pileTitle,
+          });
         }}
-        keyExtractor={item => item.id}
-        scrollEnabled={false}
-        renderItem={({ item, index }) => this._renderFacepilePhoto(item, index)}
-      />
+      >
+        <FlatList
+          data={this.props.members.slice(0, this.props.maxNumImages)}
+          horizontal={true}
+          contentContainerStyle={{
+            flex: 1,
+            alignItems: 'center',
+          }}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+          renderItem={({ item, index }) =>
+            this._renderFacepilePhoto(item, index)
+          }
+        />
+      </TouchableOpacity>
     );
   }
 }
