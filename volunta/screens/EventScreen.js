@@ -295,7 +295,7 @@ export default class EventScreen extends React.Component {
               {facepileView}
             </View>
           </View>
-          <View style={styles.facepileContainer}>
+          <View style={styles.detailsContainer}>
             <Text style={styles.sectionText}>details</Text>
             <Text style={styles.detailText}>{event.description}</Text>
           </View>
@@ -318,6 +318,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   facepileContainer: {
+    marginVertical: 12,
+  },
+  detailsContainer: {
     marginHorizontal: 20,
     marginVertical: 12,
   },
