@@ -129,25 +129,25 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: 181,
     backgroundColor: '#F8F8F8',
-    borderRadius: 10,
+    borderRadius: 8,
     overflow: 'hidden',
     marginLeft: 4,
   },
   coverPhoto: {
     height: '50%',
     width: '100%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   shadow: {
     flex: 1,
     shadowColor: 'black',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 1,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowRadius: 1,
     backgroundColor: '#0000', // invisible color
   },
   titleText: {
