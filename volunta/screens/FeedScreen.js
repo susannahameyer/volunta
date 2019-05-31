@@ -235,6 +235,7 @@ export default class FeedScreen extends React.Component {
             <FlatList
               style={styles.flatListStyle}
               renderItem={this._renderEventCard}
+              showsVerticalScrollIndicator={false}
               data={displayedEvents}
               extraData={this.state} // Needed for child to update when 'interested' changes
               onRefresh={() => this._loadData()}
@@ -278,7 +279,6 @@ const styles = StyleSheet.create({
   },
   flatListStyle: {
     marginTop: 24,
-    overflow: 'visible',
   },
   activityIndicator: {
     marginTop: 300,

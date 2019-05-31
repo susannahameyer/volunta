@@ -48,6 +48,8 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
       <View style={{ height: 164 }}>
         <FlatList
           horizontal={true}
+          style={{ overflow: 'visible' }}
+          showsHorizontalScrollIndicator={false}
           data={events}
           renderItem={this._renderEventCard}
           keyExtractor={(_, index) => index.toString()}

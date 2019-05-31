@@ -110,6 +110,7 @@ export default class NUXInterestsScreen extends React.Component {
         <View style={styles.interestsGrid}>
           <FlatList
             data={interests}
+            showsVerticalScrollIndicator={false}
             renderItem={this._renderInterestSquare}
             keyExtractor={(_, index) => index.toString()}
             numColumns={2}
