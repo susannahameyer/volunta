@@ -51,7 +51,7 @@ export default class FeedScreen extends React.Component {
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
-      currDistance: this.props.navigation.getParam('currDistance', 40), // maximum distance for events
+      currDistance: this.props.navigation.getParam('currDistance', 25), // maximum distance for events
       currInterests: this.props.navigation.getParam('currInterests', []), // list of interests to filter on
       interestRefsMap: new Map(), // maps from names of interests to reference object
     };
