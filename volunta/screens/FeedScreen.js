@@ -198,7 +198,6 @@ export default class FeedScreen extends React.Component {
     this.props.navigation.setParams({currInterests: data[1]});
     this.state.isRefreshing = true;
     this._loadData();
-    //this.forceUpdate();
   }
 
   // Not explicit used now but will potentially be.
@@ -310,7 +309,7 @@ export default class FeedScreen extends React.Component {
             style={styles.filterIcon}
             onPress={() => this._onPressAdvancedSearch(currDistance, currInterests)}
           >
-            <FontAwesome name="bars" size={20} style={{ color: 'gray' }} />
+            <FontAwesome name="sliders" size={20} style={{ color: 'gray' }} />
           </TouchableOpacity>
           </View>
           {displayedEvents !== [] && (
