@@ -48,7 +48,7 @@ export const monthNames = [
 export const dateToWords = date => {
   let dateRegex = /(\d+)\/(\d+)\/(\d+)/;
   let result = dateRegex.exec(date);
-  let month = monthNames[Number(result[1])];
+  let month = monthNames[Number(result[1]) - 1];
   let day = result[2];
   // Add year prefix
   let year = '20' + result[3];
