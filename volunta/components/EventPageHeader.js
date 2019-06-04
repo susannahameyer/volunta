@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: Dimensions.get('window').width,
-    marginHorizontal: 30,
+    marginHorizontal: 20,
     marginBottom: 5,
   },
   header: {
