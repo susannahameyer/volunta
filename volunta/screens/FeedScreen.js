@@ -51,6 +51,7 @@ export default class FeedScreen extends React.Component {
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
+      advancedSearchedPressed: false,
       currDistance: this.props.navigation.getParam('currDistance', 25), // maximum distance for events
       currInterests: this.props.navigation.getParam('currInterests', []), // list of interests to filter on
       interestRefsMap: new Map(), // maps from names of interests to reference object
@@ -110,7 +111,6 @@ export default class FeedScreen extends React.Component {
       if (!this.state.search) {
         advancedSearchEvents = await this._filterEventsFromAdvancedSearch(events);
         this.setState({
-          //displayedEvents: events,
           displayedEvents : advancedSearchEvents
         });
       } else {
@@ -123,7 +123,7 @@ export default class FeedScreen extends React.Component {
   _filterEventsFromAdvancedSearch = async (events) => {
     // if the list of selected interests is undefined, or all unselected, return all elements
     currSearchInterestRefIDs = this._getCurrentInterestRefIDs(this.state.currInterests, this.state.interestRefsMap);
-    if (currSearchInterestRefIDs.length === 0) return events;
+    if (!this.state.advancedSearchedPressed) return events;
     // otherwise, trim list of events to display
     newEventList = []    
     for (event of events) {
@@ -192,6 +192,7 @@ export default class FeedScreen extends React.Component {
   // updating both local state and navigation state so the advanced search
   // screen data can persist
   _refreshResults = data => {
+    this.state.advancedSearchedPressed = true;
     this.state.currDistance = data[0];
     this.props.navigation.setParams({currDistance: data[0]});
     this.state.currInterests = data[1];
