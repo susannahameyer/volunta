@@ -635,6 +635,7 @@ export const getVolunteerNetwork = async pastEvents => {
           const attendees = await getUsersAttributes(snapshot.docs, [
             'name',
             'profile_pic_url',
+            'profile_pic_is_base64',
           ]);
           attendees.forEach(attendee => {
             volunteerNetwork.add(attendee);
@@ -642,7 +643,9 @@ export const getVolunteerNetwork = async pastEvents => {
         });
     })
   );
-  return Array.from(volunteerNetwork);
+  return Array.from(volunteerNetwork).filter((obj, pos, arr) => {
+    return arr.map(mapObj => mapObj['id']).indexOf(obj['id']) === pos;
+  });
 };
 
 // Add new user to database, including all default fields...
