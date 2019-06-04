@@ -58,7 +58,7 @@ export default class EventScreen extends React.Component {
     let event = await getEvent(eventRef);
     let userId = await firebase.auth().currentUser.uid;
 
-    const [
+    var [
       // Get list of interests that correspond to the event
       interests,
       // Get organization logo URL
@@ -100,6 +100,12 @@ export default class EventScreen extends React.Component {
             ])
         ),
     ]);
+    attendeesGoing = attendeesGoing.filter(attendee => {
+      attendee['id'] !== userId;
+    });
+    attendeesInterested = attendeesInterested.filter(attendee => {
+      attendee['id'] !== userId;
+    });
 
     // Get IDs of all users going to event
     var allGoingIds = [];
@@ -148,7 +154,6 @@ export default class EventScreen extends React.Component {
         facePileAttendees,
         refreshing: false,
         orgLogo,
-        userId,
         going,
         numGoing: facePileAttendees.length,
         numGoingFromCommunity,
@@ -224,29 +229,17 @@ export default class EventScreen extends React.Component {
       numGoingFromCommunity,
       interests,
     } = this.state;
-    if (going || interested) {
-      numGoing -= 1;
-      numGoingFromCommunity -= 1;
-    }
-    var othersString = 'others';
-    if (numGoing == 1) {
-      othersString = 'other';
-    }
+    console.log(facePileAttendees);
 
     let goingStr =
       numGoing == numGoingFromCommunity
-        ? numGoing +
-          ' ' +
-          othersString +
-          ' going or interested, all from your community '
+        ? numGoing + ' going or interested, all from your community '
         : numGoing +
-          ' ' +
-          othersString +
           ' going or interested including ' +
           numGoingFromCommunity +
           ' from your community';
     if (numGoingFromCommunity == 0) {
-      goingStr = numGoing + ' ' + othersString + ' going or interested';
+      goingStr = numGoing + ' going or interested';
     }
 
     // Render Facepile view only if there are users interested or going
@@ -266,7 +259,6 @@ export default class EventScreen extends React.Component {
             members={facePileAttendees}
             pileTitle="Event Followers"
             navigation={this.props.navigation}
-            currentUserId={this.state.userId}
           />
           <Text style={[styles.detailText, styles.numGoingText]}>
             {goingStr}
