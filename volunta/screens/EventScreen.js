@@ -100,12 +100,14 @@ export default class EventScreen extends React.Component {
             ])
         ),
     ]);
-    attendeesGoing = attendeesGoing.filter(attendee => {
-      attendee['id'] !== userId;
-    });
-    attendeesInterested = attendeesInterested.filter(attendee => {
-      attendee['id'] !== userId;
-    });
+
+    // Filter out current user id
+    attendeesGoing = attendeesGoing.filter(
+      attendee => attendee['id'] !== userId
+    );
+    attendeesInterested = attendeesInterested.filter(
+      attendee => attendee['id'] !== userId
+    );
 
     // Get IDs of all users going to event
     var allGoingIds = [];
@@ -229,17 +231,34 @@ export default class EventScreen extends React.Component {
       numGoingFromCommunity,
       interests,
     } = this.state;
-    console.log(facePileAttendees);
+
+    let otherString = '';
+    if (going || interested) {
+      otherString = ' others';
+      if (numGoing == 1) {
+        otherString = ' other';
+      }
+    }
+
+    let allString = ' all';
+    if (numGoingFromCommunity == 1) {
+      allString = '';
+    }
 
     let goingStr =
       numGoing == numGoingFromCommunity
-        ? numGoing + ' going or interested, all from your community '
+        ? numGoing +
+          otherString +
+          ' going or interested,' +
+          allString +
+          ' from your community '
         : numGoing +
+          otherString +
           ' going or interested including ' +
           numGoingFromCommunity +
           ' from your community';
     if (numGoingFromCommunity == 0) {
-      goingStr = numGoing + ' going or interested';
+      goingStr = numGoing + otherString + ' going or interested';
     }
 
     // Render Facepile view only if there are users interested or going

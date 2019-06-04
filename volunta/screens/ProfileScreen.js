@@ -335,7 +335,10 @@ export default class ProfileScreen extends React.Component {
                   navigation={this.props.navigation}
                   members={volunteerNetwork}
                   pileTitle="Volunteer Network"
-                  currentUserId={this.state.currentUserId}
+                  currentUserId={this.props.navigation.getParam(
+                    'userId',
+                    this.state.currentUserId
+                  )}
                 />
               )}
             </View>
