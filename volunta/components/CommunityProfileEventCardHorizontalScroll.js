@@ -16,6 +16,8 @@ export default class CommunityProfileEventCardHorizontalScroll extends React.Com
         onPress={this.props.onPress}
         status={this.props.status}
         source={this.props.source}
+        org_name={this.props.dateAndOrgMap[item.doc_id][0]}
+        date={this.props.dateAndOrgMap[item.doc_id][1]}
       />
     );
   };

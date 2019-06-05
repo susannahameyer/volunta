@@ -12,25 +12,10 @@ export default class CommunityProfileEventCard extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      date: '',
-      org_name: '',
-    };
   }
 
   async componentDidMount() {
     this._isMounted = true;
-    if (!!this.props.event) {
-      let org_name = await getOrganizationName(this.props.event.org_ref);
-      let date = timestampToDate(this.props.event.from_date);
-
-      if (this._isMounted) {
-        this.setState({
-          date,
-          org_name,
-        });
-      }
-    }
   }
 
   componentWillUnmount = () => {
@@ -38,7 +23,16 @@ export default class CommunityProfileEventCard extends React.Component {
   };
 
   render() {
-    const { event, interested, going, onPress, status, source } = this.props;
+    const {
+      event,
+      interested,
+      going,
+      onPress,
+      status,
+      source,
+      org_name,
+      date,
+    } = this.props;
     const upcoming = status == 'upcoming';
     if (!!event == false) {
       // Don't show empty event cards for empty past events
@@ -75,7 +69,6 @@ export default class CommunityProfileEventCard extends React.Component {
         </View>
       );
     }
-    const { date, org_name } = this.state;
     return (
       <View style={styles.shadow}>
         {/* if the event is in the past list, make the height shorter */}

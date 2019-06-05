@@ -26,10 +26,12 @@ import {
   getAllUserGoingEventsDocIds,
   getVolunteerNetwork,
   setUserProfilePicUrl,
+  getOrganizationName,
 } from '../firebase/api';
 import { ImagePicker } from 'expo';
 import * as firebase from 'firebase';
 import { DEFAULT_PROFILE_PIC_URL } from '../constants/Constants';
+import { timestampToDate } from '../utils';
 
 const SIDE_MARGIN = 20;
 
@@ -49,6 +51,7 @@ export default class ProfileScreen extends React.Component {
       profilePic: null,
       profilePicIsBase64: null,
       isCurrentUser: false,
+      dateAndOrgMap: {},
     };
   }
 
@@ -98,6 +101,18 @@ export default class ProfileScreen extends React.Component {
 
     // get the volunteer network from the past events
     const volunteerNetwork = await getVolunteerNetwork(pastEvents);
+    dateAndOrgMap = {};
+
+    for (const event of upcomingEvents) {
+      let org_name = await getOrganizationName(event.org_ref);
+      let date = timestampToDate(event.from_date);
+      dateAndOrgMap[event.doc_id] = [org_name, date];
+    }
+    for (const event of pastEvents) {
+      let org_name = await getOrganizationName(event.org_ref);
+      let date = timestampToDate(event.from_date);
+      dateAndOrgMap[event.doc_id] = [org_name, date];
+    }
 
     if (this._isMounted) {
       this.setState({
@@ -113,6 +128,7 @@ export default class ProfileScreen extends React.Component {
         goingEventDocIds,
         refreshing: false,
         interests,
+        dateAndOrgMap,
       });
     }
   };
@@ -246,6 +262,7 @@ export default class ProfileScreen extends React.Component {
       volunteerNetwork,
       profileName,
       communityName,
+      dateAndOrgMap,
     } = this.state;
 
     const hidePastEvents = pastEvents.length == 0;
@@ -307,6 +324,7 @@ export default class ProfileScreen extends React.Component {
                   goingIDs={goingEventDocIds}
                   status={'upcoming'}
                   source={'profile'}
+                  dateAndOrgMap={dateAndOrgMap}
                 />
               </View>
             </View>
@@ -320,6 +338,7 @@ export default class ProfileScreen extends React.Component {
                   goingIDs={goingEventDocIds}
                   status={'past'}
                   source={'profile'}
+                  dateAndOrgMap={dateAndOrgMap}
                 />
               </View>
             </View>
