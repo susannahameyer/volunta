@@ -4,7 +4,6 @@ import {
   FlatList,
   View,
   ActivityIndicator,
-  Dimensions,
   TouchableOpacity
 } from 'react-native';
 import { EventCard } from '../components';
@@ -16,9 +15,6 @@ import {
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
-  getEventInterestNames,
-  getEvent,
-  getEventInterestNamesFromID,
   getAllInterests,
 } from '../firebase/api';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -44,6 +40,7 @@ export default class FeedScreen extends React.Component {
     super(props);
     this.state = {
       events: [],
+      advancedSearchEvents: [],
       displayedEvents: [],
       isRefreshing: true,
       search: '',
@@ -112,6 +109,7 @@ export default class FeedScreen extends React.Component {
         advancedSearchEvents = await this._filterEventsFromAdvancedSearch(events);
         this.setState({
           displayedEvents : advancedSearchEvents,
+          advancedSearchEvents : advancedSearchEvents
         });
       } else {
         this._updateSearchAndFilter(this.state.search);
@@ -162,13 +160,20 @@ export default class FeedScreen extends React.Component {
   // Update displayed text.
   // Filter events by titles that contain the search input.
   _updateSearchAndFilter = search => {
+    let searchList = this.state.events.filter(event => event.title.includes(search));
+    let eventsIntersection = this._getIntersection(searchList, this.state.advancedSearchEvents);
     this.setState({
       search,
-      displayedEvents: this.state.displayedEvents.filter(event =>
-        event.title.includes(search) 
-      ),
+      displayedEvents: eventsIntersection
     });
   };
+
+  // gets the events that match both the search bar and the advanced search screen
+  _getIntersection = (search, advancedSearch) => {
+    if (search.length === 0) return [];
+    if (advancedSearch.length === 0) return search;
+    return search.filter(value => advancedSearch.includes(value));
+  }
 
   // Function we pass to EventCard, pushes screen onto current stack with the corresponding event page
   _onPressEventCard = (event, org_name, interested) => {
@@ -304,6 +309,7 @@ export default class FeedScreen extends React.Component {
             containerStyle={styles.searchContainerStyle}
             inputContainerStyle={styles.searchInputContainerStyle}
             ref={searchBar => (this.searchBar = searchBar)}
+            clearIcon = {false}
           />
           <TouchableOpacity 
             style={styles.filterIcon}
