@@ -4,7 +4,7 @@ import { DEFAULT_PROFILE_PIC_URL } from '../constants/Constants';
 import { DefaultDict } from '../utils';
 import * as firebase from 'firebase';
 
-// Fetches events that are either ongoing or upcoming  from firestore. We add doc_id to each event object as well just in case its needed.
+// Fetches events that are either ongoing or upcoming from firestore. We add doc_id to each event object as well just in case its needed.
 export const getFeedEvents = async () => {
   var returnArr = [];
   var eventsRef = firestore.collection('events');
@@ -563,6 +563,26 @@ export const getUserInterestNames = async userDocId => {
   if (interestRefs.length == 0) {
     return interestRefs;
   }
+  interestRefs = await Promise.all(
+    interestRefs.map(async interestRef => {
+      var interestSnapshot = await interestRef.get();
+      return interestSnapshot.get('name');
+    })
+  );
+  return interestRefs.sort();
+};
+
+// Takes in a reference to an event object
+// Returns a list of the event's interest names
+export const getEventInterestNamesFromID = async eventDocId => {
+  var interestRefs = [];
+  await firestore
+    .collection('events')
+    .doc(eventDocId)
+    .get()
+    .then(snapshot => {
+      interestRefs = snapshot.get('interest_refs');
+    });
   interestRefs = await Promise.all(
     interestRefs.map(async interestRef => {
       var interestSnapshot = await interestRef.get();

@@ -4,7 +4,7 @@ import {
   FlatList,
   View,
   ActivityIndicator,
-  Dimensions,
+  TouchableOpacity
 } from 'react-native';
 import { EventCard } from '../components';
 import { SearchBar } from 'react-native-elements';
@@ -15,7 +15,9 @@ import {
   getAllUserInterestedEventsDocIds,
   updateUserInterestedEvents,
   getNumGoingForAllEvents,
+  getAllInterests,
 } from '../firebase/api';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import * as firebase from 'firebase';
 import EventCardConstants from '../constants/EventCardConstants';
 import Colors from '../constants/Colors';
@@ -38,6 +40,7 @@ export default class FeedScreen extends React.Component {
     super(props);
     this.state = {
       events: [],
+      advancedSearchEvents: [],
       displayedEvents: [],
       isRefreshing: true,
       search: '',
@@ -45,6 +48,10 @@ export default class FeedScreen extends React.Component {
       interestedMap: new Map(), // <string, boolean>, tells us if user is interested in eventid
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
+      advancedSearchedPressed: false,
+      currDistance: this.props.navigation.getParam('currDistance', 30), // maximum distance for events
+      currInterests: this.props.navigation.getParam('currInterests', []), // list of interests to filter on
+      interestRefsMap: new Map(), // maps from names of interests to reference object
     };
   }
 
@@ -85,6 +92,7 @@ export default class FeedScreen extends React.Component {
       getNumGoingForAllEvents(),
     ]);
 
+    const interestRefsMap = await getAllInterests();
     // Update state and restore refreshing
     // this.searchBar.clear(); // Clear search bar on refresh, simple UX
     if (this._isMounted) {
@@ -93,12 +101,15 @@ export default class FeedScreen extends React.Component {
         events,
         interestedMap,
         goingCounts,
+        interestRefsMap
       });
-
+      
       // Enable refresh while searching
       if (!this.state.search) {
+        advancedSearchEvents = await this._filterEventsFromAdvancedSearch(events);
         this.setState({
-          displayedEvents: events,
+          displayedEvents : advancedSearchEvents,
+          advancedSearchEvents : advancedSearchEvents
         });
       } else {
         this._updateSearchAndFilter(this.state.search);
@@ -106,17 +117,63 @@ export default class FeedScreen extends React.Component {
     }
   };
 
+  // takes in an array of events ref and return those that match search criteria
+  _filterEventsFromAdvancedSearch = async (events) => {
+    // if the list of selected interests is undefined, or all unselected, return all elements
+    currSearchInterestRefIDs = this._getCurrentInterestRefIDs(this.state.currInterests, this.state.interestRefsMap);
+    if (!this.state.advancedSearchedPressed) return events;
+    // otherwise, trim list of events to display
+    newEventList = []    
+    for (event of events) {
+      // convert the array of references to referenceIDs for easy comparison
+      let eventInterestRefIDs = event.interest_refs.map(i => i.id) ;
+      // check and make sure distance and selected interests match properly
+      if (this._getDistanceAsInt(event) <= this.state.currDistance &&
+      this._hasIntersection(eventInterestRefIDs, currSearchInterestRefIDs)) {
+          newEventList.push(event);
+      }
+    }
+    return newEventList;
+  }
+
+  // returns array of strings of currently active interests
+  _getCurrentInterestRefIDs = (interests, nameToRefMap) => {
+    let namesArr = interests.filter(i => i.switch).map(i => i.key);
+    let refs = namesArr.map(function (name) { 
+      return nameToRefMap.get(name).id; 
+    });
+    return refs;
+  }
+
+  // determines if two arrays have some element in common or not
+  _hasIntersection = (arr1, arr2) => {
+    if (arr1.length == 0 || arr2.length == 0) return true; // default to displaying
+    return arr1.filter(e => arr2.includes(e)).length > 0;
+  }
+
+  // given an event, returns distance to user in miles
+  _getDistanceAsInt = event => {
+    return parseInt(this._getDistance(event.location.coords).match(/\d+/)[0]);
+  }
+
   // Called when user types something into search bar.
   // Update displayed text.
   // Filter events by titles that contain the search input.
   _updateSearchAndFilter = search => {
+    let searchList = this.state.events.filter(event => event.title.includes(search));
+    let eventsIntersection = this._getIntersection(searchList, this.state.advancedSearchEvents);
     this.setState({
       search,
-      displayedEvents: this.state.events.filter(event =>
-        event.title.includes(search)
-      ),
+      displayedEvents: eventsIntersection
     });
   };
+
+  // gets the events that match both the search bar and the advanced search screen
+  _getIntersection = (search, advancedSearch) => {
+    if (search.length === 0) return [];
+    if (advancedSearch.length === 0) return search;
+    return search.filter(value => advancedSearch.includes(value));
+  }
 
   // Function we pass to EventCard, pushes screen onto current stack with the corresponding event page
   _onPressEventCard = (event, org_name, interested) => {
@@ -126,6 +183,28 @@ export default class FeedScreen extends React.Component {
       interested,
     });
   };
+
+  // opens advanced search and passes current distance and interests
+  _onPressAdvancedSearch = (currDistance, currInterests) => {
+    this.props.navigation.push('SearchFilter', {
+      currDistance, 
+      currInterests,
+      onAdvancedSearchPressed: this._refreshResults,
+    });
+  };
+
+  // gets back the distance and the interests from advanced search screen
+  // updating both local state and navigation state so the advanced search
+  // screen data can persist
+  _refreshResults = data => {
+    this.state.advancedSearchedPressed = true;
+    this.state.currDistance = data[0];
+    this.props.navigation.setParams({currDistance: data[0]});
+    this.state.currInterests = data[1];
+    this.props.navigation.setParams({currInterests: data[1]});
+    this.state.isRefreshing = true;
+    this._loadData();
+  }
 
   // Not explicit used now but will potentially be.
   _keyExtractor = (item, index) => item.doc_id;
@@ -217,12 +296,12 @@ export default class FeedScreen extends React.Component {
   };
 
   render() {
-    const { search, displayedEvents, isRefreshing } = this.state;
+    const { search, displayedEvents, isRefreshing, currDistance, currInterests } = this.state;
     if (!isRefreshing) {
       return (
         <View style={styles.pageContainer}>
           <SearchBar
-            placeholder=""
+            placeholder="Search for service events"
             onChangeText={this._updateSearchAndFilter}
             value={search}
             lightTheme
@@ -230,7 +309,14 @@ export default class FeedScreen extends React.Component {
             containerStyle={styles.searchContainerStyle}
             inputContainerStyle={styles.searchInputContainerStyle}
             ref={searchBar => (this.searchBar = searchBar)}
+            clearIcon = {false}
           />
+          <TouchableOpacity 
+            style={styles.filterIcon}
+            onPress={() => this._onPressAdvancedSearch(currDistance, currInterests)}
+          >
+            <FontAwesome name="sliders" size={20} style={{ color: 'gray' }} />
+          </TouchableOpacity>
           {displayedEvents !== [] && (
             <FlatList
               style={styles.flatListStyle}
@@ -283,4 +369,9 @@ const styles = StyleSheet.create({
   activityIndicator: {
     marginTop: 300,
   },
+  filterIcon: {
+    position: 'absolute',
+    left: '85%',
+    top: 22
+  }
 });
