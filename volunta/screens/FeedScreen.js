@@ -52,7 +52,7 @@ export default class FeedScreen extends React.Component {
       goingCounts: new DefaultDict(0), // <eventId, numGoing>
       location: false, // Initialize to false, then update to location object
       advancedSearchedPressed: false,
-      currDistance: this.props.navigation.getParam('currDistance', 25), // maximum distance for events
+      currDistance: this.props.navigation.getParam('currDistance', 30), // maximum distance for events
       currInterests: this.props.navigation.getParam('currInterests', []), // list of interests to filter on
       interestRefsMap: new Map(), // maps from names of interests to reference object
     };
@@ -111,7 +111,7 @@ export default class FeedScreen extends React.Component {
       if (!this.state.search) {
         advancedSearchEvents = await this._filterEventsFromAdvancedSearch(events);
         this.setState({
-          displayedEvents : advancedSearchEvents
+          displayedEvents : advancedSearchEvents,
         });
       } else {
         this._updateSearchAndFilter(this.state.search);
@@ -164,7 +164,7 @@ export default class FeedScreen extends React.Component {
   _updateSearchAndFilter = search => {
     this.setState({
       search,
-      displayedEvents: this.state.events.filter(event =>
+      displayedEvents: this.state.displayedEvents.filter(event =>
         event.title.includes(search) 
       ),
     });
@@ -295,7 +295,6 @@ export default class FeedScreen extends React.Component {
     if (!isRefreshing) {
       return (
         <View style={styles.pageContainer}>
-          <View>
           <SearchBar
             placeholder="Search for service events"
             onChangeText={this._updateSearchAndFilter}
@@ -312,7 +311,6 @@ export default class FeedScreen extends React.Component {
           >
             <FontAwesome name="sliders" size={20} style={{ color: 'gray' }} />
           </TouchableOpacity>
-          </View>
           {displayedEvents !== [] && (
             <FlatList
               style={styles.flatListStyle}
@@ -363,7 +361,7 @@ const styles = StyleSheet.create({
   },
   filterIcon: {
     position: 'absolute',
-    left: '82%',
+    left: '85%',
     top: 22
   }
 });
