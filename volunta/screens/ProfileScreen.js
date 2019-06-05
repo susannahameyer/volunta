@@ -129,7 +129,7 @@ export default class ProfileScreen extends React.Component {
   _onPressSettings = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ['Cancel', 'Logout', 'Edit Profile'],
+        options: ['Cancel', 'Logout'],
         destructiveButtonIndex: 1,
         cancelButtonIndex: 0,
       },
