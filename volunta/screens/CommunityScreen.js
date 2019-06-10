@@ -19,9 +19,11 @@ import {
   getUsersAttributes,
   getAllUserGoingEventsDocIds,
   getCommunityDescription,
+  getOrganizationName,
 } from '../firebase/api';
 import * as firebase from 'firebase';
 import { firestore } from '../firebase/firebase';
+import { timestampToDate } from '../utils';
 
 export default class CommunityScreen extends React.Component {
   constructor(props) {
@@ -35,6 +37,7 @@ export default class CommunityScreen extends React.Component {
       goingEventDocIds: new Set(),
       refreshing: true,
       communityMembers: [],
+      dateAndOrgMap: {},
     };
   }
 
@@ -86,6 +89,18 @@ export default class CommunityScreen extends React.Component {
       getEventsForCommunity(currentUserCommunityRef),
     ]);
 
+    dateAndOrgMap = {};
+    for (const event of upcomingEvents) {
+      let org_name = await getOrganizationName(event.org_ref);
+      let date = timestampToDate(event.from_date);
+      dateAndOrgMap[event.doc_id] = [org_name, date];
+    }
+    for (const event of pastEvents) {
+      let org_name = await getOrganizationName(event.org_ref);
+      let date = timestampToDate(event.from_date);
+      dateAndOrgMap[event.doc_id] = [org_name, date];
+    }
+
     this.setState({
       upcomingEvents,
       pastEvents,
@@ -97,6 +112,7 @@ export default class CommunityScreen extends React.Component {
       goingEventDocIds,
       refreshing: false,
       communityMembers,
+      dateAndOrgMap,
     });
   };
 
@@ -119,6 +135,7 @@ export default class CommunityScreen extends React.Component {
       goingEventDocIds,
       refreshing,
       communityMembers,
+      dateAndOrgMap,
     } = this.state;
     if (!refreshing) {
       var facepileView = (
@@ -160,6 +177,7 @@ export default class CommunityScreen extends React.Component {
                 goingIDs={goingEventDocIds}
                 status={'past'}
                 source={'community'}
+                dateAndOrgMap={dateAndOrgMap}
               />
             </View>
           </View>
@@ -205,6 +223,7 @@ export default class CommunityScreen extends React.Component {
                     goingIDs={goingEventDocIds}
                     status={'upcoming'}
                     source={'community'}
+                    dateAndOrgMap={dateAndOrgMap}
                   />
                 </View>
               </View>
